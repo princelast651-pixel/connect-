@@ -8,21 +8,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
-body{
+html,body{
   margin:0;
-  font-family:Arial,sans-serif;
-  background:#080b12;
-  color:white;
-  height:100vh;
+  width:100%;
+  height:100%;
   overflow:hidden;
 }
 
+body{
+  font-family:Arial,sans-serif;
+  background:#080b12;
+  color:white;
+}
+
 .app{
-  height:100vh;
+  height:100dvh;
   display:flex;
   flex-direction:column;
 }
@@ -31,13 +33,13 @@ body{
 
 .header{
   height:68px;
+  min-height:68px;
   display:flex;
   align-items:center;
   gap:12px;
   padding:10px 14px;
   background:#101522;
   border-bottom:1px solid #20283a;
-  flex-shrink:0;
 }
 
 .back{
@@ -47,8 +49,13 @@ body{
   border-radius:50%;
   background:#1b2333;
   color:white;
-  font-size:22px;
+  font-size:25px;
   cursor:pointer;
+  flex-shrink:0;
+}
+
+.back:active{
+  transform:scale(.94);
 }
 
 .avatar{
@@ -58,6 +65,7 @@ body{
   object-fit:cover;
   background:#273149;
   flex-shrink:0;
+  border:1px solid #33405a;
 }
 
 .userInfo{
@@ -74,7 +82,7 @@ body{
 }
 
 .status{
-  margin-top:3px;
+  margin-top:4px;
   font-size:12px;
   color:#7f8ba3;
 }
@@ -83,28 +91,35 @@ body{
 
 .messages{
   flex:1;
+  min-height:0;
   overflow-y:auto;
   padding:18px 14px 20px;
   display:flex;
   flex-direction:column;
   gap:8px;
-}
-
-.empty{
-  margin:auto;
-  text-align:center;
-  color:#78839a;
-  font-size:14px;
+  scroll-behavior:smooth;
 }
 
 .message{
   max-width:78%;
-  padding:10px 13px;
+  padding:10px 13px 7px;
   border-radius:17px;
   font-size:15px;
   line-height:1.4;
-  word-wrap:break-word;
+  word-break:break-word;
   white-space:pre-wrap;
+  animation:messageIn .16s ease;
+}
+
+@keyframes messageIn{
+  from{
+    opacity:0;
+    transform:translateY(5px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 .sent{
@@ -126,10 +141,19 @@ body{
   text-align:right;
 }
 
+.empty{
+  margin:auto;
+  text-align:center;
+  color:#78839a;
+  font-size:14px;
+  line-height:1.6;
+}
+
 /* INPUT */
 
 .inputArea{
   padding:10px;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
   background:#101522;
   border-top:1px solid #20283a;
   display:flex;
@@ -140,13 +164,17 @@ body{
 .input{
   flex:1;
   min-width:0;
-  border:0;
+  border:1px solid transparent;
   outline:none;
   background:#1a2232;
   color:white;
   border-radius:22px;
   padding:12px 16px;
   font-size:15px;
+}
+
+.input:focus{
+  border-color:#2563eb;
 }
 
 .input::placeholder{
@@ -162,10 +190,16 @@ body{
   color:white;
   font-size:19px;
   cursor:pointer;
+  flex-shrink:0;
+}
+
+.send:active{
+  transform:scale(.94);
 }
 
 .send:disabled{
   opacity:.5;
+  cursor:not-allowed;
 }
 
 /* LOADING */
@@ -182,6 +216,8 @@ body{
   color:#aeb8ca;
 }
 
+/* ERROR */
+
 .error{
   position:fixed;
   inset:0;
@@ -195,6 +231,7 @@ body{
 }
 
 .errorBox{
+  width:100%;
   max-width:400px;
   background:#141b29;
   border:1px solid #2b3549;
@@ -224,6 +261,32 @@ body{
   color:white;
   cursor:pointer;
 }
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:85px;
+  transform:translateX(-50%) translateY(20px);
+  background:#161e2d;
+  border:1px solid #303c55;
+  color:white;
+  padding:11px 16px;
+  border-radius:12px;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:50;
+  max-width:90%;
+  text-align:center;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 </style>
 </head>
 
@@ -235,17 +298,28 @@ body{
 
     <button class="back" onclick="goBack()">‹</button>
 
-    <img id="avatar" class="avatar" src="" alt="">
+    <img
+      id="avatar"
+      class="avatar"
+      alt="Profile"
+    >
 
     <div class="userInfo">
-      <div id="username" class="username">Loading...</div>
-      <div id="status" class="status">Connecting...</div>
+      <div id="username" class="username">
+        Loading...
+      </div>
+
+      <div id="status" class="status">
+        Connecting...
+      </div>
     </div>
 
   </div>
 
   <div id="messages" class="messages">
-    <div class="empty">Loading messages...</div>
+    <div class="empty">
+      Loading messages...
+    </div>
   </div>
 
   <div class="inputArea">
@@ -270,11 +344,9 @@ body{
 
 </div>
 
-
 <div id="loading" class="loading">
   Opening chat...
 </div>
-
 
 <div id="error" class="error">
 
@@ -294,18 +366,20 @@ body{
 
 </div>
 
+<div id="toast" class="toast"></div>
+
 
 <script>
 
-/* =========================
+/* =========================================================
    SUPABASE
-========================= */
+========================================================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 supabase.createClient(
@@ -321,20 +395,56 @@ supabase.createClient(
 );
 
 
-/* =========================
+/* =========================================================
+   DEFAULT AVATAR
+========================================================= */
+
+const DEFAULT_AVATAR =
+"data:image/svg+xml;charset=UTF-8," +
+encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg"
+width="160" height="160" viewBox="0 0 160 160">
+
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#2563eb"/>
+<stop offset="100%" stop-color="#7c3aed"/>
+</linearGradient>
+</defs>
+
+<rect width="160" height="160"
+rx="80" fill="url(#g)"/>
+
+<circle cx="80" cy="62"
+r="27" fill="white" opacity=".95"/>
+
+<path d="M35 133
+C38 103 57 91 80 91
+C103 91 122 103 125 133Z"
+fill="white" opacity=".95"/>
+
+</svg>
+`);
+
+
+/* =========================================================
    VARIABLES
-========================= */
+========================================================= */
 
 let currentUser = null;
 let friendId = null;
 let conversationId = null;
 let profile = null;
-let realtimeChannel = null;
+
+let messageChannel = null;
+
+let renderedMessageIds = new Set();
+let sending = false;
 
 
-/* =========================
+/* =========================================================
    ELEMENTS
-========================= */
+========================================================= */
 
 const loading =
 document.getElementById("loading");
@@ -363,10 +473,56 @@ document.getElementById("messageInput");
 const sendBtn =
 document.getElementById("sendBtn");
 
+const toastEl =
+document.getElementById("toast");
 
-/* =========================
-   START
-========================= */
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(text){
+
+  toastEl.textContent = text;
+
+  toastEl.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(()=>{
+      toastEl.classList.remove("show");
+    },2200);
+
+}
+
+
+/* =========================================================
+   GET FRIEND ID
+========================================================= */
+
+function getFriendId(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  return (
+    params.get("id") ||
+    params.get("friend") ||
+    params.get("friend_id") ||
+    params.get("user_id")
+  );
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
 
 async function init(){
 
@@ -376,10 +532,12 @@ async function init(){
       await supabaseClient.auth.getSession();
 
     if(sessionResult.error){
+
       throw new Error(
-        "Session error: "+
+        "Session error: " +
         sessionResult.error.message
       );
+
     }
 
     const session =
@@ -396,26 +554,25 @@ async function init(){
       session.user;
 
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
-
     friendId =
-      params.get("id");
+      getFriendId();
 
 
     if(!friendId){
+
       throw new Error(
-        "Friend ID missing from URL."
+        "Friend ID missing from chat URL."
       );
+
     }
 
 
     if(friendId === currentUser.id){
+
       throw new Error(
-        "You cannot open a chat with yourself."
+        "You cannot chat with yourself."
       );
+
     }
 
 
@@ -428,34 +585,39 @@ async function init(){
     subscribeToMessages();
 
 
-    inputEl.disabled=false;
-    sendBtn.disabled=false;
+    inputEl.disabled = false;
+    sendBtn.disabled = false;
 
-    statusEl.textContent="Active";
+    statusEl.textContent = "Active";
 
-    loading.style.display="none";
+    loading.style.display = "none";
+
+    inputEl.focus();
 
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "CHAT INIT ERROR:",
+      error
+    );
 
-    loading.style.display="none";
+    loading.style.display = "none";
 
     errorText.textContent =
       error.message ||
-      "Unknown error";
+      "Unknown error.";
 
-    errorBox.style.display="flex";
+    errorBox.style.display = "flex";
 
   }
 
 }
 
 
-/* =========================
+/* =========================================================
    PROFILE
-========================= */
+========================================================= */
 
 async function loadProfile(){
 
@@ -465,14 +627,17 @@ async function loadProfile(){
       .select(
         "id,username,avatar_url,bio"
       )
-      .eq("id",friendId)
+      .eq(
+        "id",
+        friendId
+      )
       .maybeSingle();
 
 
   if(result.error){
 
     throw new Error(
-      "Profile error: "+
+      "Profile error: " +
       result.error.message
     );
 
@@ -482,7 +647,7 @@ async function loadProfile(){
   if(!result.data){
 
     throw new Error(
-      "Profile not found."
+      "Profile not found for this user."
     );
 
   }
@@ -497,25 +662,133 @@ async function loadProfile(){
     "Connect User";
 
 
-  if(profile.avatar_url){
+  setAvatar(
+    profile.avatar_url
+  );
+
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+function setAvatar(url){
+
+  avatarEl.onerror = function(){
+
+    this.onerror = null;
+
+    this.src =
+      DEFAULT_AVATAR;
+
+  };
+
+
+  if(
+    url &&
+    typeof url === "string" &&
+    url.trim() !== ""
+  ){
 
     avatarEl.src =
-      profile.avatar_url;
+      url;
 
   }else{
 
-    avatarEl.removeAttribute("src");
+    avatarEl.src =
+      DEFAULT_AVATAR;
 
   }
 
 }
 
 
-/* =========================
-   CONVERSATION
-========================= */
+/* =========================================================
+   FIND / CREATE CONVERSATION
+========================================================= */
 
 async function findOrCreateConversation(){
+
+  const first =
+    await supabaseClient
+      .from("conversations")
+      .select(
+        "id,user_one,user_two"
+      )
+      .eq(
+        "user_one",
+        currentUser.id
+      )
+      .eq(
+        "user_two",
+        friendId
+      )
+      .limit(1);
+
+
+  if(first.error){
+
+    throw new Error(
+      "Conversation lookup error: " +
+      first.error.message
+    );
+
+  }
+
+
+  if(
+    first.data &&
+    first.data.length
+  ){
+
+    conversationId =
+      first.data[0].id;
+
+    return;
+
+  }
+
+
+  const second =
+    await supabaseClient
+      .from("conversations")
+      .select(
+        "id,user_one,user_two"
+      )
+      .eq(
+        "user_one",
+        friendId
+      )
+      .eq(
+        "user_two",
+        currentUser.id
+      )
+      .limit(1);
+
+
+  if(second.error){
+
+    throw new Error(
+      "Conversation lookup error: " +
+      second.error.message
+    );
+
+  }
+
+
+  if(
+    second.data &&
+    second.data.length
+  ){
+
+    conversationId =
+      second.data[0].id;
+
+    return;
+
+  }
+
 
   const userOne =
     currentUser.id < friendId
@@ -527,41 +800,6 @@ async function findOrCreateConversation(){
       ? friendId
       : currentUser.id;
 
-
-  /* Find existing */
-
-  const existing =
-    await supabaseClient
-      .from("conversations")
-      .select(
-        "id,user_one,user_two"
-      )
-      .eq("user_one",userOne)
-      .eq("user_two",userTwo)
-      .maybeSingle();
-
-
-  if(existing.error){
-
-    throw new Error(
-      "Conversation lookup error: "+
-      existing.error.message
-    );
-
-  }
-
-
-  if(existing.data){
-
-    conversationId =
-      existing.data.id;
-
-    return;
-
-  }
-
-
-  /* Create new conversation */
 
   const created =
     await supabaseClient
@@ -578,8 +816,39 @@ async function findOrCreateConversation(){
 
   if(created.error){
 
+    const retry =
+      await supabaseClient
+        .from("conversations")
+        .select(
+          "id,user_one,user_two"
+        )
+        .eq(
+          "user_one",
+          userOne
+        )
+        .eq(
+          "user_two",
+          userTwo
+        )
+        .limit(1);
+
+
+    if(
+      !retry.error &&
+      retry.data &&
+      retry.data.length
+    ){
+
+      conversationId =
+        retry.data[0].id;
+
+      return;
+
+    }
+
+
     throw new Error(
-      "Conversation creation error: "+
+      "Conversation creation error: " +
       created.error.message
     );
 
@@ -592,9 +861,9 @@ async function findOrCreateConversation(){
 }
 
 
-/* =========================
+/* =========================================================
    LOAD MESSAGES
-========================= */
+========================================================= */
 
 async function loadMessages(){
 
@@ -619,18 +888,22 @@ async function loadMessages(){
   if(result.error){
 
     throw new Error(
-      "Messages error: "+
+      "Messages error: " +
       result.error.message
     );
 
   }
 
 
-  messagesEl.innerHTML="";
+  messagesEl.innerHTML = "";
+
+  renderedMessageIds.clear();
 
 
-  if(!result.data ||
-     result.data.length===0){
+  if(
+    !result.data ||
+    result.data.length === 0
+  ){
 
     showEmpty();
 
@@ -640,8 +913,12 @@ async function loadMessages(){
 
 
   result.data.forEach(
-    message=>{
-      renderMessage(message);
+    message => {
+
+      renderMessage(
+        message
+      );
+
     }
   );
 
@@ -651,17 +928,55 @@ async function loadMessages(){
 }
 
 
-/* =========================
-   RENDER MESSAGE
-========================= */
+/* =========================================================
+   RENDER
+========================================================= */
 
 function renderMessage(message){
+
+  if(
+    !message ||
+    !message.id
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    renderedMessageIds.has(
+      message.id
+    )
+  ){
+
+    return;
+
+  }
+
+
+  renderedMessageIds.add(
+    message.id
+  );
+
+
+  const empty =
+    messagesEl.querySelector(
+      ".empty"
+    );
+
+  if(empty){
+
+    messagesEl.innerHTML = "";
+
+  }
+
 
   const wrapper =
     document.createElement("div");
 
   wrapper.className =
-    "message "+
+    "message " +
     (
       message.sender_id === currentUser.id
         ? "sent"
@@ -673,13 +988,14 @@ function renderMessage(message){
     document.createElement("div");
 
   text.textContent =
-    message.message;
+    message.message || "";
 
 
   const time =
     document.createElement("div");
 
-  time.className="time";
+  time.className =
+    "time";
 
   time.textContent =
     formatTime(
@@ -690,32 +1006,47 @@ function renderMessage(message){
   wrapper.appendChild(text);
   wrapper.appendChild(time);
 
-  messagesEl.appendChild(wrapper);
+  messagesEl.appendChild(
+    wrapper
+  );
 
 }
 
 
-/* =========================
+/* =========================================================
    EMPTY
-========================= */
+========================================================= */
 
 function showEmpty(){
 
-  messagesEl.innerHTML=`
-    <div class="empty">
-      No messages yet.<br>
-      Say hello 👋
-    </div>
-  `;
+  messagesEl.innerHTML = "";
+
+  const empty =
+    document.createElement("div");
+
+  empty.className =
+    "empty";
+
+  empty.innerHTML =
+    "No messages yet.<br>Say hello 👋";
+
+  messagesEl.appendChild(
+    empty
+  );
 
 }
 
 
-/* =========================
+/* =========================================================
    SEND
-========================= */
+========================================================= */
 
 async function sendMessage(){
+
+  if(sending){
+    return;
+  }
+
 
   const message =
     inputEl.value.trim();
@@ -728,7 +1059,7 @@ async function sendMessage(){
 
   if(!conversationId){
 
-    alert(
+    showToast(
       "Chat is still loading..."
     );
 
@@ -737,7 +1068,9 @@ async function sendMessage(){
   }
 
 
-  sendBtn.disabled=true;
+  sending = true;
+
+  sendBtn.disabled = true;
 
 
   const result =
@@ -752,37 +1085,56 @@ async function sendMessage(){
 
         message:
           message
-      });
+      })
+      .select(
+        "id,conversation_id,sender_id,message,created_at"
+      )
+      .single();
 
 
   if(result.error){
 
     console.error(
+      "SEND MESSAGE ERROR:",
       result.error
     );
 
-    alert(
-      "Message failed: "+
+    showToast(
+      "Message failed: " +
       result.error.message
     );
 
-    sendBtn.disabled=false;
+    sending = false;
+
+    sendBtn.disabled = false;
 
     return;
 
   }
 
 
-  inputEl.value="";
+  renderMessage(
+    result.data
+  );
 
-  sendBtn.disabled=false;
+  scrollBottom();
+
+
+  inputEl.value = "";
+
+  inputEl.focus();
+
+
+  sending = false;
+
+  sendBtn.disabled = false;
 
 }
 
 
-/* =========================
+/* =========================================================
    REALTIME
-========================= */
+========================================================= */
 
 function subscribeToMessages(){
 
@@ -791,10 +1143,22 @@ function subscribeToMessages(){
   }
 
 
-  realtimeChannel =
+  if(messageChannel){
+
+    supabaseClient.removeChannel(
+      messageChannel
+    );
+
+  }
+
+
+  messageChannel =
     supabaseClient
       .channel(
-        "chat-"+conversationId
+        "connect-chat-" +
+        conversationId +
+        "-" +
+        Date.now()
       )
       .on(
         "postgres_changes",
@@ -803,51 +1167,42 @@ function subscribeToMessages(){
           schema:"public",
           table:"messages",
           filter:
-            "conversation_id=eq."+conversationId
+            "conversation_id=eq." +
+            conversationId
         },
-        payload=>{
+        payload => {
 
-          const message =
-            payload.new;
-
-
-          /* Prevent duplicate messages */
-
-          const existing =
-            Array.from(
-              messagesEl.children
-            ).some(
-              el=>{
-                return false;
-              }
-            );
-
-
-          if(
-            messagesEl.querySelector(".empty")
-          ){
-
-            messagesEl.innerHTML="";
-
-          }
-
-
-          renderMessage(message);
+          renderMessage(
+            payload.new
+          );
 
           scrollBottom();
 
         }
       )
-      .subscribe();
+      .subscribe(
+        status => {
+
+          console.log(
+            "Realtime:",
+            status
+          );
+
+        }
+      );
 
 }
 
 
-/* =========================
+/* =========================================================
    TIME
-========================= */
+========================================================= */
 
 function formatTime(date){
+
+  if(!date){
+    return "";
+  }
 
   return new Date(date)
     .toLocaleTimeString(
@@ -861,33 +1216,32 @@ function formatTime(date){
 }
 
 
-/* =========================
+/* =========================================================
    SCROLL
-========================= */
+========================================================= */
 
 function scrollBottom(){
 
-  setTimeout(
+  requestAnimationFrame(
     ()=>{
       messagesEl.scrollTop =
         messagesEl.scrollHeight;
-    },
-    50
+    }
   );
 
 }
 
 
-/* =========================
-   ENTER TO SEND
-========================= */
+/* =========================================================
+   ENTER
+========================================================= */
 
 inputEl.addEventListener(
   "keydown",
-  event=>{
+  event => {
 
     if(
-      event.key==="Enter" &&
+      event.key === "Enter" &&
       !event.shiftKey
     ){
 
@@ -901,9 +1255,9 @@ inputEl.addEventListener(
 );
 
 
-/* =========================
+/* =========================================================
    BACK
-========================= */
+========================================================= */
 
 function goBack(){
 
@@ -918,16 +1272,37 @@ function goBack(){
 
   }else{
 
-    location.href="chat.html";
+    location.href =
+      "home.html";
 
   }
 
 }
 
 
-/* =========================
-   START APP
-========================= */
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+
+    if(messageChannel){
+
+      supabaseClient.removeChannel(
+        messageChannel
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
 
 init();
 
