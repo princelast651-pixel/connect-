@@ -2,1599 +2,412 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
-<title>Chat • Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect - Chat Diagnostic</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
-  -webkit-tap-highlight-color:transparent;
 }
-
-:root{
-  --bg:#08090d;
-  --header:#111219;
-  --input:#181a22;
-  --border:rgba(255,255,255,.08);
-  --text:#f5f5f7;
-  --muted:#858a9b;
-  --accent:#7965ff;
-  --mine:#654ee0;
-  --theirs:#1b1d25;
-}
-
-html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-}
-
 body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  margin:0;
+  background:#0b0f19;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  padding:20px;
 }
-
-button,textarea{
-  font:inherit;
+.card{
+  max-width:600px;
+  margin:30px auto;
+  background:#121827;
+  border:1px solid #263044;
+  border-radius:18px;
+  padding:20px;
 }
-
-button{
-  border:0;
-  color:inherit;
-  cursor:pointer;
+h2{
+  margin-top:0;
 }
-
-.app{
-  width:100%;
-  max-width:650px;
-  height:100dvh;
-  margin:auto;
-  display:flex;
-  flex-direction:column;
-  background:
-    radial-gradient(circle at 50% -15%,rgba(121,101,255,.16),transparent 38%),
-    var(--bg);
+.step{
+  padding:14px;
+  margin:10px 0;
+  border-radius:12px;
+  background:#1a2233;
+  word-break:break-word;
 }
-
-/* HEADER */
-
-.header{
-  height:70px;
-  min-height:70px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:9px 12px;
-  background:rgba(17,18,25,.96);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(18px);
-  z-index:10;
+.ok{
+  border-left:4px solid #22c55e;
 }
-
-.backBtn{
-  width:42px;
-  height:42px;
-  min-width:42px;
-  border-radius:14px;
-  background:rgba(255,255,255,.06);
-  border:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
+.bad{
+  border-left:4px solid #ef4444;
 }
-
-.backBtn:active{
-  transform:scale(.92);
+.wait{
+  border-left:4px solid #f59e0b;
 }
-
-.headerAvatar{
-  width:46px;
-  height:46px;
-  min-width:46px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#252731;
-  border:2px solid rgba(255,255,255,.1);
-}
-
-.headerInfo{
-  min-width:0;
-  flex:1;
-}
-
-.headerName{
-  font-size:16px;
-  font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.headerStatus{
-  margin-top:3px;
-  color:var(--muted);
-  font-size:11px;
-}
-
-/* MESSAGES */
-
-.messages{
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  padding:14px 11px 12px;
-  overscroll-behavior:contain;
-}
-
-.messages::-webkit-scrollbar{
-  width:3px;
-}
-
-.messages::-webkit-scrollbar-thumb{
-  background:#30333e;
-  border-radius:20px;
-}
-
-/* EMPTY */
-
-.empty{
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
-  color:var(--muted);
+.small{
+  color:#9ca8bd;
   font-size:13px;
-  line-height:1.6;
-}
-
-.emptyIcon{
-  width:60px;
-  height:60px;
-  border-radius:20px;
-  margin:0 auto 13px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(121,101,255,.12);
-  border:1px solid rgba(121,101,255,.15);
-  font-size:25px;
-}
-
-.emptyTitle{
-  color:white;
-  font-size:16px;
-  font-weight:800;
-  margin-bottom:5px;
-}
-
-/* ERROR */
-
-.errorBox{
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
-}
-
-.errorInner{
-  max-width:340px;
-}
-
-.errorIcon{
-  width:62px;
-  height:62px;
-  border-radius:20px;
-  margin:0 auto 14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,80,80,.1);
-  border:1px solid rgba(255,80,80,.15);
-  font-size:27px;
-}
-
-.errorTitle{
-  font-size:17px;
-  font-weight:800;
-  margin-bottom:7px;
-}
-
-.errorText{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
-  word-break:break-word;
-}
-
-/* DATE */
-
-.dateSeparator{
-  display:flex;
-  justify-content:center;
-  margin:12px 0;
-}
-
-.dateSeparator span{
-  background:#171922;
-  border:1px solid rgba(255,255,255,.06);
-  color:#8c91a2;
-  padding:5px 11px;
-  border-radius:20px;
-  font-size:10px;
-}
-
-/* MESSAGE */
-
-.messageRow{
-  width:100%;
-  display:flex;
-  margin:3px 0;
-}
-
-.messageRow.mine{
-  justify-content:flex-end;
-}
-
-.messageRow.theirs{
-  justify-content:flex-start;
-}
-
-.bubble{
-  max-width:80%;
-  padding:9px 11px 6px;
-  border-radius:17px;
-  font-size:14px;
-  line-height:1.42;
-  word-break:break-word;
-  white-space:pre-wrap;
-  box-shadow:0 3px 12px rgba(0,0,0,.14);
-}
-
-.mine .bubble{
-  background:linear-gradient(135deg,#7059ed,#5540cc);
-  border-bottom-right-radius:5px;
-}
-
-.theirs .bubble{
-  background:var(--theirs);
-  border:1px solid rgba(255,255,255,.055);
-  border-bottom-left-radius:5px;
-}
-
-.messageText{
-  display:block;
-}
-
-.messageMeta{
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  gap:4px;
-  margin-top:3px;
-}
-
-.messageTime{
-  color:rgba(255,255,255,.55);
-  font-size:9px;
-}
-
-.tick{
-  color:#c4beff;
-  font-size:11px;
-}
-
-/* COMPOSER */
-
-.composer{
-  min-height:68px;
-  padding:9px 10px;
-  padding-bottom:max(9px,env(safe-area-inset-bottom));
-  display:flex;
-  align-items:flex-end;
-  gap:8px;
-  background:rgba(13,14,19,.97);
-  border-top:1px solid var(--border);
-  z-index:10;
-}
-
-.inputBox{
-  flex:1;
-  min-height:47px;
-  max-height:115px;
-  display:flex;
-  align-items:center;
-  background:var(--input);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:24px;
-  padding:10px 14px;
-}
-
-.messageInput{
-  width:100%;
-  min-height:25px;
-  max-height:95px;
-  resize:none;
-  overflow-y:auto;
-  outline:none;
-  border:0;
-  background:transparent;
-  color:white;
-  font-size:14px;
-  line-height:21px;
-}
-
-.messageInput::placeholder{
-  color:#707585;
-}
-
-.sendBtn{
-  width:47px;
-  height:47px;
-  min-width:47px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#806cff,#5743d7);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:19px;
-  box-shadow:0 6px 20px rgba(93,70,220,.3);
-}
-
-.sendBtn:active{
-  transform:scale(.91);
-}
-
-.sendBtn:disabled{
-  opacity:.45;
-}
-
-/* LOADING */
-
-.loadingScreen{
-  position:fixed;
-  inset:0;
-  background:#08090d;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:100;
-}
-
-.spinner{
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  border:3px solid rgba(255,255,255,.1);
-  border-top-color:#7964ff;
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-/* TOAST */
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:83px;
-  transform:translateX(-50%) translateY(18px);
-  max-width:90%;
-  background:#22252e;
-  border:1px solid #353944;
-  border-radius:13px;
-  padding:10px 14px;
-  font-size:12px;
-  text-align:center;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-  z-index:200;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-@media(max-width:380px){
-  .bubble{
-    max-width:84%;
-  }
-
-  .header{
-    height:66px;
-    min-height:66px;
-  }
+  margin-top:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="card">
 
-  <header class="header">
+<h2>🔧 Connect Chat Diagnostic</h2>
 
-    <button id="backBtn" class="backBtn">
-      ‹
-    </button>
+<div id="steps">
 
-    <img
-      id="headerAvatar"
-      class="headerAvatar"
-      alt="Profile"
-    >
+<div id="s1" class="step wait">
+⏳ Step 1: Loading Supabase...
+</div>
 
-    <div class="headerInfo">
+<div id="s2" class="step wait">
+⏳ Step 2: Checking login...
+</div>
 
-      <div id="headerName" class="headerName">
-        Loading...
-      </div>
+<div id="s3" class="step wait">
+⏳ Step 3: Reading friend ID...
+</div>
 
-      <div id="headerStatus" class="headerStatus">
-        Connect
-      </div>
+<div id="s4" class="step wait">
+⏳ Step 4: Loading profile...
+</div>
 
-    </div>
-
-  </header>
-
-  <main id="messages" class="messages"></main>
-
-  <div class="composer">
-
-    <div class="inputBox">
-
-      <textarea
-        id="messageInput"
-        class="messageInput"
-        rows="1"
-        maxlength="2000"
-        placeholder="Message..."
-      ></textarea>
-
-    </div>
-
-    <button
-      id="sendBtn"
-      class="sendBtn"
-    >
-      ➤
-    </button>
-
-  </div>
+<div id="s5" class="step wait">
+⏳ Step 5: Checking conversation...
+</div>
 
 </div>
 
-<div id="loadingScreen" class="loadingScreen">
-  <div class="spinner"></div>
 </div>
-
-<div id="toast" class="toast"></div>
 
 <script>
-
-/* =========================================
-   SUPABASE
-========================================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
-
-const client =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 
-/* =========================================
-   ELEMENTS
-========================================= */
+function setStep(id,type,text,detail=""){
 
-const messages =
-document.getElementById("messages");
+  const el=document.getElementById(id);
 
-const input =
-document.getElementById("messageInput");
+  el.className="step "+type;
 
-const sendBtn =
-document.getElementById("sendBtn");
+  el.innerHTML=text+
+  (detail ? `<div class="small">${detail}</div>` : "");
 
-const loading =
-document.getElementById("loadingScreen");
-
-const headerName =
-document.getElementById("headerName");
-
-const headerAvatar =
-document.getElementById("headerAvatar");
-
-const headerStatus =
-document.getElementById("headerStatus");
-
-const toast =
-document.getElementById("toast");
-
-
-/* =========================================
-   VARIABLES
-========================================= */
-
-let currentUser = null;
-let friendId = null;
-let conversationId = null;
-let friendProfile = null;
-let channel = null;
-
-
-/* =========================================
-   TOAST
-========================================= */
-
-function toastMessage(text){
-
-  toast.textContent = text;
-
-  toast.classList.add("show");
-
-  clearTimeout(toastMessage.timer);
-
-  toastMessage.timer =
-    setTimeout(()=>{
-      toast.classList.remove("show");
-    },3000);
 }
 
 
-/* =========================================
-   AVATAR
-========================================= */
+async function runDiagnostic(){
 
-function avatarFallback(name){
-
-  const letter =
-    String(name || "U")
-      .trim()
-      .charAt(0)
-      .toUpperCase();
-
-  return "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg"
-           width="200"
-           height="200">
-
-        <rect
-          width="200"
-          height="200"
-          rx="100"
-          fill="#252731"/>
-
-        <text
-          x="100"
-          y="125"
-          text-anchor="middle"
-          font-family="Arial"
-          font-size="82"
-          font-weight="700"
-          fill="#aaa0ff">
-          ${letter}
-        </text>
-
-      </svg>
-    `);
-}
-
-
-/* =========================================
-   ERROR
-========================================= */
-
-function showError(message){
-
-  messages.innerHTML = `
-    <div class="errorBox">
-      <div class="errorInner">
-
-        <div class="errorIcon">
-          ⚠️
-        </div>
-
-        <div class="errorTitle">
-          Couldn't open chat
-        </div>
-
-        <div class="errorText">
-          ${escapeHtml(message)}
-        </div>
-
-      </div>
-    </div>
-  `;
-}
-
-
-/* =========================================
-   INIT
-========================================= */
-
-async function init(){
+  /* STEP 1 */
 
   try{
 
-    console.log("CONNECT CHAT START");
+    if(!window.supabase){
 
-    /* GET SESSION */
-
-    const sessionResult =
-      await client.auth.getSession();
-
-    console.log(
-      "SESSION RESULT:",
-      sessionResult
-    );
-
-    if(sessionResult.error){
-      throw sessionResult.error;
-    }
-
-    currentUser =
-      sessionResult.data.session?.user;
-
-    if(!currentUser){
-
-      location.href =
-        "index.html";
+      setStep(
+        "s1",
+        "bad",
+        "❌ Step 1 FAILED",
+        "Supabase JavaScript library was not loaded."
+      );
 
       return;
     }
 
-    console.log(
-      "CURRENT USER:",
-      currentUser.id
+    setStep(
+      "s1",
+      "ok",
+      "✅ Step 1 OK",
+      "Supabase library loaded successfully."
     );
 
+  }catch(e){
 
-    /* GET FRIEND ID */
-
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
-
-    friendId =
-      params.get("id");
-
-    console.log(
-      "FRIEND ID:",
-      friendId
-    );
-
-    if(!friendId){
-      throw new Error(
-        "Friend ID missing from URL."
-      );
-    }
-
-
-    if(friendId === currentUser.id){
-      throw new Error(
-        "You cannot chat with yourself."
-      );
-    }
-
-
-    /* LOAD EVERYTHING */
-
-    await loadProfile();
-
-    await findConversation();
-
-    await loadMessages();
-
-    subscribe();
-
-
-    loading.style.display =
-      "none";
-
-    setTimeout(
-      ()=>scrollBottom(false),
-      100
-    );
-
-    console.log(
-      "CHAT READY"
-    );
-
-  }catch(error){
-
-    console.error(
-      "CONNECT CHAT ERROR:",
-      error
-    );
-
-    loading.style.display =
-      "none";
-
-    showError(
-      error?.message ||
-      "Unknown error"
-    );
-  }
-}
-
-
-/* =========================================
-   PROFILE
-========================================= */
-
-async function loadProfile(){
-
-  console.log(
-    "LOADING PROFILE..."
-  );
-
-  const result =
-    await client
-      .from("profiles")
-      .select(
-        "id,username,avatar_url,bio"
-      )
-      .eq(
-        "id",
-        friendId
-      )
-      .maybeSingle();
-
-  console.log(
-    "PROFILE RESULT:",
-    result
-  );
-
-  if(result.error){
-
-    throw new Error(
-      "Profile error: " +
-      result.error.message
-    );
-  }
-
-  if(!result.data){
-
-    throw new Error(
-      "Friend profile not found."
-    );
-  }
-
-  friendProfile =
-    result.data;
-
-  const name =
-    result.data.username ||
-    "Connect User";
-
-  headerName.textContent =
-    name;
-
-  headerStatus.textContent =
-    "Connect";
-
-  if(
-    result.data.avatar_url &&
-    result.data.avatar_url.trim()
-  ){
-
-    headerAvatar.src =
-      result.data.avatar_url;
-
-  }else{
-
-    headerAvatar.src =
-      avatarFallback(name);
-  }
-
-  headerAvatar.onerror =
-    function(){
-
-      this.onerror = null;
-
-      this.src =
-        avatarFallback(name);
-    };
-}
-
-
-/* =========================================
-   CONVERSATION
-========================================= */
-
-async function findConversation(){
-
-  console.log(
-    "FINDING CONVERSATION..."
-  );
-
-  const users =
-    [
-      currentUser.id,
-      friendId
-    ].sort();
-
-  const userOne =
-    users[0];
-
-  const userTwo =
-    users[1];
-
-
-  const result =
-    await client
-      .from("conversations")
-      .select(
-        "id,user_one,user_two"
-      )
-      .eq(
-        "user_one",
-        userOne
-      )
-      .eq(
-        "user_two",
-        userTwo
-      )
-      .maybeSingle();
-
-
-  console.log(
-    "CONVERSATION RESULT:",
-    result
-  );
-
-
-  if(result.error){
-
-    throw new Error(
-      "Conversation error: " +
-      result.error.message
-    );
-  }
-
-
-  if(result.data){
-
-    conversationId =
-      result.data.id;
-
-    console.log(
-      "EXISTING CONVERSATION:",
-      conversationId
+    setStep(
+      "s1",
+      "bad",
+      "❌ Step 1 FAILED",
+      e.message
     );
 
     return;
   }
 
 
-  console.log(
-    "CREATING CONVERSATION..."
+  /* EXACT SAME INITIALIZATION AS WORKING chat.html */
+
+  let supabaseClient;
+
+  try{
+
+    supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+          auth:{
+            persistSession:true,
+            autoRefreshToken:true,
+            detectSessionInUrl:true
+          }
+        }
+      );
+
+  }catch(e){
+
+    setStep(
+      "s1",
+      "bad",
+      "❌ Supabase client creation failed",
+      e.message
+    );
+
+    return;
+  }
+
+
+  /* STEP 2 */
+
+  let sessionResult;
+
+  try{
+
+    sessionResult =
+      await supabaseClient.auth.getSession();
+
+  }catch(e){
+
+    setStep(
+      "s2",
+      "bad",
+      "❌ Step 2 FAILED",
+      e.message
+    );
+
+    return;
+  }
+
+  if(sessionResult.error){
+
+    setStep(
+      "s2",
+      "bad",
+      "❌ Step 2 FAILED",
+      sessionResult.error.message
+    );
+
+    return;
+  }
+
+  const session =
+    sessionResult.data.session;
+
+  if(!session || !session.user){
+
+    setStep(
+      "s2",
+      "bad",
+      "❌ Step 2 FAILED",
+      "No logged-in session found."
+    );
+
+    return;
+  }
+
+  const currentUser =
+    session.user;
+
+  setStep(
+    "s2",
+    "ok",
+    "✅ Step 2 OK",
+    "Logged in user: "+currentUser.id
   );
 
 
-  const create =
-    await client
-      .from("conversations")
-      .insert({
-        user_one:userOne,
-        user_two:userTwo
-      })
-      .select(
-        "id,user_one,user_two"
-      )
-      .single();
+  /* STEP 3 */
 
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-  console.log(
-    "CREATE RESULT:",
-    create
+  const friendId =
+    params.get("id");
+
+  if(!friendId){
+
+    setStep(
+      "s3",
+      "bad",
+      "❌ Step 3 FAILED",
+      "No friend ID found in URL."
+    );
+
+    return;
+  }
+
+  setStep(
+    "s3",
+    "ok",
+    "✅ Step 3 OK",
+    "Friend ID: "+friendId
   );
 
 
-  if(create.error){
+  /* STEP 4 */
 
-    /*
-      Another device/user may have created
-      the conversation at the same time.
-      Try fetching once again.
-    */
+  let profileResult;
 
-    const retry =
-      await client
-        .from("conversations")
+  try{
+
+    profileResult =
+      await supabaseClient
+        .from("profiles")
         .select(
-          "id,user_one,user_two"
+          "id,username,avatar_url,bio"
         )
-        .eq(
-          "user_one",
-          userOne
-        )
-        .eq(
-          "user_two",
-          userTwo
-        )
+        .eq("id",friendId)
         .maybeSingle();
 
+  }catch(e){
 
-    if(retry.error ||
-       !retry.data){
-
-      throw new Error(
-        "Conversation create error: " +
-        create.error.message
-      );
-    }
-
-    conversationId =
-      retry.data.id;
+    setStep(
+      "s4",
+      "bad",
+      "❌ Step 4 FAILED",
+      e.message
+    );
 
     return;
   }
 
+  if(profileResult.error){
 
-  conversationId =
-    create.data.id;
-
-  console.log(
-    "NEW CONVERSATION:",
-    conversationId
-  );
-}
-
-
-/* =========================================
-   LOAD MESSAGES
-========================================= */
-
-async function loadMessages(){
-
-  console.log(
-    "LOADING MESSAGES..."
-  );
-
-  const result =
-    await client
-      .from("messages")
-      .select(
-        "id,conversation_id,sender_id,message,created_at"
-      )
-      .eq(
-        "conversation_id",
-        conversationId
-      )
-      .order(
-        "created_at",
-        {
-          ascending:true
-        }
-      );
-
-
-  console.log(
-    "MESSAGES RESULT:",
-    result
-  );
-
-
-  if(result.error){
-
-    throw new Error(
-      "Messages error: " +
-      result.error.message
+    setStep(
+      "s4",
+      "bad",
+      "❌ Step 4 FAILED",
+      "Profile error: "+
+      profileResult.error.message
     );
-  }
-
-
-  messages.innerHTML = "";
-
-
-  if(
-    !result.data ||
-    result.data.length === 0
-  ){
-
-    showEmpty();
 
     return;
   }
 
+  if(!profileResult.data){
 
-  let lastDate = "";
-
-  result.data.forEach(
-    msg=>{
-
-      const date =
-        dateKey(
-          msg.created_at
-        );
-
-      if(date !== lastDate){
-
-        addDate(
-          msg.created_at
-        );
-
-        lastDate =
-          date;
-      }
-
-      renderMessage(msg);
-    }
-  );
-}
-
-
-/* =========================================
-   EMPTY
-========================================= */
-
-function showEmpty(){
-
-  const name =
-    friendProfile?.username ||
-    "your friend";
-
-  messages.innerHTML = `
-    <div class="empty">
-      <div>
-
-        <div class="emptyIcon">
-          💬
-        </div>
-
-        <div class="emptyTitle">
-          Start the conversation
-        </div>
-
-        <div>
-          Send your first message to
-          ${escapeHtml(name)}.
-        </div>
-
-      </div>
-    </div>
-  `;
-}
-
-
-/* =========================================
-   DATE
-========================================= */
-
-function dateKey(value){
-
-  const d =
-    new Date(value);
-
-  return (
-    d.getFullYear() +
-    "-" +
-    String(d.getMonth()+1).padStart(2,"0") +
-    "-" +
-    String(d.getDate()).padStart(2,"0")
-  );
-}
-
-
-function dateLabel(value){
-
-  const d =
-    new Date(value);
-
-  const today =
-    new Date();
-
-  if(
-    dateKey(d) ===
-    dateKey(today)
-  ){
-
-    return "Today";
-  }
-
-  const yesterday =
-    new Date();
-
-  yesterday.setDate(
-    yesterday.getDate()-1
-  );
-
-  if(
-    dateKey(d) ===
-    dateKey(yesterday)
-  ){
-
-    return "Yesterday";
-  }
-
-  return d.toLocaleDateString(
-    undefined,
-    {
-      day:"numeric",
-      month:"short",
-      year:"numeric"
-    }
-  );
-}
-
-
-function timeLabel(value){
-
-  return new Date(value)
-    .toLocaleTimeString(
-      undefined,
-      {
-        hour:"numeric",
-        minute:"2-digit"
-      }
+    setStep(
+      "s4",
+      "bad",
+      "❌ Step 4 FAILED",
+      "Profile query worked, but no profile was found for this friend ID."
     );
-}
 
-
-/* =========================================
-   DATE SEPARATOR
-========================================= */
-
-function addDate(value){
-
-  const div =
-    document.createElement("div");
-
-  div.className =
-    "dateSeparator";
-
-  const span =
-    document.createElement("span");
-
-  span.textContent =
-    dateLabel(value);
-
-  div.appendChild(span);
-
-  messages.appendChild(div);
-}
-
-
-/* =========================================
-   MESSAGE
-========================================= */
-
-function renderMessage(msg){
-
-  if(
-    document.querySelector(
-      `[data-message-id="${msg.id}"]`
-    )
-  ){
     return;
   }
 
+  const profile =
+    profileResult.data;
 
-  const empty =
-    messages.querySelector(".empty");
-
-  if(empty){
-    empty.remove();
-  }
-
-
-  const mine =
-    msg.sender_id ===
-    currentUser.id;
-
-
-  const row =
-    document.createElement("div");
-
-  row.className =
-    "messageRow " +
-    (
-      mine
-        ? "mine"
-        : "theirs"
-    );
-
-  row.dataset.messageId =
-    msg.id;
-
-  row.dataset.date =
-    dateKey(msg.created_at);
+  setStep(
+    "s4",
+    "ok",
+    "✅ Step 4 OK",
+    "Username: "+
+    (profile.username || "No username")+
+    "<br>ID: "+
+    profile.id
+  );
 
 
-  const bubble =
-    document.createElement("div");
+  /* STEP 5 */
 
-  bubble.className =
-    "bubble";
+  const userOne =
+    currentUser.id < friendId
+      ? currentUser.id
+      : friendId;
 
-
-  const text =
-    document.createElement("span");
-
-  text.className =
-    "messageText";
-
-  text.textContent =
-    msg.message || "";
+  const userTwo =
+    currentUser.id < friendId
+      ? friendId
+      : currentUser.id;
 
 
-  const meta =
-    document.createElement("div");
+  let conversationResult;
 
-  meta.className =
-    "messageMeta";
+  try{
 
+    conversationResult =
+      await supabaseClient
+        .from("conversations")
+        .select("id,user_one,user_two")
+        .eq("user_one",userOne)
+        .eq("user_two",userTwo)
+        .maybeSingle();
 
-  const time =
-    document.createElement("span");
+  }catch(e){
 
-  time.className =
-    "messageTime";
-
-  time.textContent =
-    timeLabel(
-      msg.created_at
-    );
-
-  meta.appendChild(time);
-
-
-  if(mine){
-
-    const tick =
-      document.createElement("span");
-
-    tick.className =
-      "tick";
-
-    tick.textContent =
-      "✓";
-
-    meta.appendChild(tick);
-  }
-
-
-  bubble.appendChild(text);
-
-  bubble.appendChild(meta);
-
-  row.appendChild(bubble);
-
-
-  const rows =
-    messages.querySelectorAll(
-      ".messageRow"
-    );
-
-
-  if(rows.length > 0){
-
-    const last =
-      rows[rows.length-1];
-
-    if(
-      last.dataset.date !==
-      dateKey(msg.created_at)
-    ){
-
-      addDate(
-        msg.created_at
-      );
-    }
-
-  }else{
-
-    /*
-      If loadMessages already added
-      the separator, don't duplicate it.
-    */
-
-    if(
-      !messages.querySelector(
-        ".dateSeparator"
-      )
-    ){
-
-      addDate(
-        msg.created_at
-      );
-    }
-  }
-
-
-  messages.appendChild(row);
-}
-
-
-/* =========================================
-   SEND
-========================================= */
-
-async function sendMessage(){
-
-  const value =
-    input.value.trim();
-
-  if(!value)
-    return;
-
-
-  if(!conversationId){
-
-    toastMessage(
-      "Chat is not ready yet."
+    setStep(
+      "s5",
+      "bad",
+      "❌ Step 5 FAILED",
+      e.message
     );
 
     return;
   }
 
 
-  sendBtn.disabled =
-    true;
+  if(conversationResult.error){
 
-
-  input.value = "";
-
-  resizeInput();
-
-
-  console.log(
-    "SENDING MESSAGE..."
-  );
-
-
-  const result =
-    await client
-      .from("messages")
-      .insert({
-        conversation_id:
-          conversationId,
-
-        sender_id:
-          currentUser.id,
-
-        message:
-          value
-      })
-      .select(
-        "id,conversation_id,sender_id,message,created_at"
-      )
-      .single();
-
-
-  console.log(
-    "SEND RESULT:",
-    result
-  );
-
-
-  sendBtn.disabled =
-    false;
-
-
-  if(result.error){
-
-    input.value =
-      value;
-
-    resizeInput();
-
-    toastMessage(
-      "Send failed: " +
-      result.error.message
+    setStep(
+      "s5",
+      "bad",
+      "❌ Step 5 FAILED",
+      "Conversation error: "+
+      conversationResult.error.message
     );
 
     return;
   }
 
 
-  renderMessage(
-    result.data
-  );
+  if(!conversationResult.data){
 
-  scrollBottom(true);
-}
+    setStep(
+      "s5",
+      "ok",
+      "✅ Step 5 QUERY WORKED",
+      "No existing conversation found. This is okay; the real page can create one."
+    );
 
-
-/* =========================================
-   REALTIME
-========================================= */
-
-function subscribe(){
-
-  if(!conversationId)
     return;
+  }
 
 
-  console.log(
-    "STARTING REALTIME..."
+  setStep(
+    "s5",
+    "ok",
+    "✅ Step 5 OK",
+    "Conversation ID: "+
+    conversationResult.data.id
   );
 
-
-  channel =
-    client
-      .channel(
-        "chat-" +
-        conversationId
-      )
-      .on(
-        "postgres_changes",
-        {
-          event:"INSERT",
-          schema:"public",
-          table:"messages",
-          filter:
-            "conversation_id=eq." +
-            conversationId
-        },
-        payload=>{
-
-          console.log(
-            "REALTIME MESSAGE:",
-            payload
-          );
-
-          renderMessage(
-            payload.new
-          );
-
-          scrollBottom(true);
-        }
-      )
-      .subscribe(
-        status=>{
-
-          console.log(
-            "REALTIME:",
-            status
-          );
-        }
-      );
 }
 
 
-/* =========================================
-   INPUT
-========================================= */
-
-function resizeInput(){
-
-  input.style.height =
-    "auto";
-
-  input.style.height =
-    Math.min(
-      input.scrollHeight,
-      95
-    ) + "px";
-}
-
-
-input.addEventListener(
-  "input",
-  resizeInput
-);
-
-
-input.addEventListener(
-  "keydown",
-  event=>{
-
-    if(
-      event.key === "Enter" &&
-      !event.shiftKey
-    ){
-
-      event.preventDefault();
-
-      sendMessage();
-    }
-  }
-);
-
-
-sendBtn.addEventListener(
-  "click",
-  sendMessage
-);
-
-
-/* =========================================
-   BACK
-========================================= */
-
-document
-  .getElementById("backBtn")
-  .addEventListener(
-    "click",
-    ()=>{
-      location.href =
-        "chat.html";
-    }
-  );
-
-
-/* =========================================
-   SCROLL
-========================================= */
-
-function scrollBottom(smooth){
-
-  messages.scrollTo({
-    top:messages.scrollHeight,
-    behavior:
-      smooth
-        ? "smooth"
-        : "auto"
-  });
-}
-
-
-/* =========================================
-   ESCAPE
-========================================= */
-
-function escapeHtml(value){
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-/* =========================================
-   CLEANUP
-========================================= */
-
-window.addEventListener(
-  "beforeunload",
-  ()=>{
-
-    if(channel){
-
-      client.removeChannel(
-        channel
-      );
-    }
-  }
-);
-
-
-/* =========================================
-   START
-========================================= */
-
-init();
+runDiagnostic();
 
 </script>
 
