@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
 <title>Chat • Connect</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,192 +13,386 @@
   box-sizing:border-box;
   margin:0;
   padding:0;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+  --bg:#0b0b0d;
+  --card:#151518;
+  --card2:#1b1b20;
+  --border:#29292f;
+  --text:#f5f5f7;
+  --muted:#92929b;
+  --accent:#8b7cff;
 }
 
 body{
-  background:#111;
-  color:#fff;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(139,124,255,.18),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
   min-height:100vh;
   padding-bottom:90px;
 }
 
-.app{
-  max-width:520px;
-  margin:auto;
-  padding:20px 16px;
+button,input{
+  font:inherit;
 }
 
-.top{
+button{
+  border:0;
+  color:inherit;
+  cursor:pointer;
+}
+
+.app{
+  width:100%;
+  max-width:650px;
+  margin:auto;
+  padding:18px 16px 30px;
+}
+
+/* HEADER */
+
+.header{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:20px;
-}
-
-.title{
-  font-size:25px;
-  font-weight:800;
-}
-
-.newChat{
-  width:43px;
-  height:43px;
-  border-radius:14px;
-  border:1px solid #292929;
-  background:#fff;
-  color:#111;
-  font-size:22px;
-  font-weight:700;
-}
-
-.search{
-  width:100%;
-  height:52px;
-  border-radius:16px;
-  background:#1a1a1a;
-  border:1px solid #292929;
-  color:#fff;
-  outline:none;
-  padding:0 15px;
-  font-size:14px;
   margin-bottom:22px;
 }
 
-.search::placeholder{
-  color:#666;
+.brandArea{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.brandIcon{
+  width:43px;
+  height:43px;
+  border-radius:15px;
+  background:linear-gradient(145deg,#9c8eff,#6758e8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:900;
+  box-shadow:0 8px 25px rgba(139,124,255,.22);
+}
+
+.title{
+  font-size:21px;
+  font-weight:800;
+  letter-spacing:-.5px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.addBtn{
+  width:43px;
+  height:43px;
+  border-radius:15px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  font-size:22px;
+}
+
+.addBtn:active{
+  transform:scale(.95);
+}
+
+/* SEARCH */
+
+.search{
+  height:49px;
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 15px;
+  margin-bottom:22px;
+}
+
+.searchIcon{
+  font-size:17px;
+  opacity:.65;
+}
+
+.search input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  font-size:14px;
+}
+
+.search input::placeholder{
+  color:#707079;
+}
+
+/* FRIENDS */
+
+.sectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
 }
 
 .sectionTitle{
-  font-size:14px;
+  font-size:15px;
   font-weight:800;
-  margin-bottom:12px;
 }
 
-.chatCard{
-  background:#1a1a1a;
-  border:1px solid #292929;
-  border-radius:18px;
-  padding:13px;
-  margin-bottom:9px;
+.count{
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* FRIEND LIST */
+
+.friendList{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.friend{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:11px 12px;
   display:flex;
   align-items:center;
   gap:12px;
-  cursor:pointer;
-  transition:.18s;
+  text-align:left;
+  transition:.15s;
 }
 
-.chatCard:active{
-  transform:scale(.98);
+.friend:active{
+  transform:scale(.985);
+  background:var(--card2);
 }
 
-.avatar{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#292929;
+.avatarWrap{
+  position:relative;
+  width:51px;
+  height:51px;
   flex-shrink:0;
 }
 
-.info{
-  flex:1;
+.avatar{
+  width:51px;
+  height:51px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#24242a;
+  border:2px solid #303038;
+}
+
+.dot{
+  position:absolute;
+  right:0;
+  bottom:1px;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#5fd67b;
+  border:3px solid var(--card);
+}
+
+.friendInfo{
   min-width:0;
+  flex:1;
 }
 
-.name{
-  font-size:15px;
-  font-weight:800;
+.friendName{
+  font-size:14px;
+  font-weight:750;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.last{
-  color:#777;
-  font-size:12px;
-  margin-top:4px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.time{
-  color:#666;
-  font-size:10px;
-  align-self:flex-start;
+.friendHandle{
+  color:var(--muted);
+  font-size:11px;
   margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
+
+.chatArrow{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  background:rgba(139,124,255,.11);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#a99fff;
+  font-size:17px;
+  flex-shrink:0;
+}
+
+/* EMPTY */
 
 .empty{
+  background:var(--card);
+  border:1px dashed #34343b;
+  border-radius:23px;
+  padding:34px 20px;
   text-align:center;
-  color:#666;
-  padding:55px 15px;
-  font-size:13px;
 }
 
 .emptyIcon{
-  font-size:38px;
-  margin-bottom:12px;
+  width:58px;
+  height:58px;
+  border-radius:19px;
+  margin:0 auto 14px;
+  background:rgba(139,124,255,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
 }
+
+.emptyTitle{
+  font-size:16px;
+  font-weight:800;
+}
+
+.emptyText{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+  margin:7px auto 16px;
+  max-width:300px;
+}
+
+.findBtn{
+  padding:11px 18px;
+  border-radius:14px;
+  background:#f4f4f5;
+  color:#111116;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* LOADING */
+
+.loading{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  height:73px;
+  position:relative;
+  overflow:hidden;
+}
+
+.loading:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.06),
+    transparent
+  );
+  animation:load 1.1s infinite;
+}
+
+@keyframes load{
+  to{
+    transform:translateX(100%);
+  }
+}
+
+/* BOTTOM NAV */
 
 .bottom{
   position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:76px;
-  background:rgba(18,18,18,.97);
-  border-top:1px solid #292929;
-  display:flex;
-  justify-content:center;
+  left:50%;
+  bottom:12px;
+  transform:translateX(-50%);
+  width:calc(100% - 24px);
+  max-width:620px;
+  height:65px;
+  background:rgba(21,21,24,.94);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:23px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:5px;
   z-index:20;
 }
 
 .nav{
-  width:100%;
-  max-width:520px;
+  border-radius:18px;
+  background:transparent;
+  color:#777780;
   display:flex;
-  justify-content:space-around;
+  flex-direction:column;
   align-items:center;
-}
-
-.navItem{
-  color:#777;
-  text-align:center;
-  font-size:11px;
-  cursor:pointer;
+  justify-content:center;
+  gap:4px;
+  font-size:10px;
 }
 
 .navIcon{
-  font-size:21px;
-  margin-bottom:3px;
+  font-size:19px;
 }
 
-.navItem.active{
+.nav.active{
+  background:rgba(139,124,255,.13);
   color:#fff;
 }
+
+/* TOAST */
 
 .toast{
   position:fixed;
   left:50%;
-  bottom:92px;
-  transform:translateX(-50%) translateY(15px);
-  background:#fff;
-  color:#111;
-  padding:11px 17px;
+  bottom:91px;
+  transform:translateX(-50%) translateY(20px);
+  background:#222228;
+  border:1px solid #36363d;
+  color:#fff;
+  padding:11px 15px;
   border-radius:13px;
-  font-size:13px;
-  font-weight:650;
+  font-size:12px;
   opacity:0;
   pointer-events:none;
   transition:.25s;
-  z-index:50;
+  z-index:100;
+  max-width:90%;
+  text-align:center;
 }
 
 .toast.show{
   opacity:1;
   transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:380px){
+  .app{
+    padding-left:12px;
+    padding-right:12px;
+  }
 }
 </style>
 </head>
@@ -206,75 +401,112 @@ body{
 
 <div class="app">
 
-  <div class="top">
-    <div class="title">Chat</div>
+  <!-- HEADER -->
 
-    <button class="newChat" onclick="openFriends()">
+  <div class="header">
+
+    <div class="brandArea">
+
+      <div class="brandIcon">C</div>
+
+      <div>
+        <div class="title">Chat</div>
+        <div class="subtitle">Talk with your people</div>
+      </div>
+
+    </div>
+
+    <button class="addBtn" onclick="openFriends()">
       +
     </button>
+
   </div>
 
-  <input
-    id="search"
-    class="search"
-    type="text"
-    placeholder="Search conversations..."
-    autocomplete="off"
-  >
 
-  <div class="sectionTitle">Messages</div>
+  <!-- SEARCH -->
 
-  <div id="chatList">
-    <div class="empty">
-      <div class="emptyIcon">💬</div>
-      Loading conversations...
+  <div class="search">
+
+    <div class="searchIcon">⌕</div>
+
+    <input
+      id="search"
+      type="text"
+      placeholder="Search friends..."
+      oninput="filterFriends()"
+    >
+
+  </div>
+
+
+  <!-- FRIENDS -->
+
+  <div class="sectionHead">
+
+    <div class="sectionTitle">
+      Your friends
     </div>
+
+    <div id="friendCount" class="count">
+      0 friends
+    </div>
+
+  </div>
+
+
+  <div id="friendList" class="friendList">
+
+    <div class="loading"></div>
+    <div class="loading"></div>
+    <div class="loading"></div>
+
   </div>
 
 </div>
+
+
+<!-- BOTTOM NAV -->
 
 <div class="bottom">
 
-  <div class="nav">
+  <button class="nav" onclick="location.href='home.html'">
+    <div class="navIcon">⌂</div>
+    Home
+  </button>
 
-    <div class="navItem" onclick="go('home.html')">
-      <div class="navIcon">⌂</div>
-      Home
-    </div>
+  <button class="nav" onclick="location.href='entertainment.html'">
+    <div class="navIcon">✦</div>
+    Explore
+  </button>
 
-    <div class="navItem" onclick="go('entertainment.html')">
-      <div class="navIcon">🚀</div>
-      Entertainment
-    </div>
+  <button class="nav active">
+    <div class="navIcon">◌</div>
+    Chat
+  </button>
 
-    <div class="navItem active">
-      <div class="navIcon">▢</div>
-      Chat
-    </div>
-
-    <div class="navItem" onclick="go('profile.html')">
-      <div class="navIcon">●</div>
-      Profile
-    </div>
-
-  </div>
+  <button class="nav" onclick="location.href='profile.html'">
+    <div class="navIcon">●</div>
+    Profile
+  </button>
 
 </div>
 
-<div class="toast" id="toast"></div>
+
+<div id="toast" class="toast"></div>
+
 
 <script>
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
-const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_ANON_KEY,
+  SUPABASE_KEY,
   {
     auth:{
       persistSession:true,
@@ -284,309 +516,442 @@ supabase.createClient(
   }
 );
 
-let currentUser=null;
-let conversations=[];
+let currentUser = null;
+let allFriends = [];
 
 
-async function start(){
+/* TOAST */
 
-  const {data:{session}} =
-    await supabaseClient.auth.getSession();
+function toast(message){
 
-  if(!session){
-    location.href="index.html";
-    return;
-  }
+  const el =
+    document.getElementById("toast");
 
-  currentUser=session.user;
+  el.textContent = message;
 
-  await loadConversations();
+  el.classList.add("show");
+
+  setTimeout(()=>{
+    el.classList.remove("show");
+  },2600);
 
 }
 
 
-async function loadConversations(){
+/* INIT */
 
-  const box=document.getElementById("chatList");
+async function init(){
 
-  const {data,error}=await supabaseClient
-    .from("conversations")
-    .select(
-      "id,user_one,user_two,created_at"
-    )
-    .or(
-      `user_one.eq.${currentUser.id},user_two.eq.${currentUser.id}`
-    )
-    .order("created_at",{ascending:false});
+  const {
+    data:{
+      session
+    }
+  } =
+    await supabaseClient.auth.getSession();
 
 
-  if(error){
+  if(!session){
 
-    console.error(error);
-
-    box.innerHTML=`
-      <div class="empty">
-        Could not load conversations
-      </div>
-    `;
-
+    location.href="index.html";
     return;
+
   }
 
 
-  if(!data || data.length===0){
-
-    conversations=[];
-
-    box.innerHTML=`
-      <div class="empty">
-        <div class="emptyIcon">💬</div>
-        No conversations yet.<br>
-        Add a friend and start chatting.
-      </div>
-    `;
-
-    return;
-  }
+  currentUser =
+    session.user;
 
 
-  const otherIds=data.map(c=>
-    c.user_one===currentUser.id
-      ? c.user_two
-      : c.user_one
-  );
+  await loadFriends();
+
+}
 
 
-  const {data:profiles,error:profileError} =
+/* LOAD FRIENDS */
+
+async function loadFriends(){
+
+  const list =
+    document.getElementById("friendList");
+
+  list.innerHTML = `
+    <div class="loading"></div>
+    <div class="loading"></div>
+    <div class="loading"></div>
+  `;
+
+
+  /*
+    Get every accepted friendship
+    involving the current user.
+  */
+
+  const {
+    data:friendRows,
+    error:friendError
+  } =
     await supabaseClient
-      .from("profiles")
-      .select("id,username,avatar_url")
-      .in("id",otherIds);
+      .from("friends")
+      .select("id,user_id,friend_id,status")
+      .eq("status","accepted")
+      .or(
+        "user_id.eq."+currentUser.id+
+        ",friend_id.eq."+currentUser.id
+      );
 
 
-  if(profileError){
+  if(friendError){
 
-    console.error(profileError);
+    console.error(
+      "Friends error:",
+      friendError
+    );
 
-    box.innerHTML=`
+    list.innerHTML = `
       <div class="empty">
-        Could not load users
+        <div class="emptyIcon">⚠️</div>
+        <div class="emptyTitle">
+          Couldn't load friends
+        </div>
+        <div class="emptyText">
+          Please refresh the page and try again.
+        </div>
+        <button
+          class="findBtn"
+          onclick="loadFriends()"
+        >
+          Retry
+        </button>
       </div>
     `;
 
     return;
+
   }
 
 
-  const profileMap={};
+  /*
+    Extract the OTHER user's ID.
+  */
 
-  (profiles || []).forEach(profile=>{
-    profileMap[profile.id]=profile;
-  });
+  const friendIds = [];
 
+  (friendRows || []).forEach(row=>{
 
-  const conversationIds=data.map(c=>c.id);
+    const otherId =
+      row.user_id === currentUser.id
+        ? row.friend_id
+        : row.user_id;
 
+    if(
+      otherId &&
+      !friendIds.includes(otherId)
+    ){
 
-  const {data:messages}=await supabaseClient
-    .from("messages")
-    .select(
-      "conversation_id,message,created_at"
-    )
-    .in("conversation_id",conversationIds)
-    .order("created_at",{ascending:false});
+      friendIds.push(otherId);
 
-
-  const lastMessage={};
-
-
-  (messages || []).forEach(message=>{
-
-    if(!lastMessage[message.conversation_id]){
-      lastMessage[message.conversation_id]=message;
     }
 
   });
 
 
-  conversations=data.map(conversation=>{
+  if(friendIds.length === 0){
 
-    const otherId =
-      conversation.user_one===currentUser.id
-        ? conversation.user_two
-        : conversation.user_one;
+    allFriends = [];
 
-    return {
-      ...conversation,
-      otherId,
-      profile:profileMap[otherId] || {},
-      lastMessage:lastMessage[conversation.id] || null
-    };
+    updateCount(0);
 
-  });
+    showEmpty();
+
+    return;
+
+  }
 
 
-  renderConversations(conversations);
+  /*
+    Load profiles for those users.
+  */
 
-}
+  const {
+    data:profiles,
+    error:profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("id,username,avatar_url,bio")
+      .in("id",friendIds);
 
 
-function renderConversations(list){
+  if(profileError){
 
-  const box=document.getElementById("chatList");
+    console.error(
+      "Profile error:",
+      profileError
+    );
 
-  if(!list.length){
-
-    box.innerHTML=`
+    list.innerHTML = `
       <div class="empty">
-        <div class="emptyIcon">🔎</div>
-        No matching conversations
+        <div class="emptyIcon">⚠️</div>
+        <div class="emptyTitle">
+          Couldn't load profiles
+        </div>
+        <div class="emptyText">
+          Your friends are connected, but their profiles couldn't be loaded.
+        </div>
+        <button
+          class="findBtn"
+          onclick="loadFriends()"
+        >
+          Retry
+        </button>
       </div>
     `;
 
     return;
+
   }
 
 
-  box.innerHTML=list.map(chat=>{
+  allFriends =
+    friendIds.map(id=>{
 
-    const name =
-      chat.profile.username ||
-      "Connect User";
+      const profile =
+        (profiles || []).find(
+          p=>p.id === id
+        );
 
-    const avatar =
-      chat.profile.avatar_url || "";
+      return {
 
-    const last =
-      chat.lastMessage
-        ? chat.lastMessage.message
-        : "Start chatting";
+        id:id,
 
-    const time =
-      chat.lastMessage
-        ? formatTime(chat.lastMessage.created_at)
-        : "";
+        username:
+          profile?.username ||
+          "Connect User",
+
+        avatar_url:
+          profile?.avatar_url ||
+          "",
+
+        bio:
+          profile?.bio ||
+          ""
+
+      };
+
+    });
 
 
-    return `
+  updateCount(allFriends.length);
 
-      <div
-        class="chatCard"
-        onclick="openConversation('${chat.otherId}')"
-      >
+  renderFriends(allFriends);
 
-        <img
-          class="avatar"
-          src="${escapeHtml(avatar)}"
-          onerror="this.style.display='none'"
-        >
+}
 
-        <div class="info">
 
-          <div class="name">
-            ${escapeHtml(name)}
-          </div>
+/* RENDER */
 
-          <div class="last">
-            ${escapeHtml(last)}
-          </div>
+function renderFriends(friends){
 
+  const list =
+    document.getElementById("friendList");
+
+
+  if(!friends.length){
+
+    list.innerHTML = `
+      <div class="empty">
+        <div class="emptyIcon">🔎</div>
+        <div class="emptyTitle">
+          No friend found
         </div>
-
-        <div class="time">
-          ${escapeHtml(time)}
+        <div class="emptyText">
+          Try searching with another username.
         </div>
-
       </div>
-
     `;
 
-  }).join("");
+    return;
+
+  }
+
+
+  list.innerHTML =
+    friends.map(friend=>{
+
+      const avatar =
+        friend.avatar_url ||
+        "https://ui-avatars.com/api/?name="+
+        encodeURIComponent(friend.username)+
+        "&background=24242a&color=fff&size=128";
+
+
+      const handle =
+        "@"+
+        friend.username
+          .replace(/\s+/g,"")
+          .toLowerCase();
+
+
+      return `
+
+        <button
+          class="friend"
+          onclick="openConversation('${friend.id}')"
+        >
+
+          <div class="avatarWrap">
+
+            <img
+              class="avatar"
+              src="${escapeHtml(avatar)}"
+              alt=""
+              onerror="this.src='https://ui-avatars.com/api/?name=User&background=24242a&color=fff&size=128'"
+            >
+
+            <div class="dot"></div>
+
+          </div>
+
+
+          <div class="friendInfo">
+
+            <div class="friendName">
+              ${escapeHtml(friend.username)}
+            </div>
+
+            <div class="friendHandle">
+              ${escapeHtml(handle)}
+            </div>
+
+          </div>
+
+
+          <div class="chatArrow">
+            ›
+          </div>
+
+        </button>
+
+      `;
+
+    }).join("");
 
 }
 
 
-function openConversation(userId){
+/* SEARCH */
 
-  location.href=
-    "conversation.html?id=" +
-    encodeURIComponent(userId);
+function filterFriends(){
+
+  const query =
+    document
+      .getElementById("search")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  if(!query){
+
+    renderFriends(allFriends);
+    return;
+
+  }
+
+
+  const filtered =
+    allFriends.filter(friend=>
+      friend.username
+        .toLowerCase()
+        .includes(query)
+    );
+
+
+  renderFriends(filtered);
 
 }
 
+
+/* COUNT */
+
+function updateCount(number){
+
+  document.getElementById("friendCount").textContent =
+    number === 1
+      ? "1 friend"
+      : number+" friends";
+
+}
+
+
+/* EMPTY */
+
+function showEmpty(){
+
+  document.getElementById("friendList").innerHTML = `
+
+    <div class="empty">
+
+      <div class="emptyIcon">
+        👥
+      </div>
+
+      <div class="emptyTitle">
+        No friends yet
+      </div>
+
+      <div class="emptyText">
+        Add some friends on Connect and start chatting with them here.
+      </div>
+
+      <button
+        class="findBtn"
+        onclick="openFriends()"
+      >
+        Find Friends
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+/* OPEN CONVERSATION */
+
+function openConversation(friendId){
+
+  if(!friendId){
+
+    toast("Couldn't open chat");
+    return;
+
+  }
+
+
+  location.href =
+    "conversation.html?id="+
+    encodeURIComponent(friendId);
+
+}
+
+
+/* FRIENDS PAGE */
 
 function openFriends(){
 
-  location.href="friends.html";
+  location.href =
+    "friends.html";
 
 }
 
 
-document.getElementById("search")
-.addEventListener("input",function(){
-
-  const value=
-    this.value.trim().toLowerCase();
-
-  if(!value){
-
-    renderConversations(conversations);
-    return;
-
-  }
-
-
-  const filtered=conversations.filter(chat=>{
-
-    const username =
-      (chat.profile.username || "")
-        .toLowerCase();
-
-    const last =
-      (chat.lastMessage?.message || "")
-        .toLowerCase();
-
-    return (
-      username.includes(value) ||
-      last.includes(value)
-    );
-
-  });
-
-
-  renderConversations(filtered);
-
-});
-
-
-function formatTime(date){
-
-  const d=new Date(date);
-  const now=new Date();
-
-  if(
-    d.toDateString()===
-    now.toDateString()
-  ){
-
-    return d.toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit"
-    });
-
-  }
-
-  return d.toLocaleDateString([],{
-    day:"numeric",
-    month:"short"
-  });
-
-}
-
+/* HTML SAFETY */
 
 function escapeHtml(value){
 
-  return String(value ?? "")
+  return String(value)
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
@@ -596,29 +961,9 @@ function escapeHtml(value){
 }
 
 
-function go(page){
+/* RUN */
 
-  location.href=page;
-
-}
-
-
-function toast(message){
-
-  const el=document.getElementById("toast");
-
-  el.textContent=message;
-
-  el.classList.add("show");
-
-  setTimeout(()=>{
-    el.classList.remove("show");
-  },1800);
-
-}
-
-
-start();
+init();
 
 </script>
 
