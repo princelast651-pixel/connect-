@@ -516,7 +516,9 @@ button{
   color:#aaa;
 }
 
-/* ROOM INVITE POPUP */
+/* =========================
+   ROOM INVITE POPUP
+========================= */
 
 .invite-popup{
   position:fixed;
@@ -627,6 +629,116 @@ button{
   font-weight:700;
 }
 
+/* =========================
+   FRIEND REQUEST POPUP
+========================= */
+
+.friend-popup{
+  position:fixed;
+  top:82px;
+  left:14px;
+  right:14px;
+  max-width:390px;
+  margin-left:auto;
+  z-index:89;
+  display:none;
+  animation:friendIn .25s ease;
+}
+
+.friend-popup.show{
+  display:block;
+}
+
+@keyframes friendIn{
+  from{
+    opacity:0;
+    transform:translateY(-12px) scale(.97);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+.friend-card{
+  background:rgba(29,29,29,.98);
+  border:1px solid #3a3a3a;
+  border-radius:18px;
+  padding:13px;
+  box-shadow:0 18px 45px rgba(0,0,0,.5);
+  backdrop-filter:blur(18px);
+}
+
+.friend-top{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.friend-avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#272727;
+  border:1px solid #3b3b3b;
+}
+
+.friend-info{
+  min-width:0;
+  flex:1;
+}
+
+.friend-label{
+  color:#ec4899;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+.friend-sender{
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  margin-top:2px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.friend-text{
+  color:#999;
+  font-size:11px;
+  margin-top:2px;
+}
+
+.friend-actions{
+  display:flex;
+  gap:8px;
+  margin-top:11px;
+}
+
+.friend-accept{
+  flex:1;
+  background:#8b5cf6;
+  color:#fff;
+  border-radius:11px;
+  padding:10px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.friend-decline{
+  flex:1;
+  background:#282828;
+  color:#aaa;
+  border-radius:11px;
+  padding:10px;
+  font-size:11px;
+  font-weight:700;
+}
+
 /* TOAST */
 
 .toast{
@@ -719,9 +831,12 @@ button{
 </header>
 
 
-<!-- SMALL ROOM INVITE POPUP -->
+<!-- =========================
+     ROOM INVITE POPUP
+========================= -->
 
 <div class="invite-popup" id="invitePopup">
+
   <div class="invite-card">
 
     <div class="invite-top">
@@ -772,6 +887,65 @@ button{
     </div>
 
   </div>
+
+</div>
+
+
+<!-- =========================
+     FRIEND REQUEST POPUP
+========================= -->
+
+<div class="friend-popup" id="friendPopup">
+
+  <div class="friend-card">
+
+    <div class="friend-top">
+
+      <img
+        id="friendRequestAvatar"
+        class="friend-avatar"
+        src=""
+        alt=""
+      >
+
+      <div class="friend-info">
+
+        <div class="friend-label">
+          Friend request
+        </div>
+
+        <div
+          class="friend-sender"
+          id="friendRequestSender">
+          Someone
+        </div>
+
+        <div class="friend-text">
+          wants to connect with you
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="friend-actions">
+
+      <button
+        class="friend-accept"
+        id="friendAcceptBtn">
+        Accept
+      </button>
+
+      <button
+        class="friend-decline"
+        id="friendDeclineBtn">
+        Decline
+      </button>
+
+    </div>
+
+  </div>
+
 </div>
 
 
@@ -1104,7 +1278,12 @@ supabase.createClient(
 
 
 let currentUser = null;
+
 let inviteChannel = null;
+
+let friendRequestChannel = null;
+
+let currentFriendRequest = null;
 
 
 /* =========================
@@ -1116,13 +1295,70 @@ function showToast(message){
   const toast =
     document.getElementById("toast");
 
-  toast.textContent = message;
+  toast.textContent =
+    message;
 
   toast.classList.add("show");
 
-  setTimeout(()=>{
-    toast.classList.remove("show");
-  },2500);
+  clearTimeout(
+    showToast.timer
+  );
+
+  showToast.timer =
+    setTimeout(()=>{
+
+      toast.classList.remove("show");
+
+    },2500);
+
+}
+
+
+/* =========================
+   DEFAULT AVATAR
+========================= */
+
+function fallbackAvatar(name){
+
+  const letter =
+    String(name || "U")
+      .trim()
+      .charAt(0)
+      .toUpperCase() || "U";
+
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(`
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="200"
+        height="200"
+        viewBox="0 0 200 200">
+
+        <rect
+          width="200"
+          height="200"
+          rx="100"
+          fill="#292c37"
+        />
+
+        <text
+          x="100"
+          y="119"
+          text-anchor="middle"
+          font-family="Arial"
+          font-size="86"
+          font-weight="700"
+          fill="#aaa0ff">
+
+          ${letter}
+
+        </text>
+
+      </svg>
+
+    `);
 
 }
 
@@ -1162,7 +1398,11 @@ async function start(){
 
   await loadRoomInvites();
 
+  await loadFriendRequests();
+
   setupInviteRealtime();
+
+  setupFriendRequestRealtime();
 
 }
 
@@ -1180,7 +1420,10 @@ async function loadProfile(){
   await supabaseClient
   .from("profiles")
   .select("username")
-  .eq("id",currentUser.id)
+  .eq(
+    "id",
+    currentUser.id
+  )
   .maybeSingle();
 
 
@@ -1197,21 +1440,12 @@ async function loadProfile(){
   }
 
 
-  if(data && data.username){
-
-    document.getElementById(
-      "welcomeName"
-    ).textContent =
-      data.username;
-
-  }else{
-
-    document.getElementById(
-      "welcomeName"
-    ).textContent =
-      "Welcome";
-
-  }
+  document.getElementById(
+    "welcomeName"
+  ).textContent =
+    data && data.username
+      ? data.username
+      : "Welcome";
 
 }
 
@@ -1223,7 +1457,9 @@ async function loadProfile(){
 async function loadFriendsStories(){
 
   const stories =
-    document.getElementById("stories");
+    document.getElementById(
+      "stories"
+    );
 
 
   const {
@@ -1235,7 +1471,10 @@ async function loadFriendsStories(){
   .select(
     "id,user_id,friend_id,status"
   )
-  .eq("status","accepted")
+  .eq(
+    "status",
+    "accepted"
+  )
   .or(
     "user_id.eq."+currentUser.id+
     ",friend_id.eq."+currentUser.id
@@ -1256,7 +1495,10 @@ async function loadFriendsStories(){
   }
 
 
-  if(!friendRows || friendRows.length===0){
+  if(
+    !friendRows ||
+    friendRows.length === 0
+  ){
 
     stories.innerHTML = `
       <div class="loading">
@@ -1272,7 +1514,8 @@ async function loadFriendsStories(){
     ...new Set(
       friendRows.map(row => {
 
-        return row.user_id === currentUser.id
+        return row.user_id ===
+          currentUser.id
           ? row.friend_id
           : row.user_id;
 
@@ -1290,7 +1533,10 @@ async function loadFriendsStories(){
   .select(
     "id,username,avatar_url"
   )
-  .in("id",friendIds);
+  .in(
+    "id",
+    friendIds
+  );
 
 
   if(profileError){
@@ -1310,47 +1556,72 @@ async function loadFriendsStories(){
   stories.innerHTML = "";
 
 
-  profiles.forEach(profile => {
+  (profiles || []).forEach(profile => {
 
     const story =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
     story.className =
       "story";
 
 
+    const name =
+      profile.username ||
+      "User";
+
+
     const avatar =
       profile.avatar_url ||
-      "https://i.pravatar.cc/100?u="+
-      encodeURIComponent(profile.id);
+      fallbackAvatar(name);
 
 
     story.innerHTML = `
 
       <img
         class="story-avatar"
-        src="${avatar}"
+        src="${escapeHtml(avatar)}"
         alt=""
-        onerror="this.src='https://i.pravatar.cc/100?u=${profile.id}'"
       >
 
       <div class="story-name">
-        ${escapeHtml(profile.username || "User")}
+        ${escapeHtml(name)}
       </div>
 
     `;
+
+
+    const image =
+      story.querySelector(
+        ".story-avatar"
+      );
+
+
+    image.onerror = function(){
+
+      this.onerror = null;
+
+      this.src =
+        fallbackAvatar(name);
+
+    };
 
 
     story.onclick = ()=>{
 
       window.location.href =
         "conversation.html?id="+
-        encodeURIComponent(profile.id);
+        encodeURIComponent(
+          profile.id
+        );
 
     };
 
 
-    stories.appendChild(story);
+    stories.appendChild(
+      story
+    );
 
   });
 
@@ -1364,17 +1635,15 @@ async function loadFriendsStories(){
 async function loadRooms(){
 
   const roomsContainer =
-    document.getElementById("rooms");
+    document.getElementById(
+      "rooms"
+    );
 
   const roomCount =
-    document.getElementById("roomCount");
+    document.getElementById(
+      "roomCount"
+    );
 
-
-  /*
-    STEP 1:
-    Get all rooms the current user
-    has permanently joined.
-  */
 
   const {
     data:memberRows,
@@ -1382,7 +1651,9 @@ async function loadRooms(){
   } =
   await supabaseClient
   .from("room_members")
-  .select("room_id,joined_at")
+  .select(
+    "room_id,joined_at"
+  )
   .eq(
     "user_id",
     currentUser.id
@@ -1391,24 +1662,20 @@ async function loadRooms(){
 
   if(memberError){
 
-    console.log("room_members:",memberError);
-
-    /*
-      We still try to show owned rooms.
-    */
+    console.log(
+      "room_members:",
+      memberError
+    );
 
   }
 
 
   const joinedRoomIds =
     (memberRows || [])
-    .map(row => row.room_id);
+    .map(
+      row => row.room_id
+    );
 
-
-  /*
-    STEP 2:
-    Get rooms created by the user.
-  */
 
   const ownedPromise =
     supabaseClient
@@ -1426,12 +1693,8 @@ async function loadRooms(){
     );
 
 
-  /*
-    STEP 3:
-    Get rooms permanently joined by user.
-  */
-
   let joinedPromise = null;
+
 
   if(joinedRoomIds.length > 0){
 
@@ -1458,12 +1721,15 @@ async function loadRooms(){
     joinedResult
   ] =
   await Promise.all([
+
     ownedPromise,
+
     joinedPromise ||
       Promise.resolve({
         data:[],
         error:null
       })
+
   ]);
 
 
@@ -1490,14 +1756,10 @@ async function loadRooms(){
   const ownedRooms =
     ownedResult.data || [];
 
+
   const joinedRooms =
     joinedResult.data || [];
 
-
-  /*
-    STEP 4:
-    Merge both lists without duplicates.
-  */
 
   const roomMap =
     new Map();
@@ -1534,7 +1796,9 @@ async function loadRooms(){
 
 
   const allRooms =
-    Array.from(roomMap.values())
+    Array.from(
+      roomMap.values()
+    )
     .sort(
       (a,b)=>
         new Date(b.created_at) -
@@ -1544,16 +1808,14 @@ async function loadRooms(){
 
   roomCount.textContent =
     allRooms.length +
-    (allRooms.length===1
-      ? " room"
-      : " rooms");
+    (
+      allRooms.length === 1
+        ? " room"
+        : " rooms"
+    );
 
 
-  /*
-    If no rooms exist.
-  */
-
-  if(allRooms.length===0){
+  if(allRooms.length === 0){
 
     roomsContainer.innerHTML = `
 
@@ -1586,14 +1848,18 @@ async function loadRooms(){
   allRooms.forEach(room => {
 
     const card =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
     card.className =
       "room-card";
 
 
     const date =
-      new Date(room.created_at)
+      new Date(
+        room.created_at
+      )
       .toLocaleDateString(
         undefined,
         {
@@ -1611,11 +1877,6 @@ async function loadRooms(){
 
     let deleteButton = "";
 
-
-    /*
-      ONLY owner gets Delete.
-      Joined rooms have Open only.
-    */
 
     if(room.isOwner){
 
@@ -1643,7 +1904,10 @@ async function loadRooms(){
       <div class="room-info">
 
         <div class="room-name">
-          ${escapeHtml(room.name || "Private Room")}
+          ${escapeHtml(
+            room.name ||
+            "Private Room"
+          )}
         </div>
 
         <div class="room-meta">
@@ -1669,7 +1933,9 @@ async function loadRooms(){
     `;
 
 
-    roomsContainer.appendChild(card);
+    roomsContainer.appendChild(
+      card
+    );
 
   });
 
@@ -1723,7 +1989,10 @@ async function loadRoomInvites(){
   }
 
 
-  if(!invites || invites.length===0){
+  if(
+    !invites ||
+    invites.length === 0
+  ){
 
     hideInvitePopup();
 
@@ -1731,19 +2000,9 @@ async function loadRoomInvites(){
   }
 
 
-  /*
-    We only show the newest pending invite
-    as a small popup.
-  */
-
   const invite =
     invites[0];
 
-
-  /*
-    Don't show an invitation if the user
-    is already permanently a member.
-  */
 
   const {
     data:existingMember
@@ -1778,15 +2037,12 @@ async function loadRoomInvites(){
       currentUser.id
     );
 
+
     await loadRoomInvites();
 
     return;
   }
 
-
-  /*
-    Get room information.
-  */
 
   const {
     data:room
@@ -1805,10 +2061,6 @@ async function loadRoomInvites(){
 
   if(!room){
 
-    /*
-      Room no longer exists.
-    */
-
     await supabaseClient
     .from("room_invites")
     .update({
@@ -1823,15 +2075,12 @@ async function loadRoomInvites(){
       currentUser.id
     );
 
+
     await loadRoomInvites();
 
     return;
   }
 
-
-  /*
-    Get sender profile.
-  */
 
   const {
     data:sender
@@ -1857,8 +2106,32 @@ async function loadRoomInvites(){
   const avatar =
     sender && sender.avatar_url
       ? sender.avatar_url
-      : "https://i.pravatar.cc/100?u="+
-        encodeURIComponent(invite.sender_id);
+      : fallbackAvatar(
+          senderName
+        );
+
+
+  const avatarEl =
+    document.getElementById(
+      "inviteAvatar"
+    );
+
+
+  avatarEl.src =
+    avatar;
+
+
+  avatarEl.onerror =
+    function(){
+
+      this.onerror = null;
+
+      this.src =
+        fallbackAvatar(
+          senderName
+        );
+
+    };
 
 
   document.getElementById(
@@ -1870,39 +2143,44 @@ async function loadRoomInvites(){
   document.getElementById(
     "inviteRoom"
   ).textContent =
-    room.name || "Private Room";
-
-
-  document.getElementById(
-    "inviteAvatar"
-  ).src =
-    avatar;
+    room.name ||
+    "Private Room";
 
 
   document.getElementById(
     "inviteJoinBtn"
   ).onclick =
-    ()=>acceptRoomInvite(invite);
+    ()=>acceptRoomInvite(
+      invite
+    );
 
 
   document.getElementById(
     "inviteDeclineBtn"
   ).onclick =
-    ()=>declineRoomInvite(invite);
+    ()=>declineRoomInvite(
+      invite
+    );
 
 
   document
-    .getElementById("invitePopup")
-    .classList.add("show");
+    .getElementById(
+      "invitePopup"
+    )
+    .classList.add(
+      "show"
+    );
 
 }
 
 
 /* =========================
-   ACCEPT INVITE
+   ACCEPT ROOM INVITE
 ========================= */
 
-async function acceptRoomInvite(invite){
+async function acceptRoomInvite(
+  invite
+){
 
   const joinButton =
     document.getElementById(
@@ -1910,15 +2188,13 @@ async function acceptRoomInvite(invite){
     );
 
 
-  joinButton.disabled = true;
+  joinButton.disabled =
+    true;
+
 
   joinButton.textContent =
     "Joining...";
 
-
-  /*
-    First mark invitation accepted.
-  */
 
   const {
     error:updateError
@@ -1940,24 +2216,27 @@ async function acceptRoomInvite(invite){
 
   if(updateError){
 
-    console.log(updateError);
+    console.log(
+      updateError
+    );
 
-    joinButton.disabled = false;
+
+    joinButton.disabled =
+      false;
+
 
     joinButton.textContent =
       "Join";
+
 
     showToast(
       "Couldn't accept invitation"
     );
 
+
     return;
   }
 
-
-  /*
-    Permanently add the user to the room.
-  */
 
   const {
     error:memberError
@@ -1985,12 +2264,10 @@ async function acceptRoomInvite(invite){
 
   if(memberError){
 
-    console.log(memberError);
+    console.log(
+      memberError
+    );
 
-    /*
-      Restore invitation to pending so
-      the user can try again.
-    */
 
     await supabaseClient
     .from("room_invites")
@@ -2007,20 +2284,25 @@ async function acceptRoomInvite(invite){
     );
 
 
-    joinButton.disabled = false;
+    joinButton.disabled =
+      false;
+
 
     joinButton.textContent =
       "Join";
 
+
     showToast(
       "Couldn't join room"
     );
+
 
     return;
   }
 
 
   hideInvitePopup();
+
 
   await loadRooms();
 
@@ -2032,7 +2314,9 @@ async function acceptRoomInvite(invite){
 
   setTimeout(()=>{
 
-    openRoom(invite.room_id);
+    openRoom(
+      invite.room_id
+    );
 
   },300);
 
@@ -2040,10 +2324,12 @@ async function acceptRoomInvite(invite){
 
 
 /* =========================
-   DECLINE INVITE
+   DECLINE ROOM INVITE
 ========================= */
 
-async function declineRoomInvite(invite){
+async function declineRoomInvite(
+  invite
+){
 
   const declineButton =
     document.getElementById(
@@ -2051,7 +2337,9 @@ async function declineRoomInvite(invite){
     );
 
 
-  declineButton.disabled = true;
+  declineButton.disabled =
+    true;
+
 
   declineButton.textContent =
     "Declining...";
@@ -2079,14 +2367,19 @@ async function declineRoomInvite(invite){
 
     console.log(error);
 
-    declineButton.disabled = false;
+
+    declineButton.disabled =
+      false;
+
 
     declineButton.textContent =
       "Decline";
 
+
     showToast(
       "Couldn't decline invitation"
     );
+
 
     return;
   }
@@ -2094,38 +2387,40 @@ async function declineRoomInvite(invite){
 
   hideInvitePopup();
 
+
   showToast(
     "Invitation declined"
   );
 
 
-  /*
-    If another pending invitation exists,
-    show the next one.
-  */
-
   setTimeout(()=>{
+
     loadRoomInvites();
+
   },250);
 
 }
 
 
 /* =========================
-   HIDE INVITE
+   HIDE ROOM INVITE
 ========================= */
 
 function hideInvitePopup(){
 
   document
-    .getElementById("invitePopup")
-    .classList.remove("show");
+    .getElementById(
+      "invitePopup"
+    )
+    .classList.remove(
+      "show"
+    );
 
 }
 
 
 /* =========================
-   REALTIME INVITES
+   ROOM INVITE REALTIME
 ========================= */
 
 function setupInviteRealtime(){
@@ -2138,9 +2433,12 @@ function setupInviteRealtime(){
   if(inviteChannel){
 
     try{
-      supabaseClient.removeChannel(
-        inviteChannel
-      );
+
+      supabaseClient
+        .removeChannel(
+          inviteChannel
+        );
+
     }catch(e){}
 
   }
@@ -2182,6 +2480,463 @@ function setupInviteRealtime(){
 }
 
 
+/* =====================================================
+   FRIEND REQUESTS
+===================================================== */
+
+
+/* =========================
+   LOAD FRIEND REQUESTS
+========================= */
+
+async function loadFriendRequests(){
+
+  if(!currentUser){
+    return;
+  }
+
+
+  const {
+    data:requests,
+    error
+  } =
+  await supabaseClient
+  .from("friends")
+  .select(
+    "id,user_id,friend_id,status,created_at"
+  )
+  .eq(
+    "friend_id",
+    currentUser.id
+  )
+  .eq(
+    "status",
+    "pending"
+  )
+  .order(
+    "created_at",
+    {
+      ascending:false
+    }
+  );
+
+
+  if(error){
+
+    console.log(
+      "friend request load:",
+      error
+    );
+
+    return;
+  }
+
+
+  if(
+    !requests ||
+    requests.length === 0
+  ){
+
+    currentFriendRequest =
+      null;
+
+    hideFriendRequestPopup();
+
+    return;
+  }
+
+
+  /*
+    Show newest pending request.
+  */
+
+  const request =
+    requests[0];
+
+
+  currentFriendRequest =
+    request;
+
+
+  const {
+    data:sender
+  } =
+  await supabaseClient
+  .from("profiles")
+  .select(
+    "id,username,avatar_url"
+  )
+  .eq(
+    "id",
+    request.user_id
+  )
+  .maybeSingle();
+
+
+  const senderName =
+    sender && sender.username
+      ? sender.username
+      : "Connect User";
+
+
+  const avatar =
+    sender && sender.avatar_url
+      ? sender.avatar_url
+      : fallbackAvatar(
+          senderName
+        );
+
+
+  const avatarEl =
+    document.getElementById(
+      "friendRequestAvatar"
+    );
+
+
+  avatarEl.src =
+    avatar;
+
+
+  avatarEl.onerror =
+    function(){
+
+      this.onerror = null;
+
+      this.src =
+        fallbackAvatar(
+          senderName
+        );
+
+    };
+
+
+  document.getElementById(
+    "friendRequestSender"
+  ).textContent =
+    senderName;
+
+
+  document.getElementById(
+    "friendAcceptBtn"
+  ).onclick =
+    ()=>acceptFriendRequest(
+      request
+    );
+
+
+  document.getElementById(
+    "friendDeclineBtn"
+  ).onclick =
+    ()=>declineFriendRequest(
+      request
+    );
+
+
+  document
+    .getElementById(
+      "friendPopup"
+    )
+    .classList.add(
+      "show"
+    );
+
+}
+
+
+/* =========================
+   ACCEPT FRIEND REQUEST
+========================= */
+
+async function acceptFriendRequest(
+  request
+){
+
+  if(!request){
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      "friendAcceptBtn"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "Accepting...";
+
+
+  const {
+    error
+  } =
+  await supabaseClient
+  .from("friends")
+  .update({
+    status:"accepted"
+  })
+  .eq(
+    "id",
+    request.id
+  )
+  .eq(
+    "friend_id",
+    currentUser.id
+  );
+
+
+  if(error){
+
+    console.log(
+      "ACCEPT FRIEND ERROR:",
+      error
+    );
+
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
+      "Accept";
+
+
+    showToast(
+      "Couldn't accept request"
+    );
+
+
+    return;
+  }
+
+
+  currentFriendRequest =
+    null;
+
+
+  hideFriendRequestPopup();
+
+
+  showToast(
+    "Friend added"
+  );
+
+
+  await loadFriendsStories();
+
+
+  /*
+    If another pending request
+    exists, show it next.
+  */
+
+  setTimeout(()=>{
+
+    loadFriendRequests();
+
+  },250);
+
+}
+
+
+/* =========================
+   DECLINE FRIEND REQUEST
+========================= */
+
+async function declineFriendRequest(
+  request
+){
+
+  if(!request){
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      "friendDeclineBtn"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "Declining...";
+
+
+  const {
+    error
+  } =
+  await supabaseClient
+  .from("friends")
+  .update({
+    status:"rejected"
+  })
+  .eq(
+    "id",
+    request.id
+  )
+  .eq(
+    "friend_id",
+    currentUser.id
+  );
+
+
+  if(error){
+
+    console.log(
+      "DECLINE FRIEND ERROR:",
+      error
+    );
+
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
+      "Decline";
+
+
+    showToast(
+      "Couldn't decline request"
+    );
+
+
+    return;
+  }
+
+
+  currentFriendRequest =
+    null;
+
+
+  hideFriendRequestPopup();
+
+
+  showToast(
+    "Request declined"
+  );
+
+
+  setTimeout(()=>{
+
+    loadFriendRequests();
+
+  },250);
+
+}
+
+
+/* =========================
+   HIDE FRIEND POPUP
+========================= */
+
+function hideFriendRequestPopup(){
+
+  document
+    .getElementById(
+      "friendPopup"
+    )
+    .classList.remove(
+      "show"
+    );
+
+}
+
+
+/* =========================
+   FRIEND REQUEST REALTIME
+========================= */
+
+function setupFriendRequestRealtime(){
+
+  if(!currentUser){
+    return;
+  }
+
+
+  if(friendRequestChannel){
+
+    try{
+
+      supabaseClient
+        .removeChannel(
+          friendRequestChannel
+        );
+
+    }catch(e){}
+
+  }
+
+
+  friendRequestChannel =
+    supabaseClient
+    .channel(
+      "home-friend-requests-"+currentUser.id
+    )
+
+    /*
+      New friend request
+    */
+
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"friends",
+        filter:
+          "friend_id=eq."+currentUser.id
+      },
+      (payload)=>{
+
+        if(
+          payload.new &&
+          payload.new.status ===
+          "pending"
+        ){
+
+          loadFriendRequests();
+
+        }
+
+      }
+    )
+
+    /*
+      Request accepted/rejected
+      or otherwise changed.
+    */
+
+    .on(
+      "postgres_changes",
+      {
+        event:"UPDATE",
+        schema:"public",
+        table:"friends",
+        filter:
+          "friend_id=eq."+currentUser.id
+      },
+      ()=>{
+
+        loadFriendRequests();
+
+        loadFriendsStories();
+
+      }
+    )
+
+    .subscribe();
+
+}
+
+
 /* =========================
    CREATE ROOM
 ========================= */
@@ -2189,14 +2944,20 @@ function setupInviteRealtime(){
 function openCreateModal(){
 
   document
-    .getElementById("createModal")
-    .classList.add("show");
+    .getElementById(
+      "createModal"
+    )
+    .classList.add(
+      "show"
+    );
 
 
   setTimeout(()=>{
 
     document
-      .getElementById("roomName")
+      .getElementById(
+        "roomName"
+      )
       .focus();
 
   },150);
@@ -2207,12 +2968,18 @@ function openCreateModal(){
 function closeCreateModal(){
 
   document
-    .getElementById("createModal")
-    .classList.remove("show");
+    .getElementById(
+      "createModal"
+    )
+    .classList.remove(
+      "show"
+    );
 
 
   document
-    .getElementById("roomName")
+    .getElementById(
+      "roomName"
+    )
     .value = "";
 
 }
@@ -2221,7 +2988,9 @@ function closeCreateModal(){
 async function createRoom(){
 
   const input =
-    document.getElementById("roomName");
+    document.getElementById(
+      "roomName"
+    );
 
 
   const name =
@@ -2256,7 +3025,9 @@ async function createRoom(){
     );
 
 
-  createButton.disabled = true;
+  createButton.disabled =
+    true;
+
 
   createButton.textContent =
     "Creating...";
@@ -2286,7 +3057,9 @@ async function createRoom(){
   .single();
 
 
-  createButton.disabled = false;
+  createButton.disabled =
+    false;
+
 
   createButton.textContent =
     "Create Private Room";
@@ -2306,6 +3079,7 @@ async function createRoom(){
 
   closeCreateModal();
 
+
   showToast(
     "Private room created 🔒"
   );
@@ -2318,7 +3092,9 @@ async function createRoom(){
 
     setTimeout(()=>{
 
-      openRoom(data.id);
+      openRoom(
+        data.id
+      );
 
     },500);
 
@@ -2335,7 +3111,9 @@ function openRoom(roomId){
 
   window.location.href =
     "room.html?id="+
-    encodeURIComponent(roomId);
+    encodeURIComponent(
+      roomId
+    );
 
 }
 
@@ -2403,12 +3181,29 @@ async function deleteRoom(roomId){
 
 function escapeHtml(text){
 
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  return String(
+    text ?? ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
 
 }
 
@@ -2418,12 +3213,16 @@ function escapeHtml(text){
 ========================= */
 
 document
-  .getElementById("createModal")
+  .getElementById(
+    "createModal"
+  )
   .addEventListener(
     "click",
     function(e){
 
-      if(e.target === this){
+      if(
+        e.target === this
+      ){
 
         closeCreateModal();
 
@@ -2438,7 +3237,9 @@ document
 ========================= */
 
 document
-  .getElementById("roomName")
+  .getElementById(
+    "roomName"
+  )
   .addEventListener(
     "keydown",
     function(e){
@@ -2454,8 +3255,7 @@ document
 
 
 /* =========================
-   REFRESH INVITES WHEN
-   USER RETURNS TO HOME
+   REFRESH WHEN RETURNING
 ========================= */
 
 document.addEventListener(
@@ -2463,13 +3263,18 @@ document.addEventListener(
   ()=>{
 
     if(
-      document.visibilityState === "visible" &&
+      document.visibilityState ===
+      "visible" &&
       currentUser
     ){
 
       loadRoomInvites();
 
+      loadFriendRequests();
+
       loadRooms();
+
+      loadFriendsStories();
 
     }
 
