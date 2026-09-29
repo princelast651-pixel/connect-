@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Friends • Connect</title>
+<meta name="theme-color" content="#121212">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#121212;color:#fff;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+.app{max-width:650px;margin:auto;min-height:100vh;padding-bottom:90px}
+
+header{
+height:70px;padding:0 16px;display:flex;align-items:center;
+border-bottom:1px solid #29292c;background:rgba(18,18,18,.95);
+backdrop-filter:blur(16px);position:sticky;top:0;z-index:20
+}
+.back{
+width:42px;height:42px;border-radius:13px;background:#1d1d1f;
+border:1px solid #303033;color:#fff;font-size:22px
+}
+.title{font-size:21px;font-weight:800;margin-left:12px}
+
+.content{padding:18px 16px}
+
+.search{
+width:100%;padding:14px 16px;border-radius:15px;
+background:#1d1d1f;border:1px solid #303033;color:#fff;
+outline:none;font-size:14px;margin-bottom:18px
+}
+.search:focus{border-color:#7659f5}
+.search::placeholder{color:#777}
+
+.my-id{
+background:linear-gradient(135deg,#211c3d,#1c1c20);
+border:1px solid #39315e;border-radius:19px;
+padding:17px;margin-bottom:22px
+}
+.my-id-top{
+display:flex;justify-content:space-between;align-items:center;
+gap:10px
+}
+.my-id-label{font-size:12px;color:#999}
+.my-id-value{
+font-size:16px;font-weight:750;margin-top:5px;
+word-break:break-all
+}
+.copy{
+padding:9px 13px;border-radius:11px;
+background:#7c5cff;color:#fff;font-size:12px;font-weight:700
+}
+
+.section-title{
+font-size:14px;color:#8e8e93;font-weight:700;
+margin:0 0 10px 3px
+}
+
+.user{
+display:flex;align-items:center;gap:12px;
+background:#1d1d1f;border:1px solid #29292c;
+border-radius:17px;padding:13px;margin-bottom:8px
+}
+.avatar{
+width:52px;height:52px;border-radius:50%;
+overflow:hidden;background:#29292b;
+border:1px solid #39393d;flex-shrink:0
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+.user-info{min-width:0;flex:1}
+.username{
+font-size:14px;font-weight:700;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.user-id{
+font-size:10px;color:#777;margin-top:5px;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+
+.add{
+padding:10px 14px;border-radius:12px;
+background:#7c5cff;color:#fff;font-size:12px;font-weight:700
+}
+.add.added{
+background:#29292c;color:#aaa;
+}
+
+.empty{
+padding:40px 15px;text-align:center;
+border:1px dashed #343438;border-radius:18px;color:#777
+}
+.empty-icon{font-size:32px;margin-bottom:10px}
+.empty h3{color:#ccc;font-size:15px;margin-bottom:5px}
+.empty p{font-size:12px;line-height:1.5}
+
+.bottom-nav{
+position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+width:100%;max-width:650px;height:74px;background:rgba(22,22,24,.97);
+backdrop-filter:blur(18px);border-top:1px solid #2c2c2f;
+display:grid;grid-template-columns:repeat(4,1fr);z-index:50
+}
+.nav{
+color:#777;text-decoration:none;display:flex;flex-direction:column;
+justify-content:center;align-items:center;gap:5px;
+font-size:10px;font-weight:600
+}
+.nav-icon{font-size:21px}
+.nav.active{color:#fff}
+.nav.active .nav-icon{color:#9b7cff}
+
+.toast{
+position:fixed;left:50%;bottom:90px;
+transform:translateX(-50%) translateY(20px);
+background:#29292c;border:1px solid #3b3b40;color:#fff;
+padding:11px 16px;border-radius:13px;font-size:12px;
+opacity:0;pointer-events:none;transition:.25s;z-index:100;
+white-space:nowrap
+}
+.toast.show{
+opacity:1;transform:translateX(-50%) translateY(0)
+}
+
+.loading{
+position:fixed;inset:0;background:#121212;z-index:200;
+display:flex;align-items:center;justify-content:center;
+color:#999;font-size:13px
+}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<div class="loading" id="loading">
+Loading friends...
+</div>
+
+<div class="app">
+
+<header>
+<button class="back" onclick="go('home.html')">‹</button>
+<div class="title">Friends</div>
+</header>
+
+<main class="content">
+
+<input
+class="search"
+id="search"
+type="search"
+placeholder="Search username or ID..."
+oninput="searchUsers()"
+>
+
+<div class="my-id">
+<div class="my-id-top">
+
+<div>
+<div class="my-id-label">MY CONNECT ID</div>
+<div class="my-id-value" id="myId">Loading...</div>
+</div>
+
+<button class="copy" onclick="copyMyId()">
+Copy
+</button>
+
+</div>
+</div>
+
+
+<div class="section-title">
+FIND PEOPLE
+</div>
+
+<div id="users">
+
+<div class="empty">
+<div class="empty-icon">👥</div>
+<h3>Search for people</h3>
+<p>Enter a username or Connect ID above.</p>
+</div>
+
+</div>
+
+</main>
+</div>
+
+
+<nav class="bottom-nav">
+
+<a class="nav" href="home.html">
+<span class="nav-icon">⌂</span>
+<span>Home</span>
+</a>
+
+<a class="nav" href="entertainment.html">
+<span class="nav-icon">🚀</span>
+<span>Entertainment</span>
+</a>
+
+<a class="nav" href="chat.html">
+<span class="nav-icon">💬</span>
+<span>Chat</span>
+</a>
+
+<a class="nav active" href="friends.html">
+<span class="nav-icon">👥</span>
+<span>Friends</span>
+</a>
+
+</nav>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://riversitunmzvuprecbt.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+});
+
+let currentUser=null;
+let currentProfile=null;
+
+
+/* START */
+
+async function start(){
+
+const {
+data:{session}
+}=await supabaseClient.auth.getSession();
+
+if(!session){
+window.location.replace("index.html");
+return;
+}
+
+currentUser=session.user;
+
+await loadMyProfile();
+
+document.getElementById("loading")
+.classList.add("hidden");
+}
+
+
+/* MY PROFILE */
+
+async function loadMyProfile(){
+
+const {
+data,
+error
+}=await supabaseClient
+.from("profiles")
+.select("id,username,avatar_url")
+.eq("id",currentUser.id)
+.maybeSingle();
+
+if(error){
+console.error(error);
+return;
+}
+
+currentProfile=data;
+
+const username=
+data?.username ||
+currentUser.email?.split("@")[0] ||
+"User";
+
+/*
+ Connect ID = Supabase user ID.
+ Later we can add a shorter custom ID without
+ changing the page structure.
+*/
+
+document.getElementById("myId")
+.textContent=currentUser.id;
+}
+
+
+/* SEARCH USERS */
+
+let searchTimer;
+
+function searchUsers(){
+
+clearTimeout(searchTimer);
+
+const value=
+document.getElementById("search")
+.value.trim();
+
+if(!value){
+
+document.getElementById("users").innerHTML=`
+<div class="empty">
+<div class="empty-icon">👥</div>
+<h3>Search for people</h3>
+<p>Enter a username or Connect ID above.</p>
+</div>
+`;
+
+return;
+}
+
+searchTimer=setTimeout(()=>{
+findUsers(value);
+},350);
+}
+
+
+async function findUsers(value){
+
+const box=document.getElementById("users");
+
+box.innerHTML=`
+<div class="empty">
+<div class="empty-icon">🔎</div>
+Searching...
+</div>
+`;
+
+
+/*
+ Username search is case-insensitive.
+ ID search works when the entered text
+ matches part of the UUID.
+*/
+
+const {
+data,
+error
+}=await supabaseClient
+.from("profiles")
+.select("id,username,avatar_url")
+.or(
+`username.ilike.%${escapeFilter(value)}%,id.ilike.%${escapeFilter(value)}%`
+)
+.neq("id",currentUser.id)
+.limit(20);
+
+
+if(error){
+
+console.error(error);
+
+box.innerHTML=`
+<div class="empty">
+<div class="empty-icon">⚠️</div>
+<h3>Couldn't search</h3>
+<p>Please try again.</p>
+</div>
+`;
+
+return;
+}
+
+
+if(!data || !data.length){
+
+box.innerHTML=`
+<div class="empty">
+<div class="empty-icon">😕</div>
+<h3>No users found</h3>
+<p>Try another username or ID.</p>
+</div>
+`;
+
+return;
+}
+
+
+box.innerHTML=
+data.map(user=>{
+
+const username=
+user.username || "Connect User";
+
+const avatar=
+user.avatar_url ||
+"https://ui-avatars.com/api/?name="+
+encodeURIComponent(username)+
+"&background=29292b&color=fff";
+
+
+return `
+
+<div class="user">
+
+<div class="avatar">
+<img src="${escapeHTML(avatar)}" alt="">
+</div>
+
+<div class="user-info">
+
+<div class="username">
+${escapeHTML(username)}
+</div>
+
+<div class="user-id">
+${escapeHTML(user.id)}
+</div>
+
+</div>
+
+<button
+class="add"
+onclick="addFriend('${user.id}',this)"
+>
+Add
+</button>
+
+</div>
+
+`;
+
+}).join("");
+}
+
+
+/* ADD FRIEND */
+
+async function addFriend(userId,button){
+
+/*
+ Friend system will use a dedicated table.
+ We keep this function ready so the UI does not
+ need to be redesigned later.
+*/
+
+button.disabled=true;
+button.textContent="...";
+
+
+/*
+ If friends table doesn't exist yet, show the
+ next-step message instead of breaking the page.
+*/
+
+const {
+error
+}=await supabaseClient
+.from("friends")
+.insert({
+user_id:currentUser.id,
+friend_id:userId,
+status:"pending"
+});
+
+
+if(error){
+
+console.error(error);
+
+button.disabled=false;
+button.textContent="Add";
+
+showToast(
+"Friend system database is not ready yet"
+);
+
+return;
+}
+
+
+button.textContent="Added";
+button.classList.add("added");
+
+showToast("Friend request sent 🔥");
+}
+
+
+/* COPY ID */
+
+async function copyMyId(){
+
+try{
+
+await navigator.clipboard.writeText(
+currentUser.id
+);
+
+showToast("Connect ID copied");
+
+}catch(error){
+
+showToast("Couldn't copy ID");
+
+}
+}
+
+
+/* TOAST */
+
+let toastTimer;
+
+function showToast(message){
+
+const toast=
+document.getElementById("toast");
+
+toast.textContent=message;
+toast.classList.add("show");
+
+clearTimeout(toastTimer);
+
+toastTimer=setTimeout(()=>{
+toast.classList.remove("show");
+},2200);
+}
+
+
+/* NAV */
+
+function go(page){
+window.location.href=page;
+}
+
+
+/* FILTER ESCAPE */
+
+function escapeFilter(value){
+
+return value
+.replaceAll("\\","\\\\")
+.replaceAll(",","\\,")
+.replaceAll(".","\\.")
+.replaceAll("%","\\%")
+.replaceAll("_","\\_")
+.replaceAll("(","\\(")
+.replaceAll(")","\\)");
+}
+
+
+/* HTML ESCAPE */
+
+function escapeHTML(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+
+/* AUTH */
+
+supabaseClient.auth.onAuthStateChange(
+(event,session)=>{
+
+if(event==="SIGNED_OUT"){
+window.location.replace("index.html");
+}
+
+});
+
+
+start();
+
+</script>
+
+</body>
+</html>
