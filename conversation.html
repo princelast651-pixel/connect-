@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Chat • Connect</title>
 
@@ -13,157 +13,94 @@
   box-sizing:border-box;
   margin:0;
   padding:0;
-  -webkit-tap-highlight-color:transparent;
 }
 
-:root{
-  --bg:#071019;
-  --header:#0b151e;
-  --input:#14232e;
-  --border:rgba(255,255,255,.08);
-  --text:#f5f7fa;
-  --muted:#8d9aa7;
-  --accent:#7167ff;
-  --mine:#5148a8;
-  --theirs:#14232e;
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#08090d;
+  color:#fff;
 }
 
 body{
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  height:100vh;
-  overflow:hidden;
-}
-
-button,input,textarea{
-  font:inherit;
-}
-
-button{
-  border:0;
-  color:inherit;
-  cursor:pointer;
+  display:flex;
+  justify-content:center;
 }
 
 .app{
   width:100%;
-  max-width:760px;
-  height:100vh;
-  margin:auto;
+  max-width:600px;
+  height:100dvh;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(124,92,255,.13),transparent 30%),
+    radial-gradient(circle at 100% 50%,rgba(0,220,255,.06),transparent 35%),
+    #08090d;
   display:flex;
   flex-direction:column;
-  background:var(--bg);
 }
 
 /* HEADER */
 
 .header{
-  height:68px;
-  min-height:68px;
+  height:70px;
+  min-height:70px;
   display:flex;
   align-items:center;
-  gap:10px;
-  padding:8px 10px;
-  background:rgba(11,21,30,.96);
-  border-bottom:1px solid var(--border);
+  gap:12px;
+  padding:10px 14px;
+  background:rgba(10,11,17,.92);
+  border-bottom:1px solid rgba(255,255,255,.08);
   backdrop-filter:blur(18px);
-  z-index:10;
+  z-index:5;
 }
 
 .back{
   width:40px;
   height:40px;
+  border:0;
   border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:transparent;
-  font-size:26px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-size:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
 }
 
 .back:active{
-  background:rgba(255,255,255,.08);
+  transform:scale(.92);
 }
 
 .avatar{
   width:44px;
   height:44px;
+  min-width:44px;
   border-radius:50%;
-  flex-shrink:0;
-  overflow:hidden;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#7167ff,#9b5cff);
-  font-size:17px;
-  font-weight:800;
-}
-
-.avatar img{
-  width:100%;
-  height:100%;
   object-fit:cover;
+  background:linear-gradient(135deg,#242633,#111218);
+  border:1px solid rgba(255,255,255,.1);
 }
 
 .userInfo{
-  flex:1;
   min-width:0;
+  flex:1;
 }
 
-.userName{
+.username{
   font-size:16px;
-  font-weight:750;
+  font-weight:700;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.userStatus{
-  color:var(--muted);
+.status{
+  margin-top:3px;
   font-size:12px;
-  margin-top:2px;
-}
-
-.headerAction{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:transparent;
-  font-size:19px;
-}
-
-.headerAction:active{
-  background:rgba(255,255,255,.08);
-}
-
-/* SEARCH */
-
-.searchBar{
-  display:none;
-  padding:8px 10px;
-  background:var(--header);
-  border-bottom:1px solid var(--border);
-}
-
-.searchBar.show{
-  display:block;
-}
-
-.searchInput{
-  width:100%;
-  height:40px;
-  border:0;
-  outline:0;
-  border-radius:20px;
-  background:#172631;
-  color:white;
-  padding:0 15px;
-  font-size:14px;
-}
-
-.searchInput::placeholder{
-  color:#758592;
+  color:#8d92a4;
 }
 
 /* MESSAGES */
@@ -171,158 +108,177 @@ button{
 .messages{
   flex:1;
   overflow-y:auto;
-  padding:14px 9px 18px;
+  padding:16px 12px 12px;
   scroll-behavior:smooth;
-
-  background-color:#071019;
-  background-image:
-    radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);
-  background-size:18px 18px;
 }
 
 .messages::-webkit-scrollbar{
-  width:3px;
+  width:4px;
 }
 
 .messages::-webkit-scrollbar-thumb{
-  background:#2a3945;
-  border-radius:10px;
+  background:#292c38;
+  border-radius:20px;
 }
 
-/* DATE */
+.empty{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#777d90;
+  font-size:14px;
+  padding:30px;
+}
 
-.dateDivider{
+.date{
   display:flex;
   justify-content:center;
-  margin:8px 0 13px;
+  margin:12px 0;
 }
 
-.dateDivider span{
-  background:#162530;
-  color:#9ba8b2;
-  font-size:11px;
+.date span{
+  background:#181b24;
+  color:#8f95a7;
   padding:5px 11px;
-  border-radius:10px;
+  border-radius:20px;
+  font-size:11px;
+  border:1px solid rgba(255,255,255,.05);
 }
-
-/* MESSAGE */
 
 .messageRow{
   display:flex;
-  margin:3px 0;
-  animation:messageIn .16s ease;
+  margin:4px 0;
+  width:100%;
 }
 
 .messageRow.mine{
   justify-content:flex-end;
 }
 
-@keyframes messageIn{
-  from{
-    opacity:0;
-    transform:translateY(5px);
-  }
-  to{
-    opacity:1;
-    transform:none;
-  }
+.messageRow.theirs{
+  justify-content:flex-start;
 }
 
 .bubble{
-  max-width:min(80%,430px);
-  padding:7px 9px 5px;
-  background:var(--theirs);
-  border-radius:12px;
-  border-bottom-left-radius:4px;
-  box-shadow:0 2px 4px rgba(0,0,0,.14);
+  max-width:78%;
+  padding:9px 11px 6px;
+  border-radius:16px;
+  position:relative;
   word-break:break-word;
+  white-space:pre-wrap;
+  font-size:14px;
+  line-height:1.4;
+  box-shadow:0 3px 12px rgba(0,0,0,.15);
 }
 
 .mine .bubble{
-  background:var(--mine);
-  border-bottom-left-radius:12px;
-  border-bottom-right-radius:4px;
+  background:linear-gradient(135deg,#735cff,#5740d7);
+  border-bottom-right-radius:5px;
 }
 
-.messageText{
-  font-size:14.5px;
-  line-height:1.43;
-  white-space:pre-wrap;
+.theirs .bubble{
+  background:#181b24;
+  border:1px solid rgba(255,255,255,.055);
+  border-bottom-left-radius:5px;
 }
 
-.messageMeta{
+.meta{
   display:flex;
   justify-content:flex-end;
   align-items:center;
   gap:4px;
   margin-top:3px;
-  min-height:14px;
-}
-
-.messageTime{
+  font-size:9px;
   color:rgba(255,255,255,.58);
-  font-size:10px;
-  white-space:nowrap;
 }
 
-.ticks{
-  font-size:12px;
-  color:#a8dcff;
-  letter-spacing:-3px;
-  white-space:nowrap;
+.tick{
+  font-size:11px;
+  color:#aeb4ff;
 }
 
-/* EMPTY */
+/* COMPOSER */
 
-.empty{
-  height:100%;
+.composer{
+  min-height:68px;
+  padding:9px 10px;
   display:flex;
-  justify-content:center;
+  align-items:flex-end;
+  gap:8px;
+  background:rgba(10,11,17,.96);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.inputWrap{
+  flex:1;
+  min-height:46px;
+  display:flex;
   align-items:center;
-  text-align:center;
-  padding:30px;
+  background:#171922;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:0 14px;
 }
 
-.emptyIcon{
-  width:70px;
-  height:70px;
-  margin:0 auto 15px;
-  border-radius:22px;
-  display:grid;
-  place-items:center;
-  background:rgba(113,103,255,.14);
-  font-size:30px;
+textarea{
+  width:100%;
+  max-height:110px;
+  min-height:24px;
+  resize:none;
+  outline:none;
+  border:0;
+  background:transparent;
+  color:#fff;
+  font-family:inherit;
+  font-size:14px;
+  line-height:22px;
 }
 
-.emptyTitle{
-  font-size:17px;
-  font-weight:750;
-  margin-bottom:7px;
+textarea::placeholder{
+  color:#6f7485;
 }
 
-.emptyText{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
+.send{
+  width:46px;
+  height:46px;
+  min-width:46px;
+  border:0;
+  border-radius:50%;
+  background:linear-gradient(135deg,#7c63ff,#543ed4);
+  color:#fff;
+  font-size:19px;
+  cursor:pointer;
+  box-shadow:0 5px 20px rgba(102,77,230,.3);
+}
+
+.send:active{
+  transform:scale(.91);
+}
+
+.send:disabled{
+  opacity:.45;
+  cursor:not-allowed;
 }
 
 /* LOADING */
 
 .loading{
-  height:100%;
-  display:grid;
-  place-items:center;
-  text-align:center;
-  color:var(--muted);
-  font-size:13px;
+  position:fixed;
+  inset:0;
+  background:#08090d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
 }
 
-.spinner{
-  width:28px;
-  height:28px;
-  margin:0 auto 10px;
-  border:3px solid rgba(255,255,255,.1);
-  border-top-color:var(--accent);
+.loader{
+  width:34px;
+  height:34px;
+  border:3px solid rgba(255,255,255,.12);
+  border-top-color:#7961ff;
   border-radius:50%;
   animation:spin .8s linear infinite;
 }
@@ -331,169 +287,23 @@ button{
   to{transform:rotate(360deg)}
 }
 
-/* COMPOSER */
-
-.composerArea{
-  padding:8px 9px calc(8px + env(safe-area-inset-bottom));
-  background:rgba(11,21,30,.97);
-  border-top:1px solid var(--border);
-  backdrop-filter:blur(18px);
-}
-
-.composer{
-  display:flex;
-  align-items:flex-end;
-  gap:7px;
-}
-
-.emojiButton{
-  width:42px;
-  height:42px;
-  flex-shrink:0;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:#14232e;
-  font-size:21px;
-}
-
-.inputWrap{
-  flex:1;
-  min-height:42px;
-  max-height:120px;
-  background:var(--input);
-  border-radius:22px;
-  padding:0 13px;
-  display:flex;
-  align-items:flex-end;
-}
-
-.messageInput{
-  width:100%;
-  min-height:42px;
-  max-height:110px;
-  resize:none;
-  outline:0;
-  border:0;
-  background:transparent;
-  color:white;
-  font-size:14px;
-  line-height:20px;
-  padding:11px 0;
-}
-
-.messageInput::placeholder{
-  color:#73828d;
-}
-
-.sendButton{
-  width:42px;
-  height:42px;
-  flex-shrink:0;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#7167ff,#925cff);
-  font-size:18px;
-  box-shadow:0 5px 18px rgba(113,103,255,.25);
-}
-
-.sendButton:active,
-.emojiButton:active{
-  transform:scale(.94);
-}
-
-/* EMOJI */
-
-.emojiPanel{
-  display:none;
-  position:absolute;
-  left:8px;
-  right:8px;
-  bottom:65px;
-  padding:11px;
-  background:#101d27;
-  border:1px solid var(--border);
-  border-radius:17px;
-  box-shadow:0 15px 40px rgba(0,0,0,.4);
-  max-height:230px;
-  overflow-y:auto;
-}
-
-.emojiPanel.show{
-  display:block;
-}
-
-.emojiGrid{
-  display:grid;
-  grid-template-columns:repeat(8,1fr);
-  gap:4px;
-}
-
-.emoji{
-  height:36px;
-  border-radius:8px;
-  background:transparent;
-  font-size:21px;
-}
-
-.emoji:active{
-  background:rgba(255,255,255,.08);
-}
-
-/* CONTEXT MENU */
-
-.messageMenu{
-  display:none;
-  position:fixed;
-  z-index:100;
-  width:175px;
-  padding:6px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:#14212b;
-  box-shadow:0 15px 40px rgba(0,0,0,.45);
-}
-
-.messageMenu.show{
-  display:block;
-}
-
-.menuItem{
-  width:100%;
-  padding:10px 12px;
-  border-radius:9px;
-  background:transparent;
-  text-align:left;
-  font-size:13px;
-}
-
-.menuItem:active{
-  background:rgba(255,255,255,.08);
-}
-
-.menuItem.danger{
-  color:#ff7b84;
-}
-
 /* TOAST */
 
 .toast{
   position:fixed;
   left:50%;
   bottom:82px;
-  transform:translateX(-50%) translateY(12px);
-  padding:9px 14px;
+  transform:translateX(-50%) translateY(20px);
+  background:#20232e;
+  color:#fff;
+  padding:10px 15px;
   border-radius:12px;
-  background:#182832;
-  border:1px solid var(--border);
-  color:white;
-  font-size:12px;
+  font-size:13px;
   opacity:0;
   pointer-events:none;
-  transition:.2s;
+  transition:.25s;
   z-index:200;
-  white-space:nowrap;
+  border:1px solid rgba(255,255,255,.08);
 }
 
 .toast.show{
@@ -501,27 +311,18 @@ button{
   transform:translateX(-50%) translateY(0);
 }
 
-/* MOBILE */
-
-@media(max-width:500px){
-  .header{
-    height:64px;
-    min-height:64px;
-    padding:7px 8px;
-  }
-
-  .avatar{
-    width:42px;
-    height:42px;
-  }
-
-  .headerAction{
-    width:38px;
-    height:38px;
-  }
-
+@media(max-width:420px){
   .bubble{
     max-width:84%;
+  }
+
+  .header{
+    height:66px;
+    min-height:66px;
+  }
+
+  .composer{
+    padding-bottom:max(9px,env(safe-area-inset-bottom));
   }
 }
 </style>
@@ -531,80 +332,50 @@ button{
 
 <div class="app">
 
-  <!-- HEADER -->
-  <div class="header">
+  <div class="loading" id="loading">
+    <div class="loader"></div>
+  </div>
+
+  <header class="header">
 
     <button class="back" id="backBtn">‹</button>
 
-    <div class="avatar" id="headerAvatar">
-      <span id="headerInitial">?</span>
-    </div>
+    <img
+      id="friendAvatar"
+      class="avatar"
+      src=""
+      alt="Profile"
+    >
 
     <div class="userInfo">
-      <div class="userName" id="headerName">Loading...</div>
-      <div class="userStatus">
-        <span class="onlineDot"></span>
-        <span id="headerStatus">Connect</span>
-      </div>
+      <div class="username" id="friendName">Loading...</div>
+      <div class="status" id="friendStatus">Connect</div>
     </div>
 
-    <button class="headerAction" id="searchBtn">⌕</button>
-  </div>
+  </header>
 
-  <!-- SEARCH -->
-  <div class="searchBar" id="searchBar">
-    <input
-      class="searchInput"
-      id="searchInput"
-      type="text"
-      placeholder="Search messages..."
-      autocomplete="off"
-    >
-  </div>
-
-  <!-- MESSAGES -->
-  <div class="messages" id="messages">
-    <div class="loading">
-      <div>
-        <div class="spinner"></div>
-        Loading conversation...
-      </div>
+  <main class="messages" id="messages">
+    <div class="empty" id="empty">
+      No messages yet.<br>
+      Start the conversation.
     </div>
-  </div>
+  </main>
 
-  <!-- COMPOSER -->
-  <div class="composerArea">
+  <div class="composer">
 
-    <div class="emojiPanel" id="emojiPanel">
-      <div class="emojiGrid" id="emojiGrid"></div>
+    <div class="inputWrap">
+      <textarea
+        id="messageInput"
+        placeholder="Message..."
+        rows="1"
+        maxlength="2000"
+      ></textarea>
     </div>
 
-    <div class="composer">
-
-      <button class="emojiButton" id="emojiButton">😊</button>
-
-      <div class="inputWrap">
-        <textarea
-          id="messageInput"
-          class="messageInput"
-          rows="1"
-          maxlength="5000"
-          placeholder="Message..."
-        ></textarea>
-      </div>
-
-      <button class="sendButton" id="sendButton">➤</button>
-
-    </div>
+    <button class="send" id="sendBtn">➤</button>
 
   </div>
 
-</div>
-
-<!-- MESSAGE MENU -->
-<div class="messageMenu" id="messageMenu">
-  <button class="menuItem" id="copyMessage">📋 Copy</button>
-  <button class="menuItem danger" id="deleteMessage">🗑 Delete</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -618,7 +389,7 @@ const SUPABASE_URL =
   "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
   window.supabase.createClient(
@@ -635,301 +406,317 @@ const supabaseClient =
 
 
 /* =========================
-   GLOBAL STATE
+   VARIABLES
 ========================= */
 
 let currentUser = null;
-let otherUserId = null;
-let otherProfile = null;
-let conversationId = null;
-let messagesData = [];
-let selectedMessage = null;
+let friendId = null;
+let friendProfile = null;
+let conversation = null;
 let realtimeChannel = null;
 
-
-/* =========================
-   ELEMENTS
-========================= */
-
-const messagesEl =
+const messagesBox =
   document.getElementById("messages");
-
-const headerName =
-  document.getElementById("headerName");
-
-const headerStatus =
-  document.getElementById("headerStatus");
-
-const headerAvatar =
-  document.getElementById("headerAvatar");
-
-const headerInitial =
-  document.getElementById("headerInitial");
 
 const messageInput =
   document.getElementById("messageInput");
 
-const sendButton =
-  document.getElementById("sendButton");
+const sendBtn =
+  document.getElementById("sendBtn");
 
-const emojiButton =
-  document.getElementById("emojiButton");
+const loading =
+  document.getElementById("loading");
 
-const emojiPanel =
-  document.getElementById("emojiPanel");
+const empty =
+  document.getElementById("empty");
 
-const emojiGrid =
-  document.getElementById("emojiGrid");
+const friendName =
+  document.getElementById("friendName");
 
-const searchBtn =
-  document.getElementById("searchBtn");
+const friendAvatar =
+  document.getElementById("friendAvatar");
 
-const searchBar =
-  document.getElementById("searchBar");
+const friendStatus =
+  document.getElementById("friendStatus");
 
-const searchInput =
-  document.getElementById("searchInput");
-
-const messageMenu =
-  document.getElementById("messageMenu");
-
-const copyMessage =
-  document.getElementById("copyMessage");
-
-const deleteMessage =
-  document.getElementById("deleteMessage");
-
-const toastEl =
+const toast =
   document.getElementById("toast");
 
 
 /* =========================
-   URL
+   TOAST
 ========================= */
 
-const params =
-  new URLSearchParams(window.location.search);
+function showToast(text){
 
-otherUserId =
-  params.get("id");
+  toast.textContent = text;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },2500);
+}
 
 
 /* =========================
-   HELPERS
+   DEFAULT AVATAR
 ========================= */
 
-function escapeHTML(value){
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+function defaultAvatar(name){
+
+  const letter =
+    (name || "?").trim().charAt(0).toUpperCase();
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="200"
+           height="200"
+           viewBox="0 0 200 200">
+
+        <rect width="200" height="200" rx="100"
+              fill="#20232d"/>
+
+        <text x="50%" y="54%"
+              dominant-baseline="middle"
+              text-anchor="middle"
+              font-family="Arial"
+              font-size="85"
+              font-weight="700"
+              fill="#aaa4ff">
+          ${letter}
+        </text>
+
+      </svg>
+    `);
 }
 
 
-function showToast(text){
-  toastEl.textContent = text;
-  toastEl.classList.add("show");
+/* =========================
+   DATE FORMAT
+========================= */
 
-  clearTimeout(showToast.timer);
+function dateKey(date){
 
-  showToast.timer =
-    setTimeout(()=>{
-      toastEl.classList.remove("show");
-    },2200);
+  const d = new Date(date);
+
+  return d.getFullYear() + "-" +
+         String(d.getMonth()+1).padStart(2,"0") + "-" +
+         String(d.getDate()).padStart(2,"0");
 }
 
 
-function getInitial(name){
-  return (name || "?")
-    .trim()
-    .charAt(0)
-    .toUpperCase();
-}
+function dateLabel(date){
 
-
-function formatTime(dateString){
-  const date =
-    new Date(dateString);
-
-  return date.toLocaleTimeString([],{
-    hour:"numeric",
-    minute:"2-digit"
-  });
-}
-
-
-function dateKey(dateString){
-  const d = new Date(dateString);
-
-  return [
-    d.getFullYear(),
-    d.getMonth(),
-    d.getDate()
-  ].join("-");
-}
-
-
-function dateLabel(dateString){
-
-  const d = new Date(dateString);
+  const d = new Date(date);
 
   const now = new Date();
 
   const today =
-    new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    );
+    dateKey(d) === dateKey(now);
 
-  const target =
-    new Date(
-      d.getFullYear(),
-      d.getMonth(),
-      d.getDate()
-    );
+  const yesterdayDate =
+    new Date();
 
-  const difference =
-    Math.round(
-      (today-target)/86400000
-    );
+  yesterdayDate.setDate(
+    yesterdayDate.getDate() - 1
+  );
 
-  if(difference === 0){
-    return "Today";
-  }
+  const yesterday =
+    dateKey(d) === dateKey(yesterdayDate);
 
-  if(difference === 1){
-    return "Yesterday";
-  }
+  if(today) return "Today";
 
-  return d.toLocaleDateString([],{
-    day:"numeric",
-    month:"short",
-    year:
-      d.getFullYear() !== now.getFullYear()
-      ? "numeric"
-      : undefined
-  });
+  if(yesterday) return "Yesterday";
+
+  return d.toLocaleDateString(
+    undefined,
+    {
+      day:"numeric",
+      month:"short",
+      year:"numeric"
+    }
+  );
 }
 
 
 /* =========================
-   PROFILE
+   TIME
 ========================= */
 
-function renderHeaderProfile(){
+function timeLabel(date){
 
-  if(!otherProfile){
-    return;
+  return new Date(date).toLocaleTimeString(
+    undefined,
+    {
+      hour:"numeric",
+      minute:"2-digit"
+    }
+  );
+}
+
+
+/* =========================
+   LOAD SESSION
+========================= */
+
+async function init(){
+
+  try{
+
+    const {
+      data,
+      error
+    } = await supabaseClient.auth.getSession();
+
+    if(error) throw error;
+
+    currentUser = data.session?.user;
+
+    if(!currentUser){
+
+      window.location.href = "index.html";
+      return;
+    }
+
+    const params =
+      new URLSearchParams(window.location.search);
+
+    friendId = params.get("id");
+
+    if(!friendId){
+
+      showToast("Friend not found");
+
+      setTimeout(()=>{
+        window.location.href = "chat.html";
+      },1000);
+
+      return;
+    }
+
+    if(friendId === currentUser.id){
+
+      showToast("You can't chat with yourself");
+
+      setTimeout(()=>{
+        window.location.href = "chat.html";
+      },1000);
+
+      return;
+    }
+
+    await loadFriend();
+
+    await findOrCreateConversation();
+
+    await loadMessages();
+
+    subscribeRealtime();
+
+    loading.style.display = "none";
+
+    setTimeout(()=>{
+      scrollBottom(false);
+    },100);
+
+  }catch(error){
+
+    console.error(error);
+
+    loading.style.display = "none";
+
+    showToast(
+      error.message || "Something went wrong"
+    );
+  }
+}
+
+
+/* =========================
+   LOAD FRIEND PROFILE
+========================= */
+
+async function loadFriend(){
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .select("id,username,avatar_url,bio")
+    .eq("id",friendId)
+    .maybeSingle();
+
+  if(error) throw error;
+
+  if(!data){
+
+    throw new Error("Friend profile not found");
   }
 
-  const username =
-    otherProfile.username ||
-    "User";
+  friendProfile = data;
 
-  headerName.textContent =
-    username;
+  const name =
+    data.username ||
+    "Connect User";
 
-  headerStatus.textContent =
-    "Connect";
+  friendName.textContent = name;
 
-  headerInitial.textContent =
-    getInitial(username);
+  friendStatus.textContent = "Connect";
 
-  headerAvatar.innerHTML = "";
+  if(data.avatar_url){
 
-  if(otherProfile.avatar_url){
-
-    const img =
-      document.createElement("img");
-
-    img.src =
-      otherProfile.avatar_url;
-
-    img.alt =
-      username;
-
-    img.onerror = ()=>{
-      headerAvatar.innerHTML =
-        `<span>${escapeHTML(getInitial(username))}</span>`;
-    };
-
-    headerAvatar.appendChild(img);
+    friendAvatar.src =
+      data.avatar_url;
 
   }else{
 
-    headerAvatar.innerHTML =
-      `<span>${escapeHTML(getInitial(username))}</span>`;
+    friendAvatar.src =
+      defaultAvatar(name);
   }
+
+  friendAvatar.onerror = ()=>{
+
+    friendAvatar.src =
+      defaultAvatar(name);
+  };
 }
 
 
 /* =========================
-   LOAD OTHER PROFILE
+   FIND / CREATE CHAT
 ========================= */
 
-async function loadOtherProfile(){
+async function findOrCreateConversation(){
 
-  const {data,error} =
-    await supabaseClient
-      .from("profiles")
-      .select("id,username,avatar_url,bio")
-      .eq("id",otherUserId)
-      .maybeSingle();
+  const users =
+    [currentUser.id,friendId].sort();
 
-  if(error){
-    console.error(error);
-    throw new Error(
-      "Couldn't load profile"
-    );
-  }
+  const userOne = users[0];
+  const userTwo = users[1];
 
-  if(!data){
-    throw new Error(
-      "User profile not found"
-    );
-  }
+  /* Find existing */
 
-  otherProfile = data;
+  let {
+    data,
+    error
+  } = await supabaseClient
+    .from("conversations")
+    .select("id,user_one,user_two")
+    .eq("user_one",userOne)
+    .eq("user_two",userTwo)
+    .maybeSingle();
 
-  renderHeaderProfile();
-}
-
-
-/* =========================
-   GET / CREATE CONVERSATION
-========================= */
-
-async function getConversation(){
-
-  const ids =
-    [currentUser.id,otherUserId]
-    .sort();
-
-  const userOne = ids[0];
-  const userTwo = ids[1];
-
-  let {data,error} =
-    await supabaseClient
-      .from("conversations")
-      .select("id,user_one,user_two")
-      .eq("user_one",userOne)
-      .eq("user_two",userTwo)
-      .maybeSingle();
-
-  if(error){
-    console.error(error);
-    throw error;
-  }
+  if(error) throw error;
 
   if(data){
-    conversationId =
-      data.id;
 
+    conversation = data;
     return;
   }
+
+  /* Create */
 
   const result =
     await supabaseClient
@@ -943,10 +730,11 @@ async function getConversation(){
 
   if(result.error){
 
-    console.error(result.error);
+    /*
+      If another request created it at
+      the same time, try fetching again.
+    */
 
-    /* Race-condition protection:
-       another client may have created it */
     const retry =
       await supabaseClient
         .from("conversations")
@@ -955,17 +743,19 @@ async function getConversation(){
         .eq("user_two",userTwo)
         .maybeSingle();
 
-    if(retry.error || !retry.data){
+    if(retry.error)
       throw result.error;
-    }
 
-    conversationId =
-      retry.data.id;
+    if(!retry.data)
+      throw result.error;
+
+    conversation =
+      retry.data;
 
   }else{
 
-    conversationId =
-      result.data.id;
+    conversation =
+      result.data;
   }
 }
 
@@ -976,196 +766,190 @@ async function getConversation(){
 
 async function loadMessages(){
 
-  messagesEl.innerHTML = `
-    <div class="loading">
-      <div>
-        <div class="spinner"></div>
-        Loading messages...
-      </div>
-    </div>
-  `;
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("messages")
+    .select(
+      "id,conversation_id,sender_id,message,created_at"
+    )
+    .eq(
+      "conversation_id",
+      conversation.id
+    )
+    .order(
+      "created_at",
+      {
+        ascending:true
+      }
+    );
 
-  const {data,error} =
-    await supabaseClient
-      .from("messages")
-      .select(
-        "id,conversation_id,sender_id,message,created_at"
-      )
-      .eq(
-        "conversation_id",
-        conversationId
-      )
-      .order(
-        "created_at",
-        {ascending:true}
-      );
+  if(error) throw error;
 
-  if(error){
+  messagesBox.innerHTML = "";
 
-    console.error(error);
+  if(!data || data.length === 0){
 
-    messagesEl.innerHTML = `
-      <div class="empty">
-        <div class="emptyCard">
-          <div class="emptyIcon">⚠️</div>
-          <div class="emptyTitle">
-            Couldn't load messages
-          </div>
-          <div class="emptyText">
-            Please try opening this conversation again.
-          </div>
-        </div>
-      </div>
-    `;
+    showEmpty();
 
     return;
   }
 
-  messagesData =
-    data || [];
+  hideEmpty();
 
-  renderMessages(true);
+  let lastDate = null;
+
+  data.forEach(msg=>{
+
+    const currentDate =
+      dateKey(msg.created_at);
+
+    if(currentDate !== lastDate){
+
+      addDateSeparator(
+        msg.created_at
+      );
+
+      lastDate = currentDate;
+    }
+
+    addMessage(msg);
+  });
 }
 
 
 /* =========================
-   RENDER MESSAGES
+   EMPTY
 ========================= */
 
-function renderMessages(scrollBottom=false){
+function showEmpty(){
 
-  const searchTerm =
-    searchInput.value
-      .trim()
-      .toLowerCase();
+  messagesBox.innerHTML = "";
 
-  let list =
-    messagesData;
+  const div =
+    document.createElement("div");
 
-  if(searchTerm){
+  div.className = "empty";
+  div.id = "empty";
 
-    list =
-      list.filter(m =>
-        String(m.message || "")
-          .toLowerCase()
-          .includes(searchTerm)
-      );
+  div.innerHTML =
+    "No messages yet.<br>Start the conversation.";
+
+  messagesBox.appendChild(div);
+}
+
+
+function hideEmpty(){
+
+  const e =
+    document.getElementById("empty");
+
+  if(e) e.remove();
+}
+
+
+/* =========================
+   DATE SEPARATOR
+========================= */
+
+function addDateSeparator(date){
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className = "date";
+
+  const span =
+    document.createElement("span");
+
+  span.textContent =
+    dateLabel(date);
+
+  wrapper.appendChild(span);
+
+  messagesBox.appendChild(wrapper);
+}
+
+
+/* =========================
+   ADD MESSAGE
+========================= */
+
+function addMessage(msg){
+
+  hideEmpty();
+
+  const mine =
+    msg.sender_id === currentUser.id;
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "messageRow " +
+    (mine ? "mine" : "theirs");
+
+  row.dataset.messageId =
+    msg.id;
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className =
+    "bubble";
+
+  const text =
+    document.createElement("div");
+
+  text.textContent =
+    msg.message || "";
+
+  const meta =
+    document.createElement("div");
+
+  meta.className = "meta";
+
+  const time =
+    document.createElement("span");
+
+  time.textContent =
+    timeLabel(msg.created_at);
+
+  meta.appendChild(time);
+
+  if(mine){
+
+    const tick =
+      document.createElement("span");
+
+    tick.className =
+      "tick";
+
+    tick.textContent = "✓";
+
+    meta.appendChild(tick);
   }
 
-  if(list.length === 0){
+  bubble.appendChild(text);
+  bubble.appendChild(meta);
 
-    if(searchTerm){
+  row.appendChild(bubble);
 
-      messagesEl.innerHTML = `
-        <div class="empty">
-          <div class="emptyCard">
-            <div class="emptyIcon">🔍</div>
-            <div class="emptyTitle">
-              No messages found
-            </div>
-            <div class="emptyText">
-              Try another search.
-            </div>
-          </div>
-        </div>
-      `;
-
-    }else{
-
-      messagesEl.innerHTML = `
-        <div class="empty">
-          <div class="emptyCard">
-            <div class="emptyIcon">💬</div>
-            <div class="emptyTitle">
-              Start a conversation
-            </div>
-            <div class="emptyText">
-              Send a message to ${escapeHTML(
-                otherProfile?.username || "your friend"
-              )}.
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    return;
-  }
+  messagesBox.appendChild(row);
+}
 
 
-  let html = "";
-  let previousDate = "";
+/* =========================
+   SCROLL
+========================= */
 
+function scrollBottom(smooth=true){
 
-  list.forEach(msg => {
-
-    const key =
-      dateKey(msg.created_at);
-
-    if(key !== previousDate){
-
-      html += `
-        <div class="dateDivider">
-          <span>
-            ${escapeHTML(
-              dateLabel(msg.created_at)
-            )}
-          </span>
-        </div>
-      `;
-
-      previousDate = key;
-    }
-
-
-    const mine =
-      msg.sender_id === currentUser.id;
-
-    html += `
-      <div
-        class="messageRow ${mine ? "mine" : "theirs"}"
-        data-id="${escapeHTML(msg.id)}"
-      >
-
-        <div class="bubble">
-
-          <div class="messageText">${escapeHTML(
-            msg.message
-          )}</div>
-
-          <div class="messageMeta">
-
-            <span class="messageTime">
-              ${escapeHTML(
-                formatTime(msg.created_at)
-              )}
-            </span>
-
-            ${
-              mine
-              ? `<span class="ticks">✓✓</span>`
-              : ""
-            }
-
-          </div>
-
-        </div>
-
-      </div>
-    `;
+  messagesBox.scrollTo({
+    top:messagesBox.scrollHeight,
+    behavior:smooth ? "smooth" : "auto"
   });
-
-
-  messagesEl.innerHTML =
-    html;
-
-
-  if(scrollBottom){
-    requestAnimationFrame(()=>{
-      messagesEl.scrollTop =
-        messagesEl.scrollHeight;
-    });
-  }
 }
 
 
@@ -1175,78 +959,74 @@ function renderMessages(scrollBottom=false){
 
 async function sendMessage(){
 
+  if(!conversation)
+    return;
+
   const text =
     messageInput.value.trim();
 
-  if(!text){
+  if(!text)
     return;
-  }
 
-  if(!conversationId){
-    showToast("Chat is not ready");
+  if(sendBtn.disabled)
     return;
-  }
 
+  sendBtn.disabled = true;
 
-  sendButton.disabled =
-    true;
+  const originalText = text;
 
-  const {data,error} =
-    await supabaseClient
-      .from("messages")
-      .insert({
-        conversation_id:
-          conversationId,
+  messageInput.value = "";
 
-        sender_id:
-          currentUser.id,
+  resizeTextarea();
 
-        message:
-          text
-      })
-      .select(
-        "id,conversation_id,sender_id,message,created_at"
-      )
-      .single();
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("messages")
+    .insert({
+      conversation_id:conversation.id,
+      sender_id:currentUser.id,
+      message:originalText
+    })
+    .select(
+      "id,conversation_id,sender_id,message,created_at"
+    )
+    .single();
 
-
-  sendButton.disabled =
-    false;
-
+  sendBtn.disabled = false;
 
   if(error){
 
     console.error(error);
 
+    messageInput.value =
+      originalText;
+
+    resizeTextarea();
+
     showToast(
-      "Message couldn't be sent"
+      error.message || "Message failed"
     );
 
     return;
   }
 
+  /*
+    Realtime normally adds this message.
+    Add manually only if it isn't already there.
+  */
 
-  /* Add immediately */
   if(
-    !messagesData.some(
-      m => m.id === data.id
+    !document.querySelector(
+      `[data-message-id="${data.id}"]`
     )
   ){
 
-    messagesData.push(data);
-
-    messagesData.sort(
-      (a,b) =>
-        new Date(a.created_at) -
-        new Date(b.created_at)
-    );
-
-    messageInput.value = "";
-
-    autoResize();
-
-    renderMessages(true);
+    addMessage(data);
   }
+
+  scrollBottom(true);
 }
 
 
@@ -1256,21 +1036,14 @@ async function sendMessage(){
 
 function subscribeRealtime(){
 
-  if(!conversationId){
+  if(!conversation)
     return;
-  }
-
-  if(realtimeChannel){
-    supabaseClient
-      .removeChannel(realtimeChannel);
-  }
-
 
   realtimeChannel =
     supabaseClient
       .channel(
         "conversation-" +
-        conversationId
+        conversation.id
       )
       .on(
         "postgres_changes",
@@ -1280,319 +1053,50 @@ function subscribeRealtime(){
           table:"messages",
           filter:
             "conversation_id=eq." +
-            conversationId
+            conversation.id
         },
-        payload => {
+        payload=>{
 
-          const newMessage =
+          const msg =
             payload.new;
 
+          /*
+            Avoid duplicates.
+          */
+
           if(
-            !messagesData.some(
-              m => m.id === newMessage.id
+            document.querySelector(
+              `[data-message-id="${msg.id}"]`
             )
           ){
-
-            messagesData.push(
-              newMessage
-            );
-
-            messagesData.sort(
-              (a,b) =>
-                new Date(a.created_at) -
-                new Date(b.created_at)
-            );
-
-            renderMessages(true);
+            return;
           }
+
+          /*
+            If the message is from another user,
+            add it and scroll.
+          */
+
+          addMessage(msg);
+
+          scrollBottom(true);
         }
       )
-      .on(
-        "postgres_changes",
-        {
-          event:"DELETE",
-          schema:"public",
-          table:"messages",
-          filter:
-            "conversation_id=eq." +
-            conversationId
-        },
-        payload => {
+      .subscribe(status=>{
 
-          messagesData =
-            messagesData.filter(
-              m =>
-                m.id !== payload.old.id
-            );
-
-          renderMessages(false);
-        }
-      )
-      .subscribe();
+        console.log(
+          "Realtime:",
+          status
+        );
+      });
 }
 
 
 /* =========================
-   DELETE MESSAGE
+   TEXTAREA
 ========================= */
 
-async function deleteSelectedMessage(){
-
-  if(!selectedMessage){
-    return;
-  }
-
-  if(
-    selectedMessage.sender_id !==
-    currentUser.id
-  ){
-    showToast(
-      "You can delete only your messages"
-    );
-
-    closeMessageMenu();
-
-    return;
-  }
-
-
-  const id =
-    selectedMessage.id;
-
-
-  const {error} =
-    await supabaseClient
-      .from("messages")
-      .delete()
-      .eq("id",id)
-      .eq(
-        "sender_id",
-        currentUser.id
-      );
-
-
-  if(error){
-
-    console.error(error);
-
-    showToast(
-      "Couldn't delete message"
-    );
-
-    closeMessageMenu();
-
-    return;
-  }
-
-
-  messagesData =
-    messagesData.filter(
-      m => m.id !== id
-    );
-
-  renderMessages(false);
-
-  closeMessageMenu();
-
-  showToast(
-    "Message deleted"
-  );
-}
-
-
-/* =========================
-   COPY MESSAGE
-========================= */
-
-async function copySelectedMessage(){
-
-  if(!selectedMessage){
-    return;
-  }
-
-  try{
-
-    await navigator.clipboard.writeText(
-      selectedMessage.message || ""
-    );
-
-    showToast(
-      "Message copied"
-    );
-
-  }catch{
-
-    showToast(
-      "Couldn't copy message"
-    );
-  }
-
-  closeMessageMenu();
-}
-
-
-/* =========================
-   MESSAGE MENU
-========================= */
-
-function closeMessageMenu(){
-
-  messageMenu.classList.remove(
-    "show"
-  );
-
-  selectedMessage =
-    null;
-}
-
-
-messagesEl.addEventListener(
-  "contextmenu",
-  event => {
-
-    const row =
-      event.target.closest(
-        ".messageRow"
-      );
-
-    if(!row){
-      return;
-    }
-
-    event.preventDefault();
-
-    const id =
-      row.dataset.id;
-
-    selectedMessage =
-      messagesData.find(
-        m => String(m.id) === String(id)
-      );
-
-    if(!selectedMessage){
-      return;
-    }
-
-    const mine =
-      selectedMessage.sender_id ===
-      currentUser.id;
-
-    deleteMessage.style.display =
-      mine ? "block" : "none";
-
-
-    let x =
-      event.clientX;
-
-    let y =
-      event.clientY;
-
-
-    const width = 175;
-    const height = mine ? 90 : 50;
-
-
-    if(x + width > window.innerWidth){
-      x =
-        window.innerWidth -
-        width -
-        10;
-    }
-
-    if(y + height > window.innerHeight){
-      y =
-        window.innerHeight -
-        height -
-        10;
-    }
-
-
-    messageMenu.style.left =
-      Math.max(8,x) + "px";
-
-    messageMenu.style.top =
-      Math.max(8,y) + "px";
-
-    messageMenu.classList.add(
-      "show"
-    );
-  }
-);
-
-
-/* =========================
-   EMOJIS
-========================= */
-
-const emojis = [
-  "😀","😃","😄","😁","😆","😅","😂","🤣",
-  "😊","😇","🙂","🙃","😉","😌","😍","🥰",
-  "😘","😎","🤩","🥳","😏","😢","😭","😡",
-  "😱","🤔","🙄","😴","🤗","🤭","🫡","🤝",
-  "👍","👎","👏","🙌","🙏","💪","❤️","🧡",
-  "💛","💚","💙","💜","🖤","🤍","💯","🔥",
-  "✨","🎉","🎊","😂","🤣","😎","👀","💀",
-  "☠️","🚀","⚡","🎮","🏆","🥶","😈","🤡"
-];
-
-
-emojis.forEach(emoji => {
-
-  const btn =
-    document.createElement("button");
-
-  btn.className =
-    "emoji";
-
-  btn.textContent =
-    emoji;
-
-  btn.addEventListener(
-    "click",
-    ()=>{
-      insertEmoji(emoji);
-    }
-  );
-
-  emojiGrid.appendChild(btn);
-});
-
-
-function insertEmoji(emoji){
-
-  const start =
-    messageInput.selectionStart;
-
-  const end =
-    messageInput.selectionEnd;
-
-  const value =
-    messageInput.value;
-
-  messageInput.value =
-    value.substring(0,start) +
-    emoji +
-    value.substring(end);
-
-  messageInput.focus();
-
-  const cursor =
-    start + emoji.length;
-
-  messageInput.setSelectionRange(
-    cursor,
-    cursor
-  );
-
-  autoResize();
-}
-
-
-/* =========================
-   INPUT
-========================= */
-
-function autoResize(){
+function resizeTextarea(){
 
   messageInput.style.height =
     "auto";
@@ -1607,13 +1111,17 @@ function autoResize(){
 
 messageInput.addEventListener(
   "input",
-  autoResize
+  resizeTextarea
 );
 
 
+/* =========================
+   ENTER TO SEND
+========================= */
+
 messageInput.addEventListener(
   "keydown",
-  event => {
+  event=>{
 
     if(
       event.key === "Enter" &&
@@ -1629,53 +1137,21 @@ messageInput.addEventListener(
 
 
 /* =========================
-   BUTTONS
+   BUTTON
 ========================= */
 
-sendButton.addEventListener(
+sendBtn.addEventListener(
   "click",
   sendMessage
 );
 
 
-emojiButton.addEventListener(
-  "click",
-  ()=>{
-    emojiPanel.classList.toggle(
-      "show"
-    );
-  }
-);
+/* =========================
+   BACK
+========================= */
 
-
-searchBtn.addEventListener(
-  "click",
-  ()=>{
-    searchBar.classList.toggle(
-      "show"
-    );
-
-    if(
-      searchBar.classList.contains("show")
-    ){
-      searchInput.focus();
-    }else{
-      searchInput.value = "";
-      renderMessages(false);
-    }
-  }
-);
-
-
-searchInput.addEventListener(
-  "input",
-  ()=>{
-    renderMessages(false);
-  }
-);
-
-
-document.getElementById("backBtn")
+document
+  .getElementById("backBtn")
   .addEventListener(
     "click",
     ()=>{
@@ -1683,149 +1159,6 @@ document.getElementById("backBtn")
         "chat.html";
     }
   );
-
-
-copyMessage.addEventListener(
-  "click",
-  copySelectedMessage
-);
-
-
-deleteMessage.addEventListener(
-  "click",
-  deleteSelectedMessage
-);
-
-
-document.addEventListener(
-  "click",
-  event => {
-
-    if(
-      !emojiPanel.contains(event.target) &&
-      event.target !== emojiButton
-    ){
-      emojiPanel.classList.remove(
-        "show"
-      );
-    }
-
-    if(
-      !messageMenu.contains(event.target) &&
-      !event.target.closest(".messageRow")
-    ){
-      closeMessageMenu();
-    }
-  }
-);
-
-
-/* =========================
-   START
-========================= */
-
-async function start(){
-
-  if(!otherUserId){
-
-    messagesEl.innerHTML = `
-      <div class="empty">
-        <div class="emptyCard">
-          <div class="emptyIcon">💬</div>
-          <div class="emptyTitle">
-            Chat not found
-          </div>
-          <div class="emptyText">
-            No user was selected for this conversation.
-          </div>
-        </div>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  const {
-    data:sessionData,
-    error:sessionError
-  } =
-    await supabaseClient.auth.getSession();
-
-
-  if(
-    sessionError ||
-    !sessionData.session
-  ){
-
-    window.location.href =
-      "index.html";
-
-    return;
-  }
-
-
-  currentUser =
-    sessionData.session.user;
-
-
-  if(
-    currentUser.id === otherUserId
-  ){
-
-    messagesEl.innerHTML = `
-      <div class="empty">
-        <div class="emptyCard">
-          <div class="emptyIcon">🙂</div>
-          <div class="emptyTitle">
-            This is your account
-          </div>
-          <div class="emptyText">
-            You can't start a conversation with yourself.
-          </div>
-        </div>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  try{
-
-    await loadOtherProfile();
-
-    await getConversation();
-
-    await loadMessages();
-
-    subscribeRealtime();
-
-  }catch(error){
-
-    console.error(error);
-
-    messagesEl.innerHTML = `
-      <div class="empty">
-        <div class="emptyCard">
-          <div class="emptyIcon">⚠️</div>
-          <div class="emptyTitle">
-            Couldn't open chat
-          </div>
-          <div class="emptyText">
-            ${escapeHTML(
-              error?.message ||
-              "Something went wrong."
-            )}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-}
-
-
-start();
 
 
 /* =========================
@@ -1836,13 +1169,21 @@ window.addEventListener(
   "beforeunload",
   ()=>{
     if(realtimeChannel){
-      supabaseClient
-        .removeChannel(
-          realtimeChannel
-        );
+
+      supabaseClient.removeChannel(
+        realtimeChannel
+      );
     }
   }
 );
+
+
+/* =========================
+   START
+========================= */
+
+init();
+
 </script>
 
 </body>
