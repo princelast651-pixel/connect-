@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Connect • Room</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,93 +15,34 @@
   -webkit-tap-highlight-color:transparent;
 }
 
-:root{
-  --purple:#7c5cff;
-  --blue:#5b8cff;
-  --dark:#17171b;
-  --dark2:#202027;
-  --text:#fff;
-  --muted:#96969f;
-}
-
-html,
-body{
+html,body{
   width:100%;
   height:100%;
   overflow:hidden;
 }
 
 body{
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  color:var(--text);
-
-  background:
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(124,92,255,.25),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 90% 25%,
-      rgba(91,140,255,.18),
-      transparent 30%
-    ),
-    linear-gradient(
-      145deg,
-      #f4efff 0%,
-      #edf4ff 50%,
-      #fff1f7 100%
-    );
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#111217;
+  color:#fff;
 }
 
 /* =========================
-   MAIN ROOM
+   ROOM
 ========================= */
 
 .room{
-  position:relative;
   width:100%;
   height:100dvh;
-  min-height:560px;
+  min-height:520px;
+  position:relative;
   overflow:hidden;
-}
-
-/* soft decorative circles */
-
-.room::before,
-.room::after{
-  content:"";
-  position:absolute;
-  border-radius:50%;
-  pointer-events:none;
-  filter:blur(4px);
-}
-
-.room::before{
-  width:190px;
-  height:190px;
-  left:-80px;
-  top:25%;
-  background:rgba(124,92,255,.14);
-}
-
-.room::after{
-  width:220px;
-  height:220px;
-  right:-100px;
-  bottom:20%;
-  background:rgba(236,72,153,.12);
+  background:
+    radial-gradient(circle at 50% 30%,#272239 0%,#15151b 38%,#101115 75%);
 }
 
 /* =========================
-   TOP
+   TOP BAR
 ========================= */
 
 .top{
@@ -111,6 +50,7 @@ body{
   top:0;
   left:0;
   right:0;
+  height:76px;
 
   padding:
     calc(12px + env(safe-area-inset-top))
@@ -119,364 +59,294 @@ body{
 
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:10px;
 
-  z-index:30;
+  z-index:20;
 }
 
-.top-btn{
-  width:46px;
-  height:46px;
-
-  flex-shrink:0;
-
+.icon-btn{
+  width:43px;
+  height:43px;
   border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
+  border-radius:14px;
 
-  background:rgba(20,20,25,.91);
+  background:rgba(29,30,37,.92);
   color:#fff;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  font-size:19px;
-
-  box-shadow:
-    0 8px 28px rgba(30,20,70,.16);
-
-  backdrop-filter:blur(16px);
-
-  cursor:pointer;
+  font-size:18px;
 }
 
-.room-title{
+.room-info{
   flex:1;
   min-width:0;
-
-  height:46px;
-
-  padding:0 15px;
-
-  border-radius:16px;
-
-  background:rgba(20,20,25,.91);
-
-  border:1px solid rgba(255,255,255,.08);
-
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:
-    0 8px 28px rgba(30,20,70,.16);
-
-  backdrop-filter:blur(16px);
+  text-align:center;
 }
 
-.room-title strong{
-  max-width:100%;
-
-  font-size:13px;
-  font-weight:800;
+.room-name{
+  font-size:14px;
+  font-weight:750;
 
   overflow:hidden;
-  text-overflow:ellipsis;
   white-space:nowrap;
+  text-overflow:ellipsis;
 }
 
-.room-title small{
-  color:#898993;
+.room-sub{
+  margin-top:2px;
+  color:#777983;
   font-size:9px;
-  margin-top:1px;
 }
 
-.invite{
-  height:46px;
+.top-right{
+  display:flex;
+  gap:7px;
+}
 
-  flex-shrink:0;
-
+.invite-btn{
+  height:43px;
   padding:0 13px;
 
   border:0;
-  border-radius:16px;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--purple),
-      var(--blue)
-    );
+  border-radius:14px;
 
   color:#fff;
+  background:#7255dc;
 
-  font-size:11px;
-  font-weight:800;
-
-  box-shadow:
-    0 8px 24px rgba(124,92,255,.25);
-
-  cursor:pointer;
+  font-size:10px;
+  font-weight:750;
 }
 
 /* =========================
-   ROOM STAGE
+   MAIN PARTICIPANT AREA
 ========================= */
 
-.stage{
+.participants{
   position:absolute;
-
   left:0;
   right:0;
 
-  top:78px;
-  bottom:168px;
+  top:88px;
+  bottom:155px;
 
-  display:flex;
-  align-items:center;
+  padding:25px 18px;
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  grid-template-rows:
+    repeat(2,minmax(0,1fr));
+
+  gap:18px 15px;
+
+  align-content:center;
   justify-content:center;
 
-  z-index:5;
+  max-width:430px;
+  margin:auto;
 }
 
-/* center orbit */
+/* participant */
 
-.orbit{
-  position:relative;
-
-  width:min(76vw,310px);
-  height:min(76vw,310px);
-
-  max-height:310px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.orbit-ring{
-  position:absolute;
-  inset:22px;
-
-  border:1px dashed rgba(110,90,180,.23);
-
-  border-radius:50%;
-
-  animation:rotate 22s linear infinite;
-}
-
-@keyframes rotate{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-.center-card{
-  position:relative;
-
-  width:118px;
-  height:118px;
-
-  border-radius:36px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(35,35,44,.98),
-      rgba(21,21,27,.98)
-    );
-
-  border:1px solid rgba(255,255,255,.10);
+.person{
+  min-height:130px;
 
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
 
-  box-shadow:
-    0 20px 60px rgba(20,15,45,.25);
-
-  z-index:3;
+  position:relative;
 }
 
-.center-avatar{
-  width:57px;
-  height:57px;
+.avatar-wrap{
+  width:92px;
+  height:92px;
 
-  border-radius:20px;
+  border-radius:50%;
+
+  position:relative;
+
+  background:#292a31;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.28);
+
+  border:2px solid rgba(255,255,255,.07);
+}
+
+.avatar{
+  width:100%;
+  height:100%;
+
+  border-radius:50%;
 
   object-fit:cover;
 
-  background:#303038;
-
-  border:2px solid rgba(255,255,255,.12);
+  background:#292a31;
 }
 
-.center-name{
-  max-width:95px;
+.mic-status{
+  position:absolute;
 
-  margin-top:7px;
+  right:-2px;
+  bottom:2px;
+
+  width:27px;
+  height:27px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#24252c;
+
+  border:3px solid #17181e;
 
   font-size:11px;
-  font-weight:700;
+}
+
+.mic-status.active{
+  background:#28bd78;
+}
+
+.mic-status.muted{
+  background:#b33b4b;
+}
+
+.person-name{
+  max-width:120px;
+
+  margin-top:10px;
+
+  font-size:11px;
+  font-weight:650;
+
+  color:#eee;
 
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
 
-.host{
+.person-role{
   margin-top:4px;
 
-  padding:3px 7px;
+  color:#777983;
+  font-size:8px;
+}
+
+/* YOUR MAIN CARD */
+
+.person.you .avatar-wrap{
+  width:108px;
+  height:108px;
+
+  border:3px solid #7758df;
+
+  box-shadow:
+    0 0 0 5px rgba(119,88,223,.10),
+    0 15px 45px rgba(0,0,0,.35);
+}
+
+.person.you .person-name{
+  font-size:12px;
+}
+
+.you-badge{
+  position:absolute;
+
+  top:calc(50% + 40px);
+
+  padding:4px 8px;
 
   border-radius:7px;
 
-  background:rgba(124,92,255,.17);
+  background:#7355dc;
 
-  color:#ad9cff;
+  color:#fff;
 
   font-size:7px;
   font-weight:800;
 
-  text-transform:uppercase;
-  letter-spacing:.5px;
-}
-
-/* orbit participant */
-
-.orbit-person{
-  position:absolute;
-
-  width:72px;
-  height:72px;
-
-  border-radius:25px;
-
-  background:rgba(25,25,31,.92);
-
-  border:1px solid rgba(255,255,255,.08);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:
-    0 12px 35px rgba(20,15,45,.16);
-
-  backdrop-filter:blur(12px);
-
-  z-index:5;
-}
-
-.person-avatar{
-  width:47px;
-  height:47px;
-
-  border-radius:16px;
-
-  object-fit:cover;
-
-  background:#303038;
-}
-
-.person-mic{
-  position:absolute;
-
-  right:-4px;
-  bottom:-4px;
-
-  width:22px;
-  height:22px;
-
-  border-radius:8px;
-
-  background:#20bd78;
-
-  border:3px solid #f0f1ff;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:9px;
-}
-
-.person-name{
-  position:absolute;
-
-  bottom:-27px;
-
-  max-width:90px;
-
-  color:#27272d;
-
-  font-size:9px;
-  font-weight:700;
-
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-/* positions */
-
-.person-one{
-  top:2px;
-  left:50%;
-  transform:translateX(-50%);
-}
-
-.person-two{
-  right:3px;
-  top:50%;
-  transform:translateY(-50%);
-}
-
-.person-three{
-  bottom:2px;
-  left:50%;
-  transform:translateX(-50%);
-}
-
-.person-four{
-  left:3px;
-  top:50%;
-  transform:translateY(-50%);
+  letter-spacing:.4px;
 }
 
 /* =========================
-   EMPTY
+   EMPTY SLOTS
 ========================= */
 
-.empty-room{
-  position:absolute;
+.empty-slot{
+  min-height:130px;
 
-  left:50%;
-  top:50%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 
-  transform:translate(-50%,-50%);
-
-  text-align:center;
-
-  color:#777;
-
-  width:210px;
+  color:#4e5059;
 }
 
-.empty-room-icon{
-  font-size:30px;
-  margin-bottom:7px;
+.empty-circle{
+  width:76px;
+  height:76px;
+
+  border-radius:50%;
+
+  border:1px dashed #41434b;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:23px;
 }
 
-.empty-room p{
-  font-size:11px;
-  line-height:1.5;
+.empty-slot span{
+  margin-top:8px;
+  font-size:9px;
 }
 
 /* =========================
-   BOTTOM PANEL
+   ROOM STATUS
+========================= */
+
+.status-pill{
+  position:absolute;
+
+  left:50%;
+  transform:translateX(-50%);
+
+  bottom:137px;
+
+  padding:7px 12px;
+
+  border-radius:20px;
+
+  background:#1c1d23;
+
+  border:1px solid rgba(255,255,255,.07);
+
+  color:#8c8e98;
+
+  font-size:8px;
+
+  z-index:15;
+}
+
+/* =========================
+   BOTTOM CONTROLS
 ========================= */
 
 .bottom{
@@ -486,125 +356,42 @@ body{
   right:12px;
 
   bottom:
-    calc(10px + env(safe-area-inset-bottom));
+    calc(9px + env(safe-area-inset-bottom));
 
-  z-index:40;
+  z-index:30;
 }
 
-/* info */
-
-.info{
-  min-height:39px;
-
+.bottom-panel{
   width:100%;
 
-  border-radius:14px;
+  padding:8px;
 
-  padding:9px 12px;
+  border-radius:22px;
 
-  background:rgba(22,22,27,.91);
+  background:rgba(27,28,34,.97);
 
-  border:1px solid rgba(255,255,255,.08);
-
-  display:flex;
-  align-items:center;
-  gap:8px;
+  border:1px solid rgba(255,255,255,.07);
 
   box-shadow:
-    0 10px 30px rgba(20,15,45,.16);
-
-  backdrop-filter:blur(15px);
-
-  cursor:pointer;
-
-  margin-bottom:7px;
+    0 12px 45px rgba(0,0,0,.35);
 }
 
-.info-icon{
-  width:22px;
-  height:22px;
-
-  flex-shrink:0;
-
-  border-radius:7px;
-
-  background:#303039;
-
+.controls{
   display:flex;
   align-items:center;
   justify-content:center;
 
-  font-size:10px;
-}
-
-.info-text{
-  flex:1;
-
-  color:#a4a4ad;
-
-  font-size:9px;
-
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.info-arrow{
-  color:#777;
-  font-size:14px;
-}
-
-/* control row */
-
-.control-row{
-  display:flex;
-  align-items:center;
-  gap:7px;
-
-  width:100%;
-}
-
-.message{
-  flex:1;
-  min-width:0;
-
-  height:49px;
-
-  border-radius:16px;
-
-  border:1px solid rgba(255,255,255,.08);
-
-  background:rgba(22,22,27,.91);
-
-  color:#fff;
-
-  outline:none;
-
-  padding:0 14px;
-
-  font-size:11px;
-
-  box-shadow:
-    0 10px 30px rgba(20,15,45,.16);
-
-  backdrop-filter:blur(15px);
-}
-
-.message::placeholder{
-  color:#74747d;
+  gap:8px;
 }
 
 .control{
-  width:49px;
-  height:49px;
+  width:48px;
+  height:48px;
 
-  flex-shrink:0;
+  border:0;
+  border-radius:15px;
 
-  border-radius:16px;
-
-  border:1px solid rgba(255,255,255,.08);
-
-  background:rgba(22,22,27,.91);
+  background:#292a31;
 
   color:#fff;
 
@@ -613,194 +400,208 @@ body{
   justify-content:center;
 
   font-size:17px;
-
-  box-shadow:
-    0 10px 30px rgba(20,15,45,.16);
-
-  cursor:pointer;
-
-  backdrop-filter:blur(15px);
-
-  transition:.18s;
 }
 
 .control:active{
-  transform:scale(.91);
+  transform:scale(.94);
 }
 
-.mic{
-  background:#20b978;
-  border-color:transparent;
+.control.primary{
+  width:55px;
+  height:55px;
+
+  border-radius:18px;
+
+  background:#7255dc;
 }
 
-.mic.off{
-  background:#a93443;
+.control.muted{
+  background:#a63b49;
+}
+
+.control.leave{
+  background:#30252a;
+  color:#ff6d79;
 }
 
 /* =========================
-   CHAT SHEET
+   CHAT
 ========================= */
 
-.sheet{
+.chat-panel{
   position:absolute;
 
   left:10px;
   right:10px;
 
-  bottom:142px;
+  bottom:
+    calc(94px + env(safe-area-inset-bottom));
 
-  max-height:53vh;
+  height:55vh;
+  max-height:460px;
 
-  background:#17171c;
+  background:#191a20;
 
-  border:1px solid #34343d;
+  border:1px solid #30313a;
 
   border-radius:23px;
 
-  padding:14px;
-
-  z-index:80;
+  z-index:60;
 
   display:none;
 
+  flex-direction:column;
+
+  overflow:hidden;
+
   box-shadow:
-    0 20px 70px rgba(0,0,0,.35);
+    0 20px 70px rgba(0,0,0,.5);
 }
 
-.sheet.show{
-  display:block;
+.chat-panel.open{
+  display:flex;
 }
 
-.sheet-head{
+.chat-head{
+  height:53px;
+
+  flex-shrink:0;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
 
-  margin-bottom:11px;
+  padding:0 15px;
+
+  border-bottom:1px solid #2b2c33;
 }
 
-.sheet-head strong{
+.chat-head strong{
   font-size:13px;
 }
 
-.close{
-  width:31px;
-  height:31px;
+.close-btn{
+  width:32px;
+  height:32px;
 
   border:0;
   border-radius:10px;
 
-  background:#292930;
+  background:#292a31;
+
   color:#aaa;
 
-  font-size:17px;
+  font-size:18px;
 }
 
-.messages{
-  max-height:36vh;
-  overflow:auto;
+.chat-messages{
+  flex:1;
+
+  padding:12px;
+
+  overflow-y:auto;
 }
 
-.empty-message{
-  padding:25px 5px;
+.no-message{
+  height:100%;
 
-  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-  color:#666;
+  color:#666873;
 
-  font-size:11px;
+  font-size:10px;
 }
 
-.msg{
-  padding:9px 11px;
+.message{
+  width:max-content;
+  max-width:80%;
 
-  background:#282830;
+  margin-bottom:8px;
+
+  padding:8px 11px;
 
   border-radius:13px;
 
-  margin-bottom:7px;
+  background:#292a31;
 
-  font-size:11px;
+  font-size:10px;
 }
 
-.msg.me{
-  background:#6245b5;
-}
-
-.msg-user{
-  color:#aaa;
-
-  font-size:8px;
-
-  margin-bottom:3px;
+.message.me{
+  margin-left:auto;
+  background:#684dc2;
 }
 
 /* =========================
-   INVITE SHEET
+   INVITE PANEL
 ========================= */
 
-.invite-sheet{
+.invite-panel{
   position:absolute;
 
   left:10px;
   right:10px;
 
-  bottom:10px;
+  bottom:
+    calc(9px + env(safe-area-inset-bottom));
 
   max-height:75vh;
 
-  background:#17171c;
+  padding:16px;
 
-  border:1px solid #35353d;
+  border-radius:23px;
 
-  border-radius:25px;
+  background:#191a20;
 
-  padding:17px;
+  border:1px solid #30313a;
 
-  z-index:100;
+  z-index:70;
 
   display:none;
 
   box-shadow:
-    0 20px 70px rgba(0,0,0,.38);
+    0 20px 70px rgba(0,0,0,.5);
 }
 
-.invite-sheet.show{
+.invite-panel.open{
   display:block;
 }
 
 .invite-head{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 
-  margin-bottom:14px;
+  margin-bottom:13px;
 }
 
 .invite-head strong{
-  font-size:16px;
+  font-size:15px;
 }
 
-.friend-list{
-  max-height:54vh;
-  overflow:auto;
+.friends{
+  max-height:55vh;
+  overflow-y:auto;
 }
 
-.friend-row{
+.friend{
   display:flex;
   align-items:center;
+
   gap:10px;
 
   padding:9px;
 
-  border-radius:14px;
-
-  background:#222229;
-
   margin-bottom:7px;
+
+  background:#24252c;
+
+  border-radius:14px;
 }
 
-.friend-avatar{
+.friend img{
   width:40px;
   height:40px;
 
@@ -808,10 +609,10 @@ body{
 
   object-fit:cover;
 
-  background:#303038;
+  background:#303139;
 }
 
-.friend-info{
+.friend-data{
   flex:1;
   min-width:0;
 }
@@ -825,63 +626,66 @@ body{
   white-space:nowrap;
 }
 
-.friend-id{
-  color:#73737d;
-  font-size:8px;
+.friend-label{
   margin-top:3px;
+  color:#72747e;
+  font-size:8px;
 }
 
-.invite-one{
-  padding:8px 11px;
-
+.send-invite{
   border:0;
   border-radius:10px;
 
-  background:#6f52df;
+  padding:8px 10px;
 
+  background:#7255dc;
   color:#fff;
 
   font-size:9px;
-  font-weight:800;
+  font-weight:700;
 }
 
 .no-friends{
   text-align:center;
-  color:#777;
-  padding:30px 10px;
-  font-size:11px;
+
+  color:#666873;
+
+  font-size:10px;
+
+  padding:28px 10px;
 }
 
 /* =========================
-   MENU
+   MORE MENU
 ========================= */
 
 .menu{
   position:absolute;
 
-  right:12px;
+  right:13px;
 
-  bottom:70px;
+  bottom:
+    calc(82px + env(safe-area-inset-bottom));
 
-  width:185px;
+  width:180px;
 
   padding:7px;
 
-  background:#18181d;
+  border-radius:16px;
 
-  border:1px solid #35353d;
+  background:#1b1c22;
 
-  border-radius:17px;
+  border:1px solid #34353d;
+
+  z-index:50;
 
   display:none;
 
-  z-index:90;
-
   box-shadow:
-    0 15px 50px rgba(0,0,0,.3);
+    0 15px 50px rgba(0,0,0,.45);
 }
 
-.menu.show{
+.menu.open{
   display:block;
 }
 
@@ -903,11 +707,11 @@ body{
 }
 
 .menu button:active{
-  background:#292930;
+  background:#292a31;
 }
 
 .menu .danger{
-  color:#ff6d76;
+  color:#ff6875;
 }
 
 /* =========================
@@ -917,39 +721,36 @@ body{
 .toast{
   position:fixed;
 
+  top:
+    calc(78px + env(safe-area-inset-top));
+
   left:50%;
 
-  top:
-    calc(74px + env(safe-area-inset-top));
+  transform:translateX(-50%);
 
-  transform:translateX(-50%) translateY(-8px);
-
-  background:#1c1c21;
-
-  border:1px solid #393941;
-
-  color:#fff;
-
-  padding:10px 14px;
+  padding:9px 13px;
 
   border-radius:12px;
 
-  font-size:10px;
+  background:#25262d;
+
+  border:1px solid #383942;
+
+  color:#fff;
+
+  font-size:9px;
 
   opacity:0;
 
   pointer-events:none;
 
-  z-index:300;
+  z-index:100;
 
-  transition:.2s;
-
-  white-space:nowrap;
+  transition:opacity .15s;
 }
 
 .toast.show{
   opacity:1;
-  transform:translateX(-50%) translateY(0);
 }
 
 /* =========================
@@ -960,46 +761,37 @@ body{
   position:absolute;
   inset:0;
 
-  background:
-    linear-gradient(
-      145deg,
-      #f4efff,
-      #edf4ff,
-      #fff1f7
-    );
-
-  color:#222;
+  z-index:200;
 
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
 
-  z-index:200;
+  background:#111217;
+
+  color:#aaa;
+
+  font-size:11px;
 }
 
-.loader{
-  width:35px;
-  height:35px;
+.spinner{
+  width:25px;
+  height:25px;
 
-  border:4px solid #ddd;
-  border-top-color:#7656e8;
+  margin-right:9px;
+
+  border:3px solid #34353d;
+  border-top-color:#7255dc;
 
   border-radius:50%;
 
   animation:spin .7s linear infinite;
-
-  margin-bottom:12px;
 }
 
 @keyframes spin{
   to{
     transform:rotate(360deg);
   }
-}
-
-.loading span{
-  font-size:12px;
 }
 
 /* =========================
@@ -1010,148 +802,140 @@ body{
   position:absolute;
   inset:0;
 
-  background:#f4effb;
-
-  color:#222;
+  z-index:210;
 
   display:none;
 
-  flex-direction:column;
   align-items:center;
   justify-content:center;
+
+  flex-direction:column;
 
   padding:30px;
 
   text-align:center;
 
-  z-index:250;
+  background:#111217;
 }
 
 .error.show{
   display:flex;
 }
 
-.error-icon{
-  font-size:38px;
-  margin-bottom:10px;
-}
-
 .error h2{
   font-size:18px;
-  margin-bottom:6px;
+  margin-bottom:7px;
 }
 
 .error p{
-  max-width:300px;
-
-  color:#666;
-
-  font-size:11px;
+  color:#777983;
+  font-size:10px;
+  max-width:280px;
   line-height:1.5;
 }
 
 .error button{
-  margin-top:17px;
+  margin-top:15px;
 
   border:0;
   border-radius:12px;
 
-  padding:11px 17px;
+  padding:10px 15px;
 
-  background:#7656e8;
+  background:#7255dc;
   color:#fff;
 
-  font-weight:700;
-  font-size:11px;
+  font-size:10px;
 }
 
 /* =========================
-   MINIMIZED
-========================= */
-
-body.minimized .stage{
-  transform:scale(.82);
-  opacity:.15;
-}
-
-body.minimized .bottom{
-  opacity:.1;
-  pointer-events:none;
-}
-
-body.minimized .invite,
-body.minimized .room-title{
-  opacity:.5;
-}
-
-/* =========================
-   SMALL DEVICES
+   SMALL HEIGHT PHONES
 ========================= */
 
 @media(max-height:650px){
 
-  .stage{
-    top:70px;
-    bottom:150px;
+  .participants{
+    top:72px;
+    bottom:130px;
+
+    gap:5px 10px;
+
+    padding:10px 15px;
   }
 
-  .orbit{
-    transform:scale(.78);
+  .person{
+    min-height:105px;
   }
 
-  .bottom{
-    bottom:
-      calc(6px + env(safe-area-inset-bottom));
+  .avatar-wrap{
+    width:70px;
+    height:70px;
   }
 
-  .info{
-    min-height:34px;
-    padding:7px 10px;
+  .person.you .avatar-wrap{
+    width:82px;
+    height:82px;
   }
 
-  .control,
-  .message{
-    height:44px;
+  .empty-circle{
+    width:58px;
+    height:58px;
   }
 
-  .control{
-    width:44px;
-  }
-
-}
-
-@media(max-width:370px){
-
-  .invite{
-    padding:0 9px;
-    font-size:10px;
-  }
-
-  .top-btn{
-    width:42px;
-    height:42px;
-  }
-
-  .room-title{
-    height:42px;
-  }
-
-  .invite{
-    height:42px;
+  .status-pill{
+    bottom:115px;
   }
 
   .control{
     width:43px;
-  }
-
-  .message{
     height:43px;
   }
 
+  .control.primary{
+    width:50px;
+    height:50px;
+  }
+
+  .bottom-panel{
+    padding:6px;
+  }
+}
+
+@media(max-width:370px){
+
+  .top{
+    padding-left:9px;
+    padding-right:9px;
+    gap:6px;
+  }
+
+  .icon-btn{
+    width:39px;
+    height:39px;
+  }
+
+  .invite-btn{
+    height:39px;
+    padding:0 9px;
+  }
+
+  .participants{
+    gap:5px;
+  }
+
+  .control{
+    width:40px;
+    height:40px;
+    border-radius:13px;
+  }
+
+  .control.primary{
+    width:48px;
+    height:48px;
+  }
 }
 </style>
 </head>
-
 
 <body>
 
@@ -1159,161 +943,175 @@ body.minimized .room-title{
 
   <!-- TOP -->
 
-  <header class="top">
+  <div class="top">
 
-    <button
-      class="top-btn"
-      onclick="goHome()">
+    <button class="icon-btn" onclick="goHome()">
       ←
     </button>
 
-    <div class="room-title">
-
-      <strong id="roomName">
+    <div class="room-info">
+      <div class="room-name" id="roomName">
         Loading...
-      </strong>
+      </div>
 
-      <small id="roomStatus">
-        Private room
-      </small>
+      <div class="room-sub">
+        Private Connect Room
+      </div>
+    </div>
+
+    <div class="top-right">
+
+      <button class="invite-btn" onclick="openInvite()">
+        Invite
+      </button>
+
+      <button class="icon-btn" onclick="toggleMenu()">
+        ⋮
+      </button>
 
     </div>
 
-    <button
-      class="invite"
-      onclick="openInvite()">
-      👋 Invite
-    </button>
-
-  </header>
+  </div>
 
 
-  <!-- CENTER -->
+  <!-- PARTICIPANTS -->
 
-  <main class="stage">
+  <div class="participants">
 
-    <div class="orbit">
+    <!-- YOU -->
 
-      <div class="orbit-ring"></div>
+    <div class="person you">
 
-      <!-- host / current user -->
-
-      <div class="center-card">
+      <div class="avatar-wrap">
 
         <img
           id="myAvatar"
-          class="center-avatar"
-          src=""
-          alt="">
+          class="avatar"
+          alt="Profile">
 
         <div
-          id="myName"
-          class="center-name">
-          Loading...
-        </div>
-
-        <div class="host">
-          YOU
+          id="myMic"
+          class="mic-status active">
+          🎙
         </div>
 
       </div>
 
-
-      <!-- future participant slots -->
-
-      <div class="orbit-person person-one">
-        <img
-          class="person-avatar"
-          src=""
-          alt="">
-        <div class="person-mic">🎙</div>
-        <div class="person-name"></div>
+      <div
+        id="myName"
+        class="person-name">
+        You
       </div>
 
-      <div class="orbit-person person-two">
-        <img
-          class="person-avatar"
-          src=""
-          alt="">
-        <div class="person-mic">🎙</div>
-        <div class="person-name"></div>
+      <div class="person-role">
+        Host
       </div>
 
-      <div class="orbit-person person-three">
-        <img
-          class="person-avatar"
-          src=""
-          alt="">
-        <div class="person-mic">🎙</div>
-        <div class="person-name"></div>
-      </div>
-
-      <div class="orbit-person person-four">
-        <img
-          class="person-avatar"
-          src=""
-          alt="">
-        <div class="person-mic">🎙</div>
-        <div class="person-name"></div>
+      <div class="you-badge">
+        YOU
       </div>
 
     </div>
 
-  </main>
+
+    <!-- EMPTY -->
+
+    <div class="empty-slot">
+
+      <div class="empty-circle">
+        +
+      </div>
+
+      <span>
+        Invite someone
+      </span>
+
+    </div>
 
 
-  <!-- CHAT SHEET -->
+    <div class="empty-slot">
 
-  <section
-    class="sheet"
-    id="chatSheet">
+      <div class="empty-circle">
+        +
+      </div>
 
-    <div class="sheet-head">
+      <span>
+        Empty seat
+      </span>
 
-      <strong>Room chat</strong>
+    </div>
 
-      <button
-        class="close"
-        onclick="closeChat()">
+
+    <div class="empty-slot">
+
+      <div class="empty-circle">
+        +
+      </div>
+
+      <span>
+        Empty seat
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- ROOM STATUS -->
+
+  <div class="status-pill" id="statusPill">
+    🎙 You are the only person here
+  </div>
+
+
+  <!-- CHAT -->
+
+  <div class="chat-panel" id="chatPanel">
+
+    <div class="chat-head">
+
+      <strong>
+        Room Chat
+      </strong>
+
+      <button class="close-btn" onclick="closeChat()">
         ×
       </button>
 
     </div>
 
     <div
-      class="messages"
-      id="messages">
+      class="chat-messages"
+      id="chatMessages">
 
-      <div class="empty-message">
+      <div class="no-message">
         No messages yet
       </div>
 
     </div>
 
-  </section>
+  </div>
 
 
-  <!-- INVITE SHEET -->
+  <!-- INVITE -->
 
-  <section
-    class="invite-sheet"
-    id="inviteSheet">
+  <div class="invite-panel" id="invitePanel">
 
     <div class="invite-head">
 
-      <strong>Invite friends</strong>
+      <strong>
+        Invite Friends
+      </strong>
 
-      <button
-        class="close"
-        onclick="closeInvite()">
+      <button class="close-btn" onclick="closeInvite()">
         ×
       </button>
 
     </div>
 
     <div
-      class="friend-list"
-      id="friendList">
+      class="friends"
+      id="friendsList">
 
       <div class="no-friends">
         Loading friends...
@@ -1321,20 +1119,18 @@ body.minimized .room-title{
 
     </div>
 
-  </section>
+  </div>
 
 
-  <!-- MORE MENU -->
+  <!-- MENU -->
 
-  <div
-    class="menu"
-    id="moreMenu">
+  <div class="menu" id="menu">
 
     <button onclick="copyRoomLink()">
       🔗 Copy room link
     </button>
 
-    <button onclick="toggleInfo()">
+    <button onclick="showRoomInfo()">
       ℹ️ Room information
     </button>
 
@@ -1351,61 +1147,43 @@ body.minimized .room-title{
 
   <div class="bottom">
 
-    <div
-      class="info"
-      onclick="toggleInfo()">
+    <div class="bottom-panel">
 
-      <div class="info-icon">
-        i
+      <div class="controls">
+
+        <button
+          class="control"
+          onclick="toggleSpeaker()"
+          id="speakerButton">
+          🔊
+        </button>
+
+        <button
+          class="control"
+          onclick="toggleChat()">
+          💬
+        </button>
+
+        <button
+          class="control primary"
+          onclick="toggleMic()"
+          id="micButton">
+          🎙
+        </button>
+
+        <button
+          class="control"
+          onclick="openInvite()">
+          👥
+        </button>
+
+        <button
+          class="control leave"
+          onclick="leaveRoom()">
+          ✕
+        </button>
+
       </div>
-
-      <div
-        class="info-text"
-        id="infoText">
-        Room messages disappear when the room ends.
-      </div>
-
-      <div
-        class="info-arrow"
-        id="infoArrow">
-        ›
-      </div>
-
-    </div>
-
-
-    <div class="control-row">
-
-      <input
-        class="message"
-        id="messageInput"
-        placeholder="Say something..."
-        autocomplete="off">
-
-      <button
-        class="control"
-        onclick="sendActivity()">
-        🚀
-      </button>
-
-      <button
-        class="control"
-        onclick="toggleChat()">
-        ≋
-      </button>
-
-      <button
-        class="control mic"
-        id="micButton"
-        onclick="toggleMic()">
-        🎙
-      </button>
-
-      <button
-        class="control"
-        onclick="toggleMenu()">
-        ⋮
-      </button>
 
     </div>
 
@@ -1414,36 +1192,23 @@ body.minimized .room-title{
 
   <!-- TOAST -->
 
-  <div
-    class="toast"
-    id="toast">
-  </div>
+  <div class="toast" id="toast"></div>
 
 
   <!-- LOADING -->
 
-  <div
-    class="loading"
-    id="loading">
+  <div class="loading" id="loading">
 
-    <div class="loader"></div>
+    <div class="spinner"></div>
 
-    <span>
-      Opening your room...
-    </span>
+    Opening room...
 
   </div>
 
 
   <!-- ERROR -->
 
-  <div
-    class="error"
-    id="error">
-
-    <div class="error-icon">
-      ⚠️
-    </div>
+  <div class="error" id="error">
 
     <h2>
       Couldn't open room
@@ -1464,9 +1229,9 @@ body.minimized .room-title{
 
 <script>
 
-/* =================================
+/* =====================================
    SUPABASE
-================================= */
+===================================== */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
@@ -1488,34 +1253,26 @@ supabase.createClient(
 );
 
 
-/* =================================
+/* =====================================
    VARIABLES
-================================= */
+===================================== */
+
+const roomId =
+new URLSearchParams(
+  location.search
+).get("id");
 
 let currentUser = null;
 let currentRoom = null;
-let profile = null;
+let myProfile = null;
 
 let micOn = true;
-let infoOpen = false;
+let speakerOn = true;
 
 
-/* =================================
-   ROOM ID
-================================= */
-
-const urlParams =
-new URLSearchParams(
-  window.location.search
-);
-
-const roomId =
-urlParams.get("id");
-
-
-/* =================================
+/* =====================================
    START
-================================= */
+===================================== */
 
 async function start(){
 
@@ -1540,7 +1297,7 @@ async function start(){
 
     if(!session){
 
-      window.location.href =
+      location.href =
         "index.html";
 
       return;
@@ -1554,7 +1311,7 @@ async function start(){
 
     await loadRoom();
 
-    await loadMyProfile();
+    await loadProfile();
 
     await loadFriends();
 
@@ -1571,7 +1328,7 @@ async function start(){
 
     showError(
       error.message ||
-      "Unable to open this room."
+      "Unable to open room."
     );
 
   }
@@ -1579,9 +1336,9 @@ async function start(){
 }
 
 
-/* =================================
-   LOAD ROOM
-================================= */
+/* =====================================
+   ROOM
+===================================== */
 
 async function loadRoom(){
 
@@ -1590,15 +1347,15 @@ async function loadRoom(){
     error
   } =
   await supabaseClient
-  .from("rooms")
-  .select(
-    "id,owner_id,name,visibility,created_at"
-  )
-  .eq(
-    "id",
-    roomId
-  )
-  .maybeSingle();
+    .from("rooms")
+    .select(
+      "id,owner_id,name,visibility,created_at"
+    )
+    .eq(
+      "id",
+      roomId
+    )
+    .maybeSingle();
 
 
   if(error){
@@ -1620,24 +1377,6 @@ async function loadRoom(){
   }
 
 
-  /*
-    Only private rooms.
-  */
-
-  if(data.visibility !== "private"){
-
-    throw new Error(
-      "This is not a private Connect room."
-    );
-
-  }
-
-
-  /*
-    For now the owner is the person
-    who created the room.
-  */
-
   currentRoom =
     data;
 
@@ -1645,31 +1384,32 @@ async function loadRoom(){
   document
     .getElementById("roomName")
     .textContent =
-      data.name || "Talk room";
+      data.name ||
+      "Connect Room";
 
 }
 
 
-/* =================================
-   LOAD MY PROFILE
-================================= */
+/* =====================================
+   PROFILE
+===================================== */
 
-async function loadMyProfile(){
+async function loadProfile(){
 
   const {
     data,
     error
   } =
   await supabaseClient
-  .from("profiles")
-  .select(
-    "id,username,avatar_url,bio"
-  )
-  .eq(
-    "id",
-    currentUser.id
-  )
-  .maybeSingle();
+    .from("profiles")
+    .select(
+      "id,username,avatar_url,bio"
+    )
+    .eq(
+      "id",
+      currentUser.id
+    )
+    .maybeSingle();
 
 
   if(error){
@@ -1679,22 +1419,15 @@ async function loadMyProfile(){
       error
     );
 
-    /*
-      Don't break room if profile
-      query has an issue.
-    */
-
-    profile = {
-      id:currentUser.id,
+    myProfile = {
       username:"You",
       avatar_url:""
     };
 
   }else{
 
-    profile =
+    myProfile =
       data || {
-        id:currentUser.id,
         username:"You",
         avatar_url:""
       };
@@ -1705,55 +1438,64 @@ async function loadMyProfile(){
   document
     .getElementById("myName")
     .textContent =
-      profile.username ||
+      myProfile.username ||
       "You";
 
 
-  const avatar =
-    profile.avatar_url;
-
-
-  const image =
+  const img =
     document.getElementById(
       "myAvatar"
     );
 
 
-  /*
-    IMPORTANT:
-    No random avatar.
+  if(myProfile.avatar_url){
 
-    If user has avatar_url,
-    show their actual profile picture.
-  */
-
-  if(avatar){
-
-    image.src =
-      avatar;
+    img.src =
+      myProfile.avatar_url;
 
   }else{
 
-    image.src =
-      createInitialAvatar(
-        profile.username ||
+    img.src =
+      makeAvatar(
+        myProfile.username ||
         "U"
       );
 
   }
 
+
+  img.onerror =
+    function(){
+
+      if(
+        !this.dataset.fallback
+      ){
+
+        this.dataset.fallback =
+          "1";
+
+        this.src =
+          makeAvatar(
+            myProfile.username ||
+            "U"
+          );
+
+      }
+
+    };
+
 }
 
 
-/* =================================
+/* =====================================
    FRIENDS
-================================= */
+===================================== */
 
 async function loadFriends(){
 
   const list =
     document.getElementById(
-      "friendList"
+      "friendsList"
     );
 
 
@@ -1762,26 +1504,23 @@ async function loadFriends(){
     error
   } =
   await supabaseClient
-  .from("friends")
-  .select(
-    "id,user_id,friend_id,status"
-  )
-  .eq(
-    "status",
-    "accepted"
-  )
-  .or(
-    "user_id.eq."+currentUser.id+
-    ",friend_id.eq."+currentUser.id
-  );
+    .from("friends")
+    .select(
+      "id,user_id,friend_id,status"
+    )
+    .eq(
+      "status",
+      "accepted"
+    )
+    .or(
+      "user_id.eq."+currentUser.id+
+      ",friend_id.eq."+currentUser.id
+    );
 
 
   if(error){
 
-    console.error(
-      "Friends error:",
-      error
-    );
+    console.error(error);
 
     list.innerHTML = `
       <div class="no-friends">
@@ -1821,21 +1560,17 @@ async function loadFriends(){
     error:profileError
   } =
   await supabaseClient
-  .from("profiles")
-  .select(
-    "id,username,avatar_url"
-  )
-  .in(
-    "id",
-    ids
-  );
+    .from("profiles")
+    .select(
+      "id,username,avatar_url"
+    )
+    .in(
+      "id",
+      ids
+    );
 
 
   if(profileError){
-
-    console.error(
-      profileError
-    );
 
     list.innerHTML = `
       <div class="no-friends">
@@ -1859,42 +1594,40 @@ async function loadFriends(){
       );
 
     row.className =
-      "friend-row";
+      "friend";
 
 
     const avatar =
-      friend.avatar_url
-      ? friend.avatar_url
-      : createInitialAvatar(
-          friend.username ||
-          "U"
-        );
+      friend.avatar_url ||
+      makeAvatar(
+        friend.username ||
+        "U"
+      );
 
 
     row.innerHTML = `
 
       <img
-        class="friend-avatar"
-        src="${escapeHtml(avatar)}"
+        src="${safe(friend.avatar_url || avatar)}"
         alt="">
 
-      <div class="friend-info">
+      <div class="friend-data">
 
         <div class="friend-name">
-          ${escapeHtml(
+          ${safe(
             friend.username ||
             "User"
           )}
         </div>
 
-        <div class="friend-id">
+        <div class="friend-label">
           Connect friend
         </div>
 
       </div>
 
       <button
-        class="invite-one"
+        class="send-invite"
         onclick="inviteFriend('${friend.id}')">
         Invite
       </button>
@@ -1909,17 +1642,156 @@ async function loadFriends(){
 }
 
 
-/* =================================
-   INVITE
-================================= */
+/* =====================================
+   MIC
+===================================== */
 
-function openInvite(){
+function toggleMic(){
 
+  micOn =
+    !micOn;
+
+
+  const button =
+    document.getElementById(
+      "micButton"
+    );
+
+  const status =
+    document.getElementById(
+      "myMic"
+    );
+
+
+  if(micOn){
+
+    button.textContent =
+      "🎙";
+
+    button.classList.remove(
+      "muted"
+    );
+
+    status.textContent =
+      "🎙";
+
+    status.classList.add(
+      "active"
+    );
+
+    status.classList.remove(
+      "muted"
+    );
+
+    showToast(
+      "Microphone on"
+    );
+
+  }else{
+
+    button.textContent =
+      "🔇";
+
+    button.classList.add(
+      "muted"
+    );
+
+    status.textContent =
+      "🔇";
+
+    status.classList.remove(
+      "active"
+    );
+
+    status.classList.add(
+      "muted"
+    );
+
+    showToast(
+      "Microphone muted"
+    );
+
+  }
+
+}
+
+
+/* =====================================
+   SPEAKER
+===================================== */
+
+function toggleSpeaker(){
+
+  speakerOn =
+    !speakerOn;
+
+
+  const button =
+    document.getElementById(
+      "speakerButton"
+    );
+
+
+  if(speakerOn){
+
+    button.textContent =
+      "🔊";
+
+    showToast(
+      "Speaker on"
+    );
+
+  }else{
+
+    button.textContent =
+      "🔇";
+
+    showToast(
+      "Speaker off"
+    );
+
+  }
+
+}
+
+
+/* =====================================
+   CHAT
+===================================== */
+
+function toggleChat(){
+
+  closeInvite();
   closeMenu();
 
   document
-    .getElementById("inviteSheet")
-    .classList.add("show");
+    .getElementById("chatPanel")
+    .classList.toggle("open");
+
+}
+
+
+function closeChat(){
+
+  document
+    .getElementById("chatPanel")
+    .classList.remove("open");
+
+}
+
+
+/* =====================================
+   INVITE
+===================================== */
+
+function openInvite(){
+
+  closeChat();
+  closeMenu();
+
+  document
+    .getElementById("invitePanel")
+    .classList.add("open");
 
 }
 
@@ -1927,24 +1799,16 @@ function openInvite(){
 function closeInvite(){
 
   document
-    .getElementById("inviteSheet")
-    .classList.remove("show");
+    .getElementById("invitePanel")
+    .classList.remove("open");
 
 }
 
 
-function inviteFriend(friendId){
-
-  /*
-    Invitation storage will be added
-    when the invite table is created.
-
-    For now we share the actual private
-    room link.
-  */
+function inviteFriend(id){
 
   const link =
-    window.location.href;
+    location.href;
 
 
   if(
@@ -1952,9 +1816,9 @@ function inviteFriend(friendId){
   ){
 
     navigator.share({
-
       title:
-        currentRoom.name,
+        currentRoom?.name ||
+        "Connect Room",
 
       text:
         "Join my private Connect room",
@@ -1972,236 +1836,24 @@ function inviteFriend(friendId){
 
 
   showToast(
-    "Room invite ready 🔗"
+    "Invite ready 🔗"
   );
 
 }
 
 
-/* =================================
-   MIC
-================================= */
-
-function toggleMic(){
-
-  micOn =
-    !micOn;
-
-
-  const button =
-    document.getElementById(
-      "micButton"
-    );
-
-
-  if(micOn){
-
-    button.classList.remove(
-      "off"
-    );
-
-    button.textContent =
-      "🎙";
-
-    showToast(
-      "Microphone on"
-    );
-
-  }else{
-
-    button.classList.add(
-      "off"
-    );
-
-    button.textContent =
-      "🔇";
-
-    showToast(
-      "Microphone muted"
-    );
-
-  }
-
-}
-
-
-/* =================================
-   CHAT
-================================= */
-
-function toggleChat(){
-
-  closeMenu();
-
-  document
-    .getElementById("chatSheet")
-    .classList.toggle("show");
-
-}
-
-
-function closeChat(){
-
-  document
-    .getElementById("chatSheet")
-    .classList.remove("show");
-
-}
-
-
-function sendMessage(){
-
-  const input =
-    document.getElementById(
-      "messageInput"
-    );
-
-  const text =
-    input.value.trim();
-
-
-  if(!text){
-
-    return;
-
-  }
-
-
-  const messages =
-    document.getElementById(
-      "messages"
-    );
-
-
-  const empty =
-    messages.querySelector(
-      ".empty-message"
-    );
-
-
-  if(empty){
-
-    empty.remove();
-
-  }
-
-
-  const msg =
-    document.createElement(
-      "div"
-    );
-
-  msg.className =
-    "msg me";
-
-
-  msg.innerHTML = `
-
-    <div class="msg-user">
-      You
-    </div>
-
-    ${escapeHtml(text)}
-
-  `;
-
-
-  messages.appendChild(msg);
-
-
-  input.value = "";
-
-
-  messages.scrollTop =
-    messages.scrollHeight;
-
-}
-
-
-document
-  .getElementById(
-    "messageInput"
-  )
-  .addEventListener(
-    "keydown",
-    function(e){
-
-      if(e.key === "Enter"){
-
-        sendMessage();
-
-      }
-
-    }
-  );
-
-
-/* =================================
-   ACTIVITY
-================================= */
-
-function sendActivity(){
-
-  showToast(
-    "🚀 Activity sent!"
-  );
-
-}
-
-
-/* =================================
-   INFO
-================================= */
-
-function toggleInfo(){
-
-  infoOpen =
-    !infoOpen;
-
-
-  const text =
-    document.getElementById(
-      "infoText"
-    );
-
-  const arrow =
-    document.getElementById(
-      "infoArrow"
-    );
-
-
-  if(infoOpen){
-
-    text.textContent =
-      "Messages in this room are temporary.";
-
-    arrow.textContent =
-      "⌄";
-
-  }else{
-
-    text.textContent =
-      "Room messages disappear when the room ends.";
-
-    arrow.textContent =
-      "›";
-
-  }
-
-}
-
-
-/* =================================
+/* =====================================
    MENU
-================================= */
+===================================== */
 
 function toggleMenu(){
 
+  closeChat();
   closeInvite();
 
   document
-    .getElementById("moreMenu")
-    .classList.toggle("show");
+    .getElementById("menu")
+    .classList.toggle("open");
 
 }
 
@@ -2209,35 +1861,31 @@ function toggleMenu(){
 function closeMenu(){
 
   document
-    .getElementById("moreMenu")
-    .classList.remove("show");
+    .getElementById("menu")
+    .classList.remove("open");
 
 }
 
 
-/* =================================
-   COPY LINK
-================================= */
+/* =====================================
+   COPY
+===================================== */
 
 async function copyRoomLink(){
 
   closeMenu();
 
-  const link =
-    window.location.href;
-
-
   try{
 
     await navigator.clipboard.writeText(
-      link
+      location.href
     );
 
     showToast(
-      "Room link copied 🔗"
+      "Room link copied"
     );
 
-  }catch(error){
+  }catch{
 
     showToast(
       "Couldn't copy link"
@@ -2248,14 +1896,33 @@ async function copyRoomLink(){
 }
 
 
-/* =================================
+/* =====================================
+   ROOM INFO
+===================================== */
+
+function showRoomInfo(){
+
+  closeMenu();
+
+  const name =
+    currentRoom?.name ||
+    "Connect Room";
+
+  showToast(
+    name+
+    " • Private room"
+  );
+
+}
+
+
+/* =====================================
    LEAVE
-================================= */
+===================================== */
 
 function leaveRoom(){
 
   closeMenu();
-
 
   if(
     confirm(
@@ -2272,17 +1939,17 @@ function leaveRoom(){
 
 function goHome(){
 
-  window.location.href =
+  location.href =
     "home.html";
 
 }
 
 
-/* =================================
+/* =====================================
    TOAST
-================================= */
+===================================== */
 
-function showToast(message){
+function showToast(text){
 
   const toast =
     document.getElementById(
@@ -2291,7 +1958,7 @@ function showToast(message){
 
 
   toast.textContent =
-    message;
+    text;
 
 
   toast.classList.add(
@@ -2305,20 +1972,21 @@ function showToast(message){
 
 
   window.toastTimer =
-    setTimeout(()=>{
-
-      toast.classList.remove(
-        "show"
-      );
-
-    },1800);
+    setTimeout(
+      ()=>{
+        toast.classList.remove(
+          "show"
+        );
+      },
+      1700
+    );
 
 }
 
 
-/* =================================
+/* =====================================
    ERROR
-================================= */
+===================================== */
 
 function showError(message){
 
@@ -2343,11 +2011,11 @@ function showError(message){
 }
 
 
-/* =================================
-   INITIAL AVATAR
-================================= */
+/* =====================================
+   DEFAULT AVATAR
+===================================== */
 
-function createInitialAvatar(name){
+function makeAvatar(name){
 
   const letter =
     String(name || "U")
@@ -2357,128 +2025,78 @@ function createInitialAvatar(name){
 
 
   const svg = `
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="200"
+    height="200">
 
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
+    <defs>
+      <linearGradient
+        id="g"
+        x1="0"
+        y1="0"
+        x2="1"
+        y2="1">
+
+        <stop
+          offset="0"
+          stop-color="#7656e8"/>
+
+        <stop
+          offset="1"
+          stop-color="#4e8cff"/>
+
+      </linearGradient>
+    </defs>
+
+    <rect
       width="200"
-      height="200">
+      height="200"
+      rx="100"
+      fill="url(#g)"/>
 
-      <defs>
+    <text
+      x="100"
+      y="127"
+      text-anchor="middle"
+      font-family="Arial"
+      font-size="85"
+      font-weight="700"
+      fill="white">
+      ${letter}
+    </text>
 
-        <linearGradient
-          id="g"
-          x1="0"
-          y1="0"
-          x2="1"
-          y2="1">
-
-          <stop
-            offset="0%"
-            stop-color="#7c5cff"/>
-
-          <stop
-            offset="100%"
-            stop-color="#5b8cff"/>
-
-        </linearGradient>
-
-      </defs>
-
-      <rect
-        width="200"
-        height="200"
-        rx="55"
-        fill="url(#g)"/>
-
-      <text
-        x="100"
-        y="125"
-        text-anchor="middle"
-        font-family="Arial"
-        font-size="85"
-        font-weight="700"
-        fill="white">
-        ${letter}
-      </text>
-
-    </svg>
-
+  </svg>
   `;
 
 
-  return "data:image/svg+xml;charset=UTF-8,"+
-    encodeURIComponent(svg);
+  return (
+    "data:image/svg+xml;charset=UTF-8,"+
+    encodeURIComponent(svg)
+  );
 
 }
 
 
-/* =================================
-   ESCAPE
-================================= */
+/* =====================================
+   SAFE HTML
+===================================== */
 
-function escapeHtml(text){
+function safe(value){
 
-  return String(text)
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
-/* =================================
-   OUTSIDE CLICK
-================================= */
-
-document.addEventListener(
-  "click",
-  function(e){
-
-    const menu =
-      document.getElementById(
-        "moreMenu"
-      );
-
-    const menuButton =
-      document.querySelector(
-        ".control:last-child"
-      );
-
-
-    if(
-      menu.classList.contains("show") &&
-      !menu.contains(e.target) &&
-      !menuButton.contains(e.target)
-    ){
-
-      closeMenu();
-
-    }
-
-  }
-);
-
-
-/* =================================
+/* =====================================
    START
-================================= */
+===================================== */
 
 start();
 
