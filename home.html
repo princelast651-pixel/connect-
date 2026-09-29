@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101014">
+<title>Connect</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+  --bg:#101014;
+  --card:#1b1b21;
+  --card2:#222229;
+  --border:#2d2d35;
+  --text:#f7f7fa;
+  --muted:#9696a3;
+  --blue:#5b8cff;
+  --green:#45d483;
+}
+
+body{
+  background:
+    radial-gradient(circle at 50% -10%,rgba(91,140,255,.14),transparent 38%),
+    var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  min-height:100vh;
+}
+
+button,input{
+  font:inherit;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+  color:inherit;
+}
+
+#loading{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#101014;
+}
+
+.loader-logo{
+  width:62px;
+  height:62px;
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(.92);opacity:.6}
+  50%{transform:scale(1);opacity:1}
+}
+
+.app{
+  max-width:650px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:92px;
+}
+
+/* HEADER */
+
+.header{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(16,16,20,.86);
+  backdrop-filter:blur(18px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+  font-size:21px;
+}
+
+.brand-logo{
+  width:35px;
+  height:35px;
+}
+
+.header-actions{
+  display:flex;
+  gap:7px;
+}
+
+.icon-btn{
+  width:39px;
+  height:39px;
+  border-radius:13px;
+  background:#1b1b21;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  transition:.2s;
+}
+
+.icon-btn:active{
+  transform:scale(.9);
+}
+
+/* CONTENT */
+
+.content{
+  padding:8px 16px 20px;
+}
+
+.section{
+  margin-top:25px;
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:13px;
+}
+
+.section-title{
+  font-size:18px;
+  font-weight:750;
+}
+
+.section-action{
+  background:transparent;
+  color:#7ea0ff;
+  font-size:14px;
+  font-weight:650;
+}
+
+/* STORIES */
+
+.stories{
+  display:flex;
+  gap:15px;
+  overflow-x:auto;
+  padding:4px 1px 8px;
+  scrollbar-width:none;
+}
+
+.stories::-webkit-scrollbar{
+  display:none;
+}
+
+.story{
+  min-width:67px;
+  text-align:center;
+}
+
+.avatar-ring{
+  width:58px;
+  height:58px;
+  margin:auto;
+  border-radius:50%;
+  padding:2px;
+  background:linear-gradient(135deg,#ff4fa3,#ffd15c,#5c91ff);
+}
+
+.avatar-ring.online{
+  background:linear-gradient(135deg,#35e88a,#5c91ff);
+}
+
+.avatar-ring.blue{
+  background:linear-gradient(135deg,#4e9fff,#766bff);
+}
+
+.avatar{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  background:#303039;
+  border:3px solid #17171c;
+}
+
+.story-name{
+  margin-top:6px;
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.story-status{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:2px;
+}
+
+/* NOTICE */
+
+.notice{
+  margin-top:22px;
+  background:linear-gradient(135deg,#20212a,#191a20);
+  border:1px solid #30313b;
+  border-radius:18px;
+  padding:15px;
+  position:relative;
+}
+
+.notice-top{
+  display:flex;
+  gap:11px;
+}
+
+.notice-icon{
+  width:38px;
+  height:38px;
+  flex-shrink:0;
+  border-radius:12px;
+  background:#2a2c39;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.notice-title{
+  font-size:14px;
+  font-weight:700;
+}
+
+.notice-text{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+  margin-top:4px;
+  padding-right:15px;
+}
+
+.notice-close{
+  position:absolute;
+  right:12px;
+  top:10px;
+  background:none;
+  color:#777784;
+  font-size:18px;
+}
+
+.learn{
+  display:inline-block;
+  margin-top:12px;
+  color:#789aff;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* LOBBY */
+
+.room{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:19px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  transition:.2s;
+}
+
+.room:active{
+  transform:scale(.985);
+}
+
+.room-avatar{
+  width:49px;
+  height:49px;
+  border-radius:15px;
+  object-fit:cover;
+  background:#303039;
+}
+
+.room-info{
+  flex:1;
+  min-width:0;
+}
+
+.room-name{
+  font-weight:700;
+  font-size:14px;
+}
+
+.room-status{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px;
+}
+
+.green-dot{
+  width:7px;
+  height:7px;
+  background:var(--green);
+  border-radius:50%;
+  box-shadow:0 0 8px rgba(69,212,131,.7);
+}
+
+.open-btn{
+  background:#303b58;
+  color:#8eacff;
+  padding:9px 14px;
+  border-radius:11px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.empty-room{
+  margin-top:10px;
+  border:1px dashed #34343d;
+  border-radius:18px;
+  padding:20px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+/* PRIVATE */
+
+.group-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+}
+
+.group-icon{
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  background:linear-gradient(135deg,#424250,#292934);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+}
+
+.group-info{
+  flex:1;
+}
+
+.group-name{
+  font-size:14px;
+  font-weight:700;
+}
+
+.group-sub{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(650px,100%);
+  padding:9px 12px calc(9px + env(safe-area-inset-bottom));
+  background:rgba(18,18,23,.94);
+  backdrop-filter:blur(22px);
+  border-top:1px solid #292930;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  z-index:100;
+}
+
+.nav-btn{
+  background:none;
+  color:#70707c;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  font-size:10px;
+  position:relative;
+}
+
+.nav-icon{
+  font-size:20px;
+  line-height:22px;
+}
+
+.nav-btn.active{
+  color:#fff;
+}
+
+.nav-btn.active .nav-icon{
+  filter:drop-shadow(0 0 7px rgba(112,150,255,.55));
+}
+
+.badge{
+  position:absolute;
+  top:-2px;
+  margin-left:25px;
+  min-width:15px;
+  height:15px;
+  padding:0 4px;
+  border-radius:20px;
+  background:#ff527c;
+  color:white;
+  font-size:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* SCREENS */
+
+.screen{
+  display:none;
+  animation:fadeUp .25s ease;
+}
+
+.screen.active{
+  display:block;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* SUB HEADER */
+
+.sub-header{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:18px 0 5px;
+}
+
+.back-btn{
+  width:39px;
+  height:39px;
+  border-radius:12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  font-size:21px;
+}
+
+.page-title{
+  font-size:21px;
+  font-weight:800;
+}
+
+/* ADD FRIEND */
+
+.search{
+  margin-top:18px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:0 14px;
+}
+
+.search span{
+  color:#777783;
+}
+
+.search input{
+  flex:1;
+  background:none;
+  border:0;
+  outline:none;
+  color:white;
+  font-size:14px;
+}
+
+.search input::placeholder{
+  color:#6d6d78;
+}
+
+.share-row{
+  display:flex;
+  gap:13px;
+  margin-top:18px;
+}
+
+.share{
+  flex:1;
+  min-width:0;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:11px 5px;
+  text-align:center;
+  font-size:11px;
+}
+
+.share-icon{
+  font-size:21px;
+  margin-bottom:5px;
+}
+
+.my-id{
+  margin-top:20px;
+  background:linear-gradient(135deg,#202431,#1a1b22);
+  border:1px solid #303544;
+  border-radius:19px;
+  padding:17px;
+}
+
+.small-label{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.id-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:7px;
+}
+
+.user-id{
+  font-size:18px;
+  font-weight:800;
+  flex:1;
+}
+
+.copy-btn{
+  background:#2c3a5b;
+  color:#8cabff;
+  border-radius:10px;
+  padding:8px 11px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.link-banner{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid #30313a;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.link-text{
+  font-size:12px;
+  color:#dddde5;
+}
+
+.link-btn{
+  background:#fff;
+  color:#111;
+  border-radius:9px;
+  padding:8px 12px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.recommendations{
+  margin-top:25px;
+}
+
+.person{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:13px 0;
+  border-bottom:1px solid #24242b;
+}
+
+.person-avatar{
+  width:47px;
+  height:47px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#303039;
+}
+
+.person-info{
+  flex:1;
+  min-width:0;
+}
+
+.person-name{
+  font-size:13px;
+  font-weight:700;
+}
+
+.person-id{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.person-context{
+  font-size:10px;
+  color:#7e98d9;
+  margin-top:3px;
+}
+
+.add-btn{
+  background:#527df4;
+  padding:8px 11px;
+  border-radius:10px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.dismiss{
+  background:none;
+  color:#777783;
+  font-size:18px;
+  padding:5px;
+}
+
+/* CHAT */
+
+.chat-list{
+  margin-top:12px;
+}
+
+.chat-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid #24242b;
+}
+
+.chat-avatar{
+  width:51px;
+  height:51px;
+  border-radius:16px;
+  object-fit:cover;
+  background:#303039;
+}
+
+.chat-info{
+  flex:1;
+  min-width:0;
+}
+
+.chat-name{
+  font-size:14px;
+  font-weight:700;
+}
+
+.chat-preview{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chat-time{
+  color:#686873;
+  font-size:9px;
+  align-self:flex-start;
+  margin-top:5px;
+}
+
+.unread{
+  width:8px;
+  height:8px;
+  background:#5c89ff;
+  border-radius:50%;
+  margin-left:4px;
+}
+
+/* PROFILE */
+
+.profile-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.profile-top{
+  text-align:center;
+  margin-top:25px;
+}
+
+.profile-avatar-ring{
+  width:112px;
+  height:112px;
+  padding:3px;
+  margin:auto;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff4fa3,#ffc857,#667fff);
+}
+
+.profile-avatar{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  background:#303039;
+  border:4px solid #17171c;
+}
+
+.profile-name{
+  font-size:21px;
+  font-weight:800;
+  margin-top:13px;
+}
+
+.profile-id{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:#92929e;
+  font-size:11px;
+  margin-top:6px;
+}
+
+.mini-copy{
+  background:none;
+  color:#7e9eff;
+}
+
+.bio{
+  color:#777783;
+  font-size:12px;
+  margin-top:9px;
+}
+
+.status-card{
+  margin-top:20px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  color:#777783;
+  font-size:12px;
+}
+
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:28px;
+  margin-top:20px;
+}
+
+.profile-action{
+  text-align:center;
+  color:#9a9aa5;
+  font-size:10px;
+}
+
+.action-circle{
+  width:47px;
+  height:47px;
+  border-radius:50%;
+  background:var(--card2);
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  margin:auto auto 6px;
+}
+
+.profile-section{
+  margin-top:27px;
+}
+
+.frame-row{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:3px;
+}
+
+.frame-row::-webkit-scrollbar{
+  display:none;
+}
+
+.frame{
+  width:62px;
+  height:62px;
+  flex-shrink:0;
+  border-radius:50%;
+  border:1px dashed #4a4a54;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#6d6d78;
+  font-size:21px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:15px;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.stat-value{
+  font-size:23px;
+  font-weight:800;
+  margin-top:5px;
+}
+
+.game{
+  margin-top:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:12px;
+  border-radius:15px;
+}
+
+.game-icon{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  background:#2b2c35;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.game-name{
+  font-size:12px;
+  font-weight:700;
+}
+
+.game-date{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+.logout{
+  width:100%;
+  margin-top:25px;
+  padding:13px;
+  border-radius:14px;
+  background:#241b20;
+  color:#ff718e;
+  font-weight:700;
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:90px;
+  transform:translate(-50%,20px);
+  background:#292931;
+  border:1px solid #3b3b45;
+  padding:10px 15px;
+  border-radius:12px;
+  font-size:12px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+</style>
+</head>
+
+<body>
+
+<div id="loading">
+  <svg class="loader-logo" viewBox="0 0 100 100">
+    <defs>
+      <linearGradient id="lg" x1="0" x2="1">
+        <stop offset="0" stop-color="#6d8cff"/>
+        <stop offset="1" stop-color="#a16dff"/>
+      </linearGradient>
+    </defs>
+    <path d="M50 10C27 10 10 27 10 50s17 40 40 40c23 0 40-17 40-40S73 10 50 10Zm0 13c15 0 27 12 27 27S65 77 50 77 23 65 23 50s12-27 27-27Z" fill="url(#lg)"/>
+    <circle cx="50" cy="50" r="10" fill="#101014"/>
+  </svg>
+</div>
+
+<div class="app">
+
+<!-- HOME -->
+<main id="homeScreen" class="screen active">
+
+<header class="header">
+
+<div class="brand">
+<svg class="brand-logo" viewBox="0 0 100 100">
+<defs>
+<linearGradient id="logoGrad" x1="0" x2="1">
+<stop offset="0" stop-color="#6d8cff"/>
+<stop offset="1" stop-color="#a16dff"/>
+</linearGradient>
+</defs>
+<path d="M50 8C26.8 8 8 26.8 8 50s18.8 42 42 42 42-18.8 42-42S73.2 8 50 8Zm0 14c15.5 0 28 12.5 28 28S65.5 78 50 78 22 65.5 22 50s12.5-28 28-28Z" fill="url(#logoGrad)"/>
+<circle cx="50" cy="50" r="11" fill="#101014"/>
+</svg>
+Connect
+</div>
+
+<div class="header-actions">
+<button class="icon-btn">🚀</button>
+<button class="icon-btn">☑️</button>
+<button class="icon-btn">🛍️</button>
+<button class="icon-btn" onclick="openAddFriend()">＋</button>
+</div>
+
+</header>
+
+<div class="content">
+
+<div class="stories">
+
+<div class="story">
+<div class="avatar-ring online">
+<img id="storyAvatar" class="avatar">
+</div>
+<div id="storyName" class="story-name">You</div>
+<div class="story-status">Online</div>
+</div>
+
+<div class="story">
+<div class="avatar-ring">
+<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
+</div>
+<div class="story-name">Rohit</div>
+<div class="story-status">Online</div>
+</div>
+
+<div class="story">
+<div class="avatar-ring blue">
+<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🎮</div>
+</div>
+<div class="story-name">RONY</div>
+<div class="story-status">Online</div>
+</div>
+
+<div class="story">
+<div class="avatar-ring">
+<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🔥</div>
+</div>
+<div class="story-name">Aditya</div>
+<div class="story-status">2h ago</div>
+</div>
+
+<div class="story">
+<div class="avatar-ring blue">
+<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">⚡</div>
+</div>
+<div class="story-name">Vivek</div>
+<div class="story-status">5h ago</div>
+</div>
+
+</div>
+
+<div id="notice" class="notice">
+
+<button class="notice-close" onclick="closeNotice()">×</button>
+
+<div class="notice-top">
+
+<div class="notice-icon">ℹ️</div>
+
+<div>
+<div class="notice-title">Welcome to Connect</div>
+
+<div class="notice-text">
+Your social gaming space is ready. Find friends,
+join lobbies and connect with your community.
+</div>
+
+<div class="learn">Learn more →</div>
+</div>
+
+</div>
+</div>
+
+
+<section class="section">
+
+<div class="section-head">
+<div class="section-title">Lobby</div>
+<button class="section-action">See all</button>
+</div>
+
+<div class="room">
+
+<img id="roomAvatar" class="room-avatar">
+
+<div class="room-info">
+<div id="roomName" class="room-name">Your Lobby</div>
+
+<div class="room-status">
+<span class="green-dot"></span>
+Waiting
+</div>
+</div>
+
+<button class="open-btn" onclick="toast('Lobby opening soon')">
+Open
+</button>
+
+</div>
+
+<div class="empty-room">
+Your online friends will be displayed here<br>
+Invite your friends 👋
+</div>
+
+</section>
+
+
+<section class="section">
+
+<div class="section-head">
+<div class="section-title">Private</div>
+
+<button class="section-action"
+onclick="toast('Group creation coming soon')">
+＋ Create
+</button>
+
+</div>
+
+<div class="group-card">
+
+<div class="group-icon">👥</div>
+
+<div class="group-info">
+<div class="group-name">My first group</div>
+<div class="group-sub">Private group · 1 member</div>
+</div>
+
+<span style="color:#777783;">›</span>
+
+</div>
+
+</section>
+
+</div>
+</main>
+
+
+<!-- ADD FRIEND -->
+
+<main id="addFriendScreen" class="screen">
+
+<div class="content">
+
+<div class="sub-header">
+
+<button class="back-btn"
+onclick="showScreen('homeScreen')">
+‹
+</button>
+
+<div class="page-title">
+Add friend
+</div>
+
+</div>
+
+
+<div class="search">
+
+<span>⌕</span>
+
+<input
+id="friendSearch"
+type="text"
+placeholder="Search by ID">
+
+</div>
+
+
+<div class="share-row">
+
+<button class="share"
+onclick="toast('Instagram sharing')">
+<div class="share-icon">◎</div>
+Instagram
+</button>
+
+<button class="share"
+onclick="toast('Messenger sharing')">
+<div class="share-icon">💬</div>
+Messenger
+</button>
+
+<button class="share"
+onclick="toast('QR scanner coming soon')">
+<div class="share-icon">▦</div>
+QR Code
+</button>
+
+<button class="share"
+onclick="shareID()">
+<div class="share-icon">↗</div>
+Others
+</button>
+
+</div>
+
+
+<div class="my-id">
+
+<div class="small-label">
+My ID
+</div>
+
+<div class="id-row">
+
+<div id="myId" class="user-id">
+Loading...
+</div>
+
+<button class="copy-btn"
+onclick="copyID()">
+Copy
+</button>
+
+</div>
+
+
+<div class="link-banner">
+
+<div class="link-text">
+🔗 Link X to Connect
+</div>
+
+<button class="link-btn"
+onclick="toast('Linking coming soon')">
+Link
+</button>
+
+</div>
+
+</div>
+
+
+<div class="recommendations">
+
+<div class="section-title">
+Friend recommendations
+</div>
+
+
+<div class="person">
+
+<div class="person-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+👤
+</div>
+
+<div class="person-info">
+
+<div class="person-name">
+Rohit Raj
+</div>
+
+<div class="person-id">
+ID: rohit_raj
+</div>
+
+<div class="person-context">
+joins Scrims
+</div>
+
+</div>
+
+<button class="add-btn"
+onclick="toast('Friend request sent')">
+Add
+</button>
+
+<button class="dismiss">
+×
+</button>
+
+</div>
+
+
+<div class="person">
+
+<div class="person-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+🎮
+</div>
+
+<div class="person-info">
+
+<div class="person-name">
+RONY
+</div>
+
+<div class="person-id">
+ID: rony_ff
+</div>
+
+<div class="person-context">
+had call before
+</div>
+
+</div>
+
+<button class="add-btn"
+onclick="toast('Friend request sent')">
+Add
+</button>
+
+<button class="dismiss">
+×
+</button>
+
+</div>
+
+
+<div class="person">
+
+<div class="person-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+⚡
+</div>
+
+<div class="person-info">
+
+<div class="person-name">
+Aditya
+</div>
+
+<div class="person-id">
+ID: aditya_07
+</div>
+
+<div class="person-context">
+joins Scrims
+</div>
+
+</div>
+
+<button class="add-btn"
+onclick="toast('Friend request sent')">
+Add
+</button>
+
+<button class="dismiss">
+×
+</button>
+
+</div>
+
+</div>
+
+</div>
+</main>
+
+
+<!-- ENTERTAINMENT -->
+
+<main id="entertainmentScreen" class="screen">
+
+<div class="content">
+
+<div class="sub-header">
+<div class="page-title">
+Entertainment
+</div>
+</div>
+
+
+<div class="notice">
+
+<div class="notice-top">
+
+<div class="notice-icon">
+🚀
+</div>
+
+<div>
+
+<div class="notice-title">
+Discover something new
+</div>
+
+<div class="notice-text">
+Games, activities and community experiences
+will appear here.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<section class="section">
+
+<div class="section-head">
+<div class="section-title">
+Games
+</div>
+</div>
+
+
+<div class="group-card"
+onclick="toast('Game lobby coming soon')">
+
+<div class="group-icon">
+🎮
+</div>
+
+<div class="group-info">
+
+<div class="group-name">
+Gaming Lobby
+</div>
+
+<div class="group-sub">
+Find people to play with
+</div>
+
+</div>
+
+<span>›</span>
+
+</div>
+
+
+<div class="group-card"
+style="margin-top:10px;"
+onclick="toast('Scrims coming soon')">
+
+<div class="group-icon">
+🏆
+</div>
+
+<div class="group-info">
+
+<div class="group-name">
+Scrims
+</div>
+
+<div class="group-sub">
+Join a competitive room
+</div>
+
+</div>
+
+<span>›</span>
+
+</div>
+
+</section>
+
+</div>
+</main>
+
+
+<!-- CHAT -->
+
+<main id="chatScreen" class="screen">
+
+<div class="content">
+
+<div class="sub-header">
+<div class="page-title">
+Chat
+</div>
+</div>
+
+
+<div class="chat-list">
+
+<div class="chat-item">
+
+<div class="chat-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+👥
+</div>
+
+<div class="chat-info">
+
+<div class="chat-name">
+Fifa <span style="color:#777783;font-size:10px;">(8)</span>
+</div>
+
+<div class="chat-preview">
+RONY joined the group
+</div>
+
+</div>
+
+<div class="chat-time">
+9/28 21:15
+</div>
+
+</div>
+
+
+<div class="chat-item">
+
+<div class="chat-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+🎮
+</div>
+
+<div class="chat-info">
+
+<div class="chat-name">
+RONY
+</div>
+
+<div class="chat-preview">
+Send a first message!
+</div>
+
+</div>
+
+<div class="unread"></div>
+
+<div class="chat-time">
+9/28
+</div>
+
+</div>
+
+
+<div class="chat-item">
+
+<div class="chat-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+👤
+</div>
+
+<div class="chat-info">
+
+<div class="chat-name">
+Rohit Raj
+</div>
+
+<div class="chat-preview">
+Let's play later
+</div>
+
+</div>
+
+<div class="chat-time">
+9/27
+</div>
+
+</div>
+
+
+<div class="chat-item">
+
+<div class="chat-avatar"
+style="display:flex;align-items:center;justify-content:center;font-size:22px;">
+⚡
+</div>
+
+<div class="chat-info">
+
+<div class="chat-name">
+Aditya
+</div>
+
+<div class="chat-preview">
+Voice room is open
+</div>
+
+</div>
+
+<div class="chat-time">
+9/26
+</div>
+
+</div>
+
+</div>
+
+</div>
+</main>
+
+
+<!-- PROFILE -->
+
+<main id="profileScreen" class="screen">
+
+<div class="content">
+
+<div class="profile-head">
+
+<div class="page-title">
+Profile
+</div>
+
+<button class="icon-btn"
+onclick="toast('Settings coming soon')">
+⚙️
+</button>
+
+</div>
+
+
+<div class="status-card">
+A quick note
+</div>
+
+
+<div class="profile-top">
+
+<div class="profile-avatar-ring">
+
+<img
+id="profileAvatar"
+class="profile-avatar">
+
+</div>
+
+
+<div id="profileName" class="profile-name">
+User
+</div>
+
+
+<div class="profile-id">
+
+<span id="profileID">
+ID
+</span>
+
+<button class="mini-copy"
+onclick="copyID()">
+▣
+</button>
+
+</div>
+
+
+<div class="bio">
+No bio
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button class="profile-action"
+onclick="toast('Edit profile coming soon')">
+
+<div class="action-circle">
+✎
+</div>
+
+Edit
+
+</button>
+
+
+<button class="profile-action"
+onclick="toast('Favorites coming soon')">
+
+<div class="action-circle">
+★
+</div>
+
+Favorite
+
+</button>
+
+
+<button class="profile-action"
+onclick="openAddFriend()">
+
+<div class="action-circle">
+♙
+</div>
+
+Add friend
+
+</button>
+
+</div>
+
+
+<section class="profile-section">
+
+<div class="section-head">
+
+<div class="section-title">
+Favorite Frame
+</div>
+
+</div>
+
+
+<div class="frame-row">
+
+<div class="frame">＋</div>
+<div class="frame">＋</div>
+<div class="frame">＋</div>
+<div class="frame">＋</div>
+
+</div>
+
+</section>
+
+
+<section class="profile-section">
+
+<div class="section-head">
+
+<div class="section-title">
+Play History
+</div>
+
+</div>
+
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-label">
+Content Highlight
+</div>
+
+<div class="stat-value">
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+Launch count
+</div>
+
+<div class="stat-value">
+0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="game">
+
+<div class="game-icon">
+🎮
+</div>
+
+<div>
+
+<div class="game-name">
+No recent games
+</div>
+
+<div class="game-date">
+Start playing to build your history
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<button class="logout"
+onclick="logout()">
+Log out
+</button>
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+<button class="nav-btn active"
+onclick="navigate('homeScreen',this)">
+
+<div class="nav-icon">
+⌂
+</div>
+
+Home
+
+</button>
+
+
+<button class="nav-btn"
+onclick="navigate('entertainmentScreen',this)">
+
+<div class="nav-icon">
+🚀
+</div>
+
+Entertainment
+
+</button>
+
+
+<button class="nav-btn"
+onclick="navigate('chatScreen',this)">
+
+<div class="nav-icon">
+▱
+</div>
+
+<span class="badge">
+1
+</span>
+
+Chat
+
+</button>
+
+
+<button class="nav-btn"
+onclick="navigate('profileScreen',this)">
+
+<div class="nav-icon">
+♙
+</div>
+
+Profile
+
+</button>
+
+</nav>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+"https://riversitunmzvuprecbt.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+const supabase =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+}
+);
+
+let currentUser=null;
+let currentProfile=null;
+
+
+/* INITIALIZE */
+
+async function init(){
+
+const {
+data:{session},
+error
+}=await supabase.auth.getSession();
+
+if(error || !session){
+
+window.location.href="index.html";
+return;
+
+}
+
+currentUser=session.user;
+
+await loadProfile();
+
+document.getElementById("loading").style.display="none";
+
+}
+
+
+/* LOAD PROFILE */
+
+async function loadProfile(){
+
+const {
+data,
+error
+}=await supabase
+.from("profiles")
+.select("*")
+.eq("id",currentUser.id)
+.maybeSingle();
+
+if(error){
+
+console.error(error);
+
+toast("Could not load profile");
+
+return;
+
+}
+
+currentProfile=data;
+
+
+const username =
+data?.username ||
+currentUser.user_metadata?.full_name ||
+currentUser.email?.split("@")[0] ||
+"User";
+
+
+const avatar =
+data?.avatar_url ||
+currentUser.user_metadata?.avatar_url ||
+currentUser.user_metadata?.picture ||
+"";
+
+
+document.getElementById("profileName")
+.textContent=username;
+
+
+document.getElementById("profileID")
+.textContent="@"+username;
+
+
+document.getElementById("myId")
+.textContent=username;
+
+
+document.getElementById("storyName")
+.textContent=
+username.length>10
+?username.slice(0,10)+"…"
+:username;
+
+
+document.getElementById("roomName")
+.textContent=
+username+"'s Lobby";
+
+
+if(avatar){
+
+document.getElementById("profileAvatar")
+.src=avatar;
+
+document.getElementById("storyAvatar")
+.src=avatar;
+
+document.getElementById("roomAvatar")
+.src=avatar;
+
+}
+
+}
+
+
+/* NAVIGATION */
+
+function navigate(screenId,button){
+
+document
+.querySelectorAll(".screen")
+.forEach(screen=>{
+screen.classList.remove("active");
+});
+
+
+document
+.getElementById(screenId)
+.classList.add("active");
+
+
+document
+.querySelectorAll(".nav-btn")
+.forEach(btn=>{
+btn.classList.remove("active");
+});
+
+
+button.classList.add("active");
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* SCREEN */
+
+function showScreen(screenId){
+
+document
+.querySelectorAll(".screen")
+.forEach(screen=>{
+screen.classList.remove("active");
+});
+
+
+document
+.getElementById(screenId)
+.classList.add("active");
+
+
+document
+.querySelectorAll(".nav-btn")
+.forEach(btn=>{
+btn.classList.remove("active");
+});
+
+
+window.scrollTo(0,0);
+
+}
+
+
+/* ADD FRIEND */
+
+function openAddFriend(){
+
+showScreen("addFriendScreen");
+
+}
+
+
+/* NOTICE */
+
+function closeNotice(){
+
+document
+.getElementById("notice")
+.style.display="none";
+
+}
+
+
+/* COPY ID */
+
+async function copyID(){
+
+const username=
+currentProfile?.username ||
+currentUser?.email?.split("@")[0] ||
+"user";
+
+try{
+
+await navigator.clipboard.writeText(username);
+
+toast("ID copied");
+
+}catch{
+
+toast("Copy not supported");
+
+}
+
+}
+
+
+/* SHARE */
+
+async function shareID(){
+
+const username=
+currentProfile?.username ||
+currentUser?.email?.split("@")[0] ||
+"user";
+
+const text=
+"Add me on Connect: "+username;
+
+if(navigator.share){
+
+try{
+
+await navigator.share({
+title:"Connect",
+text:text
+});
+
+}catch{}
+
+}else{
+
+try{
+
+await navigator.clipboard.writeText(text);
+
+toast("Share text copied");
+
+}catch{
+
+toast("Sharing not supported");
+
+}
+
+}
+
+}
+
+
+/* TOAST */
+
+let toastTimer;
+
+function toast(message){
+
+const el=
+document.getElementById("toast");
+
+el.textContent=message;
+
+el.classList.add("show");
+
+clearTimeout(toastTimer);
+
+toastTimer=setTimeout(()=>{
+
+el.classList.remove("show");
+
+},1800);
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+const {error}=
+await supabase.auth.signOut();
+
+if(error){
+
+toast("Logout failed");
+
+return;
+
+}
+
+window.location.href="index.html";
+
+}
+
+
+/* SEARCH */
+
+document
+.getElementById("friendSearch")
+.addEventListener("input",function(){
+
+const value=
+this.value.trim().toLowerCase();
+
+
+document
+.querySelectorAll(".person")
+.forEach(person=>{
+
+const text=
+person.innerText.toLowerCase();
+
+person.style.display=
+!value || text.includes(value)
+?"flex"
+:"none";
+
+});
+
+});
+
+
+/* START */
+
+init();
+
+</script>
+
+</body>
+</html>
