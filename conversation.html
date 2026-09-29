@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Conversation • Connect</title>
+
+<title>Chat • Connect</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -57,7 +58,7 @@ button{
   display:flex;
   flex-direction:column;
   background:
-    radial-gradient(circle at 50% -15%,rgba(121,101,255,.17),transparent 38%),
+    radial-gradient(circle at 50% -15%,rgba(121,101,255,.16),transparent 38%),
     var(--bg);
 }
 
@@ -70,7 +71,7 @@ button{
   align-items:center;
   gap:11px;
   padding:9px 12px;
-  background:rgba(17,18,25,.95);
+  background:rgba(17,18,25,.96);
   border-bottom:1px solid var(--border);
   backdrop-filter:blur(18px);
   z-index:10;
@@ -87,7 +88,6 @@ button{
   align-items:center;
   justify-content:center;
   font-size:28px;
-  line-height:1;
 }
 
 .backBtn:active{
@@ -142,6 +142,8 @@ button{
   border-radius:20px;
 }
 
+/* EMPTY */
+
 .empty{
   height:100%;
   display:flex;
@@ -172,6 +174,47 @@ button{
   font-size:16px;
   font-weight:800;
   margin-bottom:5px;
+}
+
+/* ERROR */
+
+.errorBox{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+}
+
+.errorInner{
+  max-width:340px;
+}
+
+.errorIcon{
+  width:62px;
+  height:62px;
+  border-radius:20px;
+  margin:0 auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,80,80,.1);
+  border:1px solid rgba(255,80,80,.15);
+  font-size:27px;
+}
+
+.errorTitle{
+  font-size:17px;
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.errorText{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+  word-break:break-word;
 }
 
 /* DATE */
@@ -239,7 +282,6 @@ button{
   align-items:center;
   gap:4px;
   margin-top:3px;
-  min-height:11px;
 }
 
 .messageTime{
@@ -250,7 +292,6 @@ button{
 .tick{
   color:#c4beff;
   font-size:11px;
-  line-height:1;
 }
 
 /* COMPOSER */
@@ -345,39 +386,6 @@ button{
   }
 }
 
-/* ERROR */
-
-.errorBox{
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
-}
-
-.errorInner{
-  max-width:330px;
-}
-
-.errorIcon{
-  font-size:32px;
-  margin-bottom:12px;
-}
-
-.errorTitle{
-  font-size:17px;
-  font-weight:800;
-  margin-bottom:7px;
-}
-
-.errorText{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.55;
-  word-break:break-word;
-}
-
 /* TOAST */
 
 .toast{
@@ -404,7 +412,6 @@ button{
 }
 
 @media(max-width:380px){
-
   .bubble{
     max-width:84%;
   }
@@ -423,14 +430,13 @@ button{
 
   <header class="header">
 
-    <button id="backBtn" class="backBtn" aria-label="Back">
+    <button id="backBtn" class="backBtn">
       ‹
     </button>
 
     <img
       id="headerAvatar"
       class="headerAvatar"
-      src=""
       alt="Profile"
     >
 
@@ -467,7 +473,6 @@ button{
     <button
       id="sendBtn"
       class="sendBtn"
-      aria-label="Send message"
     >
       ➤
     </button>
@@ -485,7 +490,7 @@ button{
 <script>
 
 /* =========================================
-   SUPABASE CONFIG
+   SUPABASE
 ========================================= */
 
 const SUPABASE_URL =
@@ -494,29 +499,16 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
-const supabaseClient =
+const client =
 window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true
-    }
-  }
+  SUPABASE_KEY
 );
 
 
 /* =========================================
-   VARIABLES
+   ELEMENTS
 ========================================= */
-
-let currentUser = null;
-let friendId = null;
-let conversationId = null;
-let friendProfile = null;
-let realtimeChannel = null;
 
 const messages =
 document.getElementById("messages");
@@ -544,18 +536,29 @@ document.getElementById("toast");
 
 
 /* =========================================
+   VARIABLES
+========================================= */
+
+let currentUser = null;
+let friendId = null;
+let conversationId = null;
+let friendProfile = null;
+let channel = null;
+
+
+/* =========================================
    TOAST
 ========================================= */
 
-function showToast(text){
+function toastMessage(text){
 
   toast.textContent = text;
 
   toast.classList.add("show");
 
-  clearTimeout(showToast.timeout);
+  clearTimeout(toastMessage.timer);
 
-  showToast.timeout =
+  toastMessage.timer =
     setTimeout(()=>{
       toast.classList.remove("show");
     },3000);
@@ -563,10 +566,10 @@ function showToast(text){
 
 
 /* =========================================
-   FALLBACK AVATAR
+   AVATAR
 ========================================= */
 
-function fallbackAvatar(name){
+function avatarFallback(name){
 
   const letter =
     String(name || "U")
@@ -578,19 +581,17 @@ function fallbackAvatar(name){
     encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg"
            width="200"
-           height="200"
-           viewBox="0 0 200 200">
+           height="200">
 
         <rect
           width="200"
           height="200"
           rx="100"
-          fill="#252731"
-        />
+          fill="#252731"/>
 
         <text
           x="100"
-          y="110"
+          y="125"
           text-anchor="middle"
           font-family="Arial"
           font-size="82"
@@ -605,25 +606,59 @@ function fallbackAvatar(name){
 
 
 /* =========================================
-   INITIALIZE
+   ERROR
+========================================= */
+
+function showError(message){
+
+  messages.innerHTML = `
+    <div class="errorBox">
+      <div class="errorInner">
+
+        <div class="errorIcon">
+          ⚠️
+        </div>
+
+        <div class="errorTitle">
+          Couldn't open chat
+        </div>
+
+        <div class="errorText">
+          ${escapeHtml(message)}
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+
+/* =========================================
+   INIT
 ========================================= */
 
 async function init(){
 
   try{
 
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.auth.getSession();
+    console.log("CONNECT CHAT START");
 
-    if(error){
-      throw error;
+    /* GET SESSION */
+
+    const sessionResult =
+      await client.auth.getSession();
+
+    console.log(
+      "SESSION RESULT:",
+      sessionResult
+    );
+
+    if(sessionResult.error){
+      throw sessionResult.error;
     }
 
     currentUser =
-      data.session?.user;
+      sessionResult.data.session?.user;
 
     if(!currentUser){
 
@@ -633,6 +668,14 @@ async function init(){
       return;
     }
 
+    console.log(
+      "CURRENT USER:",
+      currentUser.id
+    );
+
+
+    /* GET FRIEND ID */
+
     const params =
       new URLSearchParams(
         window.location.search
@@ -641,39 +684,52 @@ async function init(){
     friendId =
       params.get("id");
 
-    if(!friendId){
+    console.log(
+      "FRIEND ID:",
+      friendId
+    );
 
+    if(!friendId){
       throw new Error(
         "Friend ID missing from URL."
       );
     }
 
-    if(friendId === currentUser.id){
 
+    if(friendId === currentUser.id){
       throw new Error(
-        "Invalid friend."
+        "You cannot chat with yourself."
       );
     }
 
-    await loadFriend();
 
-    await getConversation();
+    /* LOAD EVERYTHING */
+
+    await loadProfile();
+
+    await findConversation();
 
     await loadMessages();
 
-    subscribeRealtime();
+    subscribe();
+
 
     loading.style.display =
       "none";
 
-    setTimeout(()=>{
-      scrollBottom(false);
-    },100);
+    setTimeout(
+      ()=>scrollBottom(false),
+      100
+    );
+
+    console.log(
+      "CHAT READY"
+    );
 
   }catch(error){
 
     console.error(
-      "CHAT ERROR:",
+      "CONNECT CHAT ERROR:",
       error
     );
 
@@ -681,24 +737,25 @@ async function init(){
       "none";
 
     showError(
-      error.message ||
-      "Couldn't open chat."
+      error?.message ||
+      "Unknown error"
     );
   }
 }
 
 
 /* =========================================
-   LOAD FRIEND PROFILE
+   PROFILE
 ========================================= */
 
-async function loadFriend(){
+async function loadProfile(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
+  console.log(
+    "LOADING PROFILE..."
+  );
+
+  const result =
+    await client
       .from("profiles")
       .select(
         "id,username,avatar_url,bio"
@@ -709,20 +766,20 @@ async function loadFriend(){
       )
       .maybeSingle();
 
-  if(error){
+  console.log(
+    "PROFILE RESULT:",
+    result
+  );
 
-    console.error(
-      "FRIEND PROFILE ERROR:",
-      error
-    );
+  if(result.error){
 
     throw new Error(
       "Profile error: " +
-      error.message
+      result.error.message
     );
   }
 
-  if(!data){
+  if(!result.data){
 
     throw new Error(
       "Friend profile not found."
@@ -730,10 +787,10 @@ async function loadFriend(){
   }
 
   friendProfile =
-    data;
+    result.data;
 
   const name =
-    data.username ||
+    result.data.username ||
     "Connect User";
 
   headerName.textContent =
@@ -743,17 +800,17 @@ async function loadFriend(){
     "Connect";
 
   if(
-    data.avatar_url &&
-    data.avatar_url.trim()
+    result.data.avatar_url &&
+    result.data.avatar_url.trim()
   ){
 
     headerAvatar.src =
-      data.avatar_url;
+      result.data.avatar_url;
 
   }else{
 
     headerAvatar.src =
-      fallbackAvatar(name);
+      avatarFallback(name);
   }
 
   headerAvatar.onerror =
@@ -762,32 +819,36 @@ async function loadFriend(){
       this.onerror = null;
 
       this.src =
-        fallbackAvatar(name);
+        avatarFallback(name);
     };
 }
 
 
 /* =========================================
-   GET OR CREATE CONVERSATION
+   CONVERSATION
 ========================================= */
 
-async function getConversation(){
+async function findConversation(){
 
-  const sorted =
+  console.log(
+    "FINDING CONVERSATION..."
+  );
+
+  const users =
     [
       currentUser.id,
       friendId
     ].sort();
 
   const userOne =
-    sorted[0];
+    users[0];
 
   const userTwo =
-    sorted[1];
+    users[1];
 
 
-  let result =
-    await supabaseClient
+  const result =
+    await client
       .from("conversations")
       .select(
         "id,user_one,user_two"
@@ -803,12 +864,13 @@ async function getConversation(){
       .maybeSingle();
 
 
-  if(result.error){
+  console.log(
+    "CONVERSATION RESULT:",
+    result
+  );
 
-    console.error(
-      "CONVERSATION SELECT ERROR:",
-      result.error
-    );
+
+  if(result.error){
 
     throw new Error(
       "Conversation error: " +
@@ -822,12 +884,22 @@ async function getConversation(){
     conversationId =
       result.data.id;
 
+    console.log(
+      "EXISTING CONVERSATION:",
+      conversationId
+    );
+
     return;
   }
 
 
-  result =
-    await supabaseClient
+  console.log(
+    "CREATING CONVERSATION..."
+  );
+
+
+  const create =
+    await client
       .from("conversations")
       .insert({
         user_one:userOne,
@@ -839,51 +911,60 @@ async function getConversation(){
       .single();
 
 
-  if(!result.error){
+  console.log(
+    "CREATE RESULT:",
+    create
+  );
+
+
+  if(create.error){
+
+    /*
+      Another device/user may have created
+      the conversation at the same time.
+      Try fetching once again.
+    */
+
+    const retry =
+      await client
+        .from("conversations")
+        .select(
+          "id,user_one,user_two"
+        )
+        .eq(
+          "user_one",
+          userOne
+        )
+        .eq(
+          "user_two",
+          userTwo
+        )
+        .maybeSingle();
+
+
+    if(retry.error ||
+       !retry.data){
+
+      throw new Error(
+        "Conversation create error: " +
+        create.error.message
+      );
+    }
 
     conversationId =
-      result.data.id;
+      retry.data.id;
 
     return;
   }
 
 
-  console.error(
-    "CONVERSATION CREATE ERROR:",
-    result.error
-  );
-
-
-  const retry =
-    await supabaseClient
-      .from("conversations")
-      .select(
-        "id,user_one,user_two"
-      )
-      .eq(
-        "user_one",
-        userOne
-      )
-      .eq(
-        "user_two",
-        userTwo
-      )
-      .maybeSingle();
-
-
-  if(
-    retry.error ||
-    !retry.data
-  ){
-
-    throw new Error(
-      "Couldn't create conversation: " +
-      result.error.message
-    );
-  }
-
   conversationId =
-    retry.data.id;
+    create.data.id;
+
+  console.log(
+    "NEW CONVERSATION:",
+    conversationId
+  );
 }
 
 
@@ -893,11 +974,12 @@ async function getConversation(){
 
 async function loadMessages(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
+  console.log(
+    "LOADING MESSAGES..."
+  );
+
+  const result =
+    await client
       .from("messages")
       .select(
         "id,conversation_id,sender_id,message,created_at"
@@ -914,16 +996,17 @@ async function loadMessages(){
       );
 
 
-  if(error){
+  console.log(
+    "MESSAGES RESULT:",
+    result
+  );
 
-    console.error(
-      "MESSAGES LOAD ERROR:",
-      error
-    );
+
+  if(result.error){
 
     throw new Error(
       "Messages error: " +
-      error.message
+      result.error.message
     );
   }
 
@@ -932,8 +1015,8 @@ async function loadMessages(){
 
 
   if(
-    !data ||
-    data.length === 0
+    !result.data ||
+    result.data.length === 0
   ){
 
     showEmpty();
@@ -944,31 +1027,27 @@ async function loadMessages(){
 
   let lastDate = "";
 
+  result.data.forEach(
+    msg=>{
 
-  data.forEach(msg=>{
+      const date =
+        dateKey(
+          msg.created_at
+        );
 
-    const currentDate =
-      getDateKey(
-        msg.created_at
-      );
+      if(date !== lastDate){
 
+        addDate(
+          msg.created_at
+        );
 
-    if(
-      currentDate !== lastDate
-    ){
+        lastDate =
+          date;
+      }
 
-      addDateSeparator(
-        msg.created_at
-      );
-
-      lastDate =
-        currentDate;
+      renderMessage(msg);
     }
-
-
-    renderMessage(msg);
-
-  });
+  );
 }
 
 
@@ -978,10 +1057,12 @@ async function loadMessages(){
 
 function showEmpty(){
 
+  const name =
+    friendProfile?.username ||
+    "your friend";
+
   messages.innerHTML = `
-
     <div class="empty">
-
       <div>
 
         <div class="emptyIcon">
@@ -994,48 +1075,11 @@ function showEmpty(){
 
         <div>
           Send your first message to
-          ${escapeHtml(
-            friendProfile?.username ||
-            "your friend"
-          )}.
+          ${escapeHtml(name)}.
         </div>
 
       </div>
-
     </div>
-
-  `;
-}
-
-
-/* =========================================
-   ERROR
-========================================= */
-
-function showError(errorMessage){
-
-  messages.innerHTML = `
-
-    <div class="errorBox">
-
-      <div class="errorInner">
-
-        <div class="errorIcon">
-          ⚠️
-        </div>
-
-        <div class="errorTitle">
-          Couldn't open chat
-        </div>
-
-        <div class="errorText">
-          ${escapeHtml(errorMessage)}
-        </div>
-
-      </div>
-
-    </div>
-
   `;
 }
 
@@ -1044,38 +1088,36 @@ function showError(errorMessage){
    DATE
 ========================================= */
 
-function getDateKey(value){
+function dateKey(value){
 
-  const date =
+  const d =
     new Date(value);
 
   return (
-    date.getFullYear() +
+    d.getFullYear() +
     "-" +
-    String(date.getMonth()+1).padStart(2,"0") +
+    String(d.getMonth()+1).padStart(2,"0") +
     "-" +
-    String(date.getDate()).padStart(2,"0")
+    String(d.getDate()).padStart(2,"0")
   );
 }
 
 
-function getDateLabel(value){
+function dateLabel(value){
 
-  const date =
+  const d =
     new Date(value);
 
   const today =
     new Date();
 
-
   if(
-    getDateKey(date) ===
-    getDateKey(today)
+    dateKey(d) ===
+    dateKey(today)
   ){
 
     return "Today";
   }
-
 
   const yesterday =
     new Date();
@@ -1084,17 +1126,15 @@ function getDateLabel(value){
     yesterday.getDate()-1
   );
 
-
   if(
-    getDateKey(date) ===
-    getDateKey(yesterday)
+    dateKey(d) ===
+    dateKey(yesterday)
   ){
 
     return "Yesterday";
   }
 
-
-  return date.toLocaleDateString(
+  return d.toLocaleDateString(
     undefined,
     {
       day:"numeric",
@@ -1105,11 +1145,7 @@ function getDateLabel(value){
 }
 
 
-/* =========================================
-   TIME
-========================================= */
-
-function getTime(value){
+function timeLabel(value){
 
   return new Date(value)
     .toLocaleTimeString(
@@ -1126,52 +1162,43 @@ function getTime(value){
    DATE SEPARATOR
 ========================================= */
 
-function addDateSeparator(value){
+function addDate(value){
 
-  const wrapper =
+  const div =
     document.createElement("div");
 
-  wrapper.className =
+  div.className =
     "dateSeparator";
-
 
   const span =
     document.createElement("span");
 
   span.textContent =
-    getDateLabel(value);
+    dateLabel(value);
 
+  div.appendChild(span);
 
-  wrapper.appendChild(span);
-
-  messages.appendChild(
-    wrapper
-  );
+  messages.appendChild(div);
 }
 
 
 /* =========================================
-   RENDER MESSAGE
+   MESSAGE
 ========================================= */
 
 function renderMessage(msg){
 
   if(
     document.querySelector(
-      '[data-message-id="' +
-      msg.id +
-      '"]'
+      `[data-message-id="${msg.id}"]`
     )
   ){
-
     return;
   }
 
 
   const empty =
-    messages.querySelector(
-      ".empty"
-    );
+    messages.querySelector(".empty");
 
   if(empty){
     empty.remove();
@@ -1194,14 +1221,11 @@ function renderMessage(msg){
         : "theirs"
     );
 
-
   row.dataset.messageId =
     msg.id;
 
   row.dataset.date =
-    getDateKey(
-      msg.created_at
-    );
+    dateKey(msg.created_at);
 
 
   const bubble =
@@ -1211,13 +1235,13 @@ function renderMessage(msg){
     "bubble";
 
 
-  const messageText =
+  const text =
     document.createElement("span");
 
-  messageText.className =
+  text.className =
     "messageText";
 
-  messageText.textContent =
+  text.textContent =
     msg.message || "";
 
 
@@ -1235,10 +1259,9 @@ function renderMessage(msg){
     "messageTime";
 
   time.textContent =
-    getTime(
+    timeLabel(
       msg.created_at
     );
-
 
   meta.appendChild(time);
 
@@ -1258,17 +1281,11 @@ function renderMessage(msg){
   }
 
 
-  bubble.appendChild(
-    messageText
-  );
+  bubble.appendChild(text);
 
-  bubble.appendChild(
-    meta
-  );
+  bubble.appendChild(meta);
 
-  row.appendChild(
-    bubble
-  );
+  row.appendChild(bubble);
 
 
   const rows =
@@ -1277,55 +1294,62 @@ function renderMessage(msg){
     );
 
 
-  if(rows.length === 0){
+  if(rows.length > 0){
 
-    addDateSeparator(
-      msg.created_at
-    );
+    const last =
+      rows[rows.length-1];
+
+    if(
+      last.dataset.date !==
+      dateKey(msg.created_at)
+    ){
+
+      addDate(
+        msg.created_at
+      );
+    }
 
   }else{
 
-    const lastRow =
-      rows[rows.length - 1];
+    /*
+      If loadMessages already added
+      the separator, don't duplicate it.
+    */
 
     if(
-      lastRow.dataset.date !==
-      getDateKey(
-        msg.created_at
+      !messages.querySelector(
+        ".dateSeparator"
       )
     ){
 
-      addDateSeparator(
+      addDate(
         msg.created_at
       );
     }
   }
 
 
-  messages.appendChild(
-    row
-  );
+  messages.appendChild(row);
 }
 
 
 /* =========================================
-   SEND MESSAGE
+   SEND
 ========================================= */
 
 async function sendMessage(){
 
-  const text =
+  const value =
     input.value.trim();
 
-
-  if(!text)
+  if(!value)
     return;
 
 
   if(!conversationId){
 
-    showToast(
-      "Chat is still loading..."
+    toastMessage(
+      "Chat is not ready yet."
     );
 
     return;
@@ -1336,20 +1360,18 @@ async function sendMessage(){
     true;
 
 
-  const oldText =
-    text;
-
-
   input.value = "";
 
   resizeInput();
 
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
+  console.log(
+    "SENDING MESSAGE..."
+  );
+
+
+  const result =
+    await client
       .from("messages")
       .insert({
         conversation_id:
@@ -1359,7 +1381,7 @@ async function sendMessage(){
           currentUser.id,
 
         message:
-          oldText
+          value
       })
       .select(
         "id,conversation_id,sender_id,message,created_at"
@@ -1367,32 +1389,35 @@ async function sendMessage(){
       .single();
 
 
+  console.log(
+    "SEND RESULT:",
+    result
+  );
+
+
   sendBtn.disabled =
     false;
 
 
-  if(error){
-
-    console.error(
-      "SEND ERROR:",
-      error
-    );
+  if(result.error){
 
     input.value =
-      oldText;
+      value;
 
     resizeInput();
 
-    showToast(
+    toastMessage(
       "Send failed: " +
-      error.message
+      result.error.message
     );
 
     return;
   }
 
 
-  renderMessage(data);
+  renderMessage(
+    result.data
+  );
 
   scrollBottom(true);
 }
@@ -1402,16 +1427,21 @@ async function sendMessage(){
    REALTIME
 ========================================= */
 
-function subscribeRealtime(){
+function subscribe(){
 
   if(!conversationId)
     return;
 
 
-  realtimeChannel =
-    supabaseClient
+  console.log(
+    "STARTING REALTIME..."
+  );
+
+
+  channel =
+    client
       .channel(
-        "conversation-" +
+        "chat-" +
         conversationId
       )
       .on(
@@ -1426,36 +1456,25 @@ function subscribeRealtime(){
         },
         payload=>{
 
-          const message =
-            payload.new;
+          console.log(
+            "REALTIME MESSAGE:",
+            payload
+          );
 
-
-          if(
-            document.querySelector(
-              '[data-message-id="' +
-              message.id +
-              '"]'
-            )
-          ){
-
-            return;
-          }
-
-
-          renderMessage(message);
+          renderMessage(
+            payload.new
+          );
 
           scrollBottom(true);
-
         }
       )
       .subscribe(
         status=>{
 
           console.log(
-            "Realtime status:",
+            "REALTIME:",
             status
           );
-
         }
       );
 }
@@ -1484,10 +1503,6 @@ input.addEventListener(
 );
 
 
-/* =========================================
-   ENTER
-========================================= */
-
 input.addEventListener(
   "keydown",
   event=>{
@@ -1501,14 +1516,9 @@ input.addEventListener(
 
       sendMessage();
     }
-
   }
 );
 
-
-/* =========================================
-   SEND BUTTON
-========================================= */
 
 sendBtn.addEventListener(
   "click",
@@ -1538,21 +1548,17 @@ document
 function scrollBottom(smooth){
 
   messages.scrollTo({
-
-    top:
-      messages.scrollHeight,
-
+    top:messages.scrollHeight,
     behavior:
       smooth
         ? "smooth"
         : "auto"
-
   });
 }
 
 
 /* =========================================
-   ESCAPE HTML
+   ESCAPE
 ========================================= */
 
 function escapeHtml(value){
@@ -1574,14 +1580,12 @@ window.addEventListener(
   "beforeunload",
   ()=>{
 
-    if(realtimeChannel){
+    if(channel){
 
-      supabaseClient
-        .removeChannel(
-          realtimeChannel
-        );
+      client.removeChannel(
+        channel
+      );
     }
-
   }
 );
 
