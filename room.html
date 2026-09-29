@@ -2,734 +2,1054 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Room • Connect</title>
-<meta name="theme-color" content="#121212">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect — Talk Room</title>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
   -webkit-tap-highlight-color:transparent;
 }
 
-body{
-  background:#121212;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-  min-height:100vh;
+:root{
+  --dark:#20242b;
+  --dark2:#292e37;
+  --text:#fff;
+  --muted:#aeb3bb;
+  --green:#54df83;
+  --pink:#ff62ad;
 }
 
-.app{
-  max-width:650px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:90px;
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:Inter,Arial,sans-serif;
+  color:#20242b;
+  background:
+    radial-gradient(circle at 12px 12px,#b9dfff 2px,transparent 3px) 0 0/48px 48px,
+    radial-gradient(circle at 34px 32px,#ffc5df 2px,transparent 3px) 0 0/58px 58px,
+    #fff9f1;
+}
+
+/* MAIN */
+
+.room{
+  position:relative;
+  width:100%;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* soft decorative blobs */
+
+.blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(45px);
+  opacity:.38;
+  pointer-events:none;
+}
+
+.blob.one{
+  width:180px;
+  height:180px;
+  background:#cceaff;
+  left:-70px;
+  top:20%;
+}
+
+.blob.two{
+  width:200px;
+  height:200px;
+  background:#ffd1e6;
+  right:-80px;
+  top:40%;
 }
 
 /* HEADER */
 
-header{
-  height:70px;
-  padding:0 16px;
+.header{
+  position:absolute;
+  z-index:10;
+  top:16px;
+  left:14px;
+  right:14px;
+  height:58px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid #29292c;
-  background:rgba(18,18,18,.94);
-  backdrop-filter:blur(16px);
-  position:sticky;
-  top:0;
-  z-index:20;
+  gap:8px;
 }
 
-.back{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  background:#1d1d1f;
-  border:1px solid #303033;
-  color:white;
-  font-size:21px;
-}
-
-.room-header{
-  flex:1;
-  margin-left:12px;
-  min-width:0;
-}
-
-.room-name{
-  font-size:17px;
-  font-weight:750;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.room-status{
-  color:#85858a;
-  font-size:11px;
-  margin-top:4px;
-}
-
-.more{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  background:#1d1d1f;
-  border:1px solid #303033;
-  color:white;
-  font-size:20px;
-}
-
-/* CONTENT */
-
-.content{
-  padding:20px 16px;
-}
-
-.hero{
-  text-align:center;
-  padding:20px 0 28px;
-}
-
-.room-icon{
-  width:82px;
-  height:82px;
+.header-btn,
+.title-pill,
+.invite{
+  height:50px;
   border-radius:25px;
-  margin:auto;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(28,32,39,.92);
+  color:white;
+  box-shadow:0 8px 25px rgba(0,0,0,.16);
+  backdrop-filter:blur(16px);
+}
+
+.header-btn{
+  width:50px;
+  font-size:25px;
+  cursor:pointer;
+}
+
+.title-pill{
+  flex:1;
   display:flex;
-  align-items:center;
   justify-content:center;
-  font-size:38px;
-  background:linear-gradient(135deg,#8d6cff,#4b35d4);
-  box-shadow:0 15px 45px rgba(124,92,255,.22);
+  align-items:center;
+  font-weight:700;
+  letter-spacing:.2px;
 }
 
-.hero h1{
-  margin-top:16px;
-  font-size:22px;
-}
-
-.hero p{
-  margin-top:6px;
-  color:#8e8e93;
-  font-size:13px;
+.invite{
+  padding:0 17px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
 }
 
 /* PARTICIPANTS */
 
-.section-title{
-  font-size:16px;
-  font-weight:700;
-  margin-bottom:12px;
-}
-
 .participants{
+  position:absolute;
+  top:100px;
+  bottom:190px;
+  left:15px;
+  right:15px;
+
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
+  grid-template-columns:repeat(2,130px);
+  justify-content:center;
+  align-content:center;
+  gap:42px 30px;
+  overflow:auto;
 }
 
 .person{
-  background:#1d1d1f;
-  border:1px solid #303033;
-  border-radius:18px;
-  padding:18px 8px;
-  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.avatar-wrap{
+  position:relative;
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  padding:4px;
+
+  background:linear-gradient(
+    135deg,
+    #ff3d9a,
+    #ff89c5,
+    #ff4e9f
+  );
+
+  box-shadow:
+    0 0 0 5px rgba(255,91,170,.13),
+    0 0 28px rgba(255,91,170,.45);
+
+  animation:speaking 1.8s infinite ease-in-out;
 }
 
 .avatar{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  margin:auto;
-  overflow:hidden;
-  border:2px solid #7055ef;
-  background:#29292b;
-}
-
-.avatar img{
   width:100%;
   height:100%;
+  border-radius:50%;
   object-fit:cover;
+  background:#d7dbe0;
+  border:3px solid #fff9f1;
 }
 
-.person-name{
-  margin-top:9px;
-  font-size:12px;
-  font-weight:650;
-  overflow:hidden;
+.mic-badge{
+  margin-top:-2px;
+  z-index:2;
+
+  max-width:120px;
+  padding:7px 11px;
+
+  border-radius:16px;
+  background:rgba(29,33,40,.94);
+  color:white;
+
+  font-size:11px;
+  font-weight:600;
+
   white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+
+  box-shadow:0 6px 18px rgba(0,0,0,.16);
+}
+
+.mic-dot{
+  color:var(--green);
+  margin-right:4px;
+}
+
+@keyframes speaking{
+  0%,100%{
+    box-shadow:
+      0 0 0 5px rgba(255,91,170,.13),
+      0 0 22px rgba(255,91,170,.35);
+  }
+  50%{
+    box-shadow:
+      0 0 0 8px rgba(255,91,170,.12),
+      0 0 34px rgba(255,91,170,.65);
+  }
+}
+
+/* EMPTY / ADD PERSON */
+
+.add-person{
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  border:2px dashed rgba(32,36,43,.28);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  color:#555c66;
+  cursor:pointer;
+  background:rgba(255,255,255,.3);
+}
+
+/* BOTTOM */
+
+.bottom{
+  position:absolute;
+  z-index:20;
+  left:10px;
+  right:10px;
+  bottom:10px;
+}
+
+/* NOTICE */
+
+.notice{
+  min-height:48px;
+  margin:0 5px 9px;
+
+  display:flex;
+  align-items:center;
+  gap:9px;
+
+  padding:10px 12px;
+
+  color:white;
+  background:rgba(30,34,41,.91);
+  border-radius:18px;
+
+  box-shadow:0 8px 25px rgba(0,0,0,.18);
+  backdrop-filter:blur(15px);
+}
+
+.info{
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:#3b414a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  flex-shrink:0;
+}
+
+.notice-text{
+  flex:1;
+  font-size:11px;
+  color:#d9dde2;
+  white-space:nowrap;
+  overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.person-state{
-  color:#77777d;
-  font-size:10px;
-  margin-top:4px;
-}
-
-.owner{
-  display:inline-block;
-  margin-top:6px;
-  font-size:9px;
-  color:#9b7cff;
-}
-
-/* INFO */
-
-.info{
-  margin-top:22px;
-  background:#1d1d1f;
-  border:1px solid #303033;
-  border-radius:18px;
-  padding:15px;
-}
-
-.info-row{
-  display:flex;
-  justify-content:space-between;
-  padding:7px 0;
-  font-size:12px;
-}
-
-.info-row span:first-child{
-  color:#77777d;
-}
-
-.info-row span:last-child{
-  color:#ddd;
+.notice-toggle{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:50%;
+  background:#3a4049;
+  color:white;
+  cursor:pointer;
 }
 
 /* CONTROLS */
 
 .controls{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:650px;
-  height:82px;
-  padding:13px 18px;
   display:flex;
-  gap:10px;
-  background:rgba(22,22,24,.97);
-  border-top:1px solid #2c2c2f;
-  backdrop-filter:blur(18px);
-  z-index:50;
+  align-items:center;
+  gap:6px;
+}
+
+.input{
+  flex:1;
+  height:52px;
+  min-width:0;
+
+  border:1px solid rgba(255,255,255,.12);
+  outline:none;
+
+  border-radius:27px;
+  background:rgba(29,33,40,.94);
+  color:white;
+
+  padding:0 18px;
+  font-size:13px;
+
+  box-shadow:0 8px 25px rgba(0,0,0,.17);
+  backdrop-filter:blur(15px);
+}
+
+.input::placeholder{
+  color:#9ca2aa;
 }
 
 .control{
-  flex:1;
-  border-radius:15px;
-  background:#29292c;
-  border:1px solid #39393d;
+  width:52px;
+  height:52px;
+  border:0;
+  border-radius:50%;
+
+  background:rgba(29,33,40,.94);
   color:white;
+
+  font-size:20px;
+  cursor:pointer;
+
+  box-shadow:0 8px 25px rgba(0,0,0,.17);
+  backdrop-filter:blur(15px);
+
+  transition:.18s;
+}
+
+.control:active{
+  transform:scale(.91);
+}
+
+.mic{
+  background:var(--green);
+  color:#13251a;
+}
+
+.mic.muted{
+  background:#e95065;
+  color:white;
+}
+
+.menu{
+  position:relative;
+}
+
+.red-dot{
+  position:absolute;
+  right:9px;
+  top:8px;
+
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ff4d62;
+  border:2px solid #20242b;
+}
+
+.hide{
+  height:52px;
+  padding:0 17px;
+
+  border:0;
+  border-radius:26px;
+
+  background:rgba(29,33,40,.94);
+  color:white;
+
   font-weight:700;
-  font-size:12px;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.17);
 }
 
-.mic.active{
-  background:#7c5cff;
-  border-color:#7c5cff;
-}
+/* POPUPS */
 
-.leave{
-  background:#382126;
-  border-color:#513039;
-  color:#ff8594;
-}
+.popup{
+  position:absolute;
+  z-index:50;
 
-/* LOADING */
+  right:10px;
+  bottom:70px;
 
-.loading{
-  position:fixed;
-  inset:0;
-  background:#121212;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#999;
-  font-size:13px;
-}
+  width:190px;
 
-.hidden{
+  padding:8px;
+
+  background:rgba(28,32,39,.97);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;
+
+  box-shadow:0 15px 40px rgba(0,0,0,.3);
+
   display:none;
 }
 
-/* EMPTY */
+.popup.show{
+  display:block;
+  animation:popup .18s ease-out;
+}
 
-.empty{
-  grid-column:1/-1;
-  text-align:center;
-  color:#777;
-  padding:25px;
-  border:1px dashed #343438;
-  border-radius:18px;
+@keyframes popup{
+  from{
+    opacity:0;
+    transform:translateY(8px) scale(.97);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+.popup button{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:white;
+  text-align:left;
+  padding:12px;
+  border-radius:11px;
+  cursor:pointer;
+}
+
+.popup button:active{
+  background:#343a45;
+}
+
+/* CHAT PANEL */
+
+.chat-panel{
+  position:absolute;
+  z-index:40;
+  left:10px;
+  right:10px;
+  bottom:76px;
+
+  background:rgba(28,32,39,.96);
+  border-radius:20px;
+
+  padding:12px;
+
+  display:none;
+  box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+
+.chat-panel.show{
+  display:block;
+}
+
+.chat-messages{
+  max-height:170px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.chat-msg{
+  align-self:flex-start;
+  max-width:80%;
+  padding:8px 11px;
+  background:#353b46;
+  color:white;
+  border-radius:13px;
   font-size:12px;
+}
+
+/* MINIMIZED */
+
+.room.minimized .participants,
+.room.minimized .notice,
+.room.minimized .input{
+  display:none;
+}
+
+.room.minimized .bottom{
+  bottom:10px;
+}
+
+.room.minimized .header{
+  top:10px;
+}
+
+.room.minimized{
+  background:
+    radial-gradient(circle at 12px 12px,#b9dfff 2px,transparent 3px) 0 0/48px 48px,
+    #fff9f1;
+}
+
+/* MOBILE */
+
+@media(max-width:430px){
+
+  .header{
+    top:10px;
+  }
+
+  .invite{
+    padding:0 13px;
+  }
+
+  .participants{
+    grid-template-columns:repeat(2,110px);
+    gap:34px 20px;
+  }
+
+  .avatar-wrap{
+    width:82px;
+    height:82px;
+  }
+
+  .control{
+    width:46px;
+    height:46px;
+    font-size:18px;
+  }
+
+  .input{
+    height:46px;
+    padding:0 14px;
+  }
+
+  .hide{
+    height:46px;
+    padding:0 13px;
+  }
+
+}
+
+@media(max-width:350px){
+
+  .input{
+    display:none;
+  }
+
+  .participants{
+    grid-template-columns:repeat(2,100px);
+  }
+
 }
 </style>
 </head>
 
 <body>
 
-<div class="loading" id="loading">
-  Loading room...
-</div>
+<div id="room" class="room">
 
-<div class="app">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
 
-<header>
-  <button class="back" onclick="leaveRoom()">‹</button>
+  <!-- HEADER -->
 
-  <div class="room-header">
-    <div class="room-name" id="roomName">
-      Loading...
+  <div class="header">
+
+    <button
+      class="header-btn"
+      onclick="toggleMinimize()"
+      aria-label="Minimize">
+      ˅
+    </button>
+
+    <div class="title-pill">
+      Talk room
     </div>
 
-    <div class="room-status" id="roomStatus">
-      Connecting...
-    </div>
-  </div>
-
-  <button class="more" onclick="roomInfo()">⋯</button>
-</header>
-
-<main class="content">
-
-  <div class="hero">
-    <div class="room-icon">🎙</div>
-
-    <h1 id="heroName">
-      Loading Room
-    </h1>
-
-    <p id="heroMeta">
-      Connecting to room...
-    </p>
-  </div>
-
-
-  <div class="section-title">
-    👥 Participants
-  </div>
-
-  <div class="participants" id="participants">
-
-    <div class="empty">
-      Loading participants...
-    </div>
+    <button
+      class="invite"
+      onclick="inviteUser()">
+      👋 Invite
+    </button>
 
   </div>
 
 
-  <div class="info">
+  <!-- PARTICIPANTS -->
 
-    <div class="info-row">
-      <span>Room type</span>
-      <span id="visibility">—</span>
+  <div id="participants" class="participants">
+
+    <div class="person">
+
+      <div class="avatar-wrap">
+
+        <img
+          class="avatar"
+          src="https://i.pravatar.cc/300?img=12"
+          alt="Aadarsh">
+
+      </div>
+
+      <div class="mic-badge">
+        <span class="mic-dot">🎙</span>
+        Aadarsh...
+      </div>
+
     </div>
 
-    <div class="info-row">
-      <span>Room ID</span>
-      <span id="roomIdText">—</span>
+
+    <div class="person">
+
+      <div class="avatar-wrap">
+
+        <img
+          class="avatar"
+          src="https://i.pravatar.cc/300?img=32"
+          alt="Prince">
+
+      </div>
+
+      <div class="mic-badge">
+        <span class="mic-dot">🎙</span>
+        Prince
+      </div>
+
     </div>
 
-    <div class="info-row">
-      <span>Created</span>
-      <span id="created">—</span>
+
+    <div class="person">
+
+      <div class="avatar-wrap">
+
+        <img
+          class="avatar"
+          src="https://i.pravatar.cc/300?img=11"
+          alt="User">
+
+      </div>
+
+      <div class="mic-badge">
+        <span class="mic-dot">🎙</span>
+        Connect...
+      </div>
+
+    </div>
+
+
+    <div class="person">
+
+      <div class="add-person"
+           onclick="inviteUser()">
+        +
+      </div>
+
+      <div class="mic-badge">
+        Invite someone
+      </div>
+
     </div>
 
   </div>
 
-</main>
 
-</div>
+  <!-- CHAT POPUP -->
+
+  <div
+    id="chatPanel"
+    class="chat-panel">
+
+    <div
+      id="chatMessages"
+      class="chat-messages">
+
+      <div class="chat-msg">
+        Welcome to the Talk room 👋
+      </div>
+
+    </div>
+
+  </div>
 
 
-<div class="controls">
+  <!-- MENU POPUP -->
 
-  <button
-    class="control mic"
-    id="micButton"
-    onclick="toggleMic()">
-    🎙 Mic Off
-  </button>
+  <div
+    id="menuPopup"
+    class="popup">
 
-  <button
-    class="control"
-    onclick="shareRoom()">
-    ↗ Share
-  </button>
+    <button onclick="showNotice()">
+      ℹ️ Room information
+    </button>
 
-  <button
-    class="control leave"
-    onclick="leaveRoom()">
-    🚪 Leave
-  </button>
+    <button onclick="inviteUser()">
+      👋 Invite friends
+    </button>
+
+    <button onclick="showComingSoon()">
+      🎮 Activities
+    </button>
+
+    <button onclick="showComingSoon()">
+      ⚙️ Room settings
+    </button>
+
+  </div>
+
+
+  <!-- BOTTOM -->
+
+  <div class="bottom">
+
+    <div class="notice">
+
+      <div class="info">
+        i
+      </div>
+
+      <div class="notice-text">
+        Texting in this room won't be saved after the room ends.
+      </div>
+
+      <button
+        class="notice-toggle"
+        onclick="toggleNotice()">
+        ˄
+      </button>
+
+    </div>
+
+
+    <div class="controls">
+
+      <input
+        id="messageInput"
+        class="input"
+        placeholder="Enter message..."
+        autocomplete="off"
+        onkeydown="handleMessage(event)">
+
+
+      <button
+        class="control"
+        onclick="showComingSoon()"
+        title="Activities">
+        🚀
+      </button>
+
+
+      <button
+        class="control"
+        onclick="showComingSoon()"
+        title="Voice effects">
+        〽
+      </button>
+
+
+      <button
+        id="micButton"
+        class="control mic"
+        onclick="toggleMic()"
+        title="Microphone">
+        🎙
+      </button>
+
+
+      <button
+        class="control menu"
+        onclick="toggleMenu()"
+        title="Menu">
+
+        ⠿
+
+        <span class="red-dot"></span>
+
+      </button>
+
+
+      <button
+        class="hide"
+        onclick="hideRoom()">
+        Hide
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
 
 <script>
 
-const SUPABASE_URL =
-"https://riversitunmzvuprecbt.supabase.co";
+/* =========================
+   STATE
+========================= */
 
-const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+let micOn = true;
+let minimized = false;
+let noticeOpen = true;
 
-const supabaseClient =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true
-    }
-  }
-);
 
+/* =========================
+   MIC
+========================= */
 
-let currentUser = null;
-let room = null;
-let micOn = false;
+function toggleMic(){
 
+  micOn = !micOn;
 
-/* GET ROOM ID */
+  const button =
+    document.getElementById("micButton");
 
-const params =
-new URLSearchParams(window.location.search);
+  if(micOn){
 
-const roomId =
-params.get("id");
-
-
-/* START */
-
-async function start(){
-
-  if(!roomId){
-    window.location.replace("home.html");
-    return;
-  }
-
-  const {
-    data:{
-      session
-    }
-  } =
-  await supabaseClient.auth.getSession();
-
-  if(!session){
-    window.location.replace("index.html");
-    return;
-  }
-
-  currentUser =
-  session.user;
-
-  await loadRoom();
-}
-
-
-/* LOAD ROOM */
-
-async function loadRoom(){
-
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("rooms")
-    .select(
-      "id,owner_id,name,visibility,created_at"
-    )
-    .eq("id",roomId)
-    .maybeSingle();
-
-
-  if(error){
-
-    console.error(error);
-
-    alert("Couldn't load room.");
-
-    window.location.replace("home.html");
-
-    return;
-  }
-
-
-  if(!data){
-
-    alert("Room not found.");
-
-    window.location.replace("home.html");
-
-    return;
-  }
-
-
-  room = data;
-
-
-  document.getElementById("roomName")
-    .textContent = room.name;
-
-  document.getElementById("heroName")
-    .textContent = room.name;
-
-  document.getElementById("roomStatus")
-    .textContent =
-      room.visibility === "private"
-      ? "🔒 Private room"
-      : "🌐 Public room";
-
-  document.getElementById("heroMeta")
-    .textContent =
-      room.visibility === "private"
-      ? "Private Connect room"
-      : "Public Connect room";
-
-
-  document.getElementById("visibility")
-    .textContent =
-      room.visibility;
-
-
-  document.getElementById("roomIdText")
-    .textContent =
-      room.id.slice(0,8) + "...";
-
-
-  document.getElementById("created")
-    .textContent =
-      new Date(room.created_at)
-      .toLocaleDateString();
-
-
-  renderOwner();
-
-
-  document.getElementById("loading")
-    .classList.add("hidden");
-}
-
-
-/* OWNER */
-
-async function renderOwner(){
-
-  const box =
-    document.getElementById("participants");
-
-
-  let username =
-    currentUser.email
-    ?.split("@")[0] ||
-    "User";
-
-  let avatar =
-    "https://ui-avatars.com/api/?name=" +
-    encodeURIComponent(username) +
-    "&background=29292b&color=fff";
-
-
-  const {
-    data
-  } =
-  await supabaseClient
-    .from("profiles")
-    .select("username,avatar_url")
-    .eq("id",room.owner_id)
-    .maybeSingle();
-
-
-  if(data){
-
-    username =
-      data.username ||
-      username;
-
-    avatar =
-      data.avatar_url ||
-      "https://ui-avatars.com/api/?name=" +
-      encodeURIComponent(username) +
-      "&background=29292b&color=fff";
-  }
-
-
-  const isOwner =
-    room.owner_id === currentUser.id;
-
-
-  box.innerHTML = `
-
-    <div class="person">
-
-      <div class="avatar">
-        <img
-          src="${escapeHTML(avatar)}"
-          alt="">
-      </div>
-
-      <div class="person-name">
-        ${escapeHTML(username)}
-      </div>
-
-      <div class="person-state">
-        🟢 In room
-      </div>
-
-      ${
-        isOwner
-        ? `<div class="owner">ROOM OWNER</div>`
-        : ""
-      }
-
-    </div>
-
-  `;
-}
-
-
-/* MIC UI */
-
-async function toggleMic(){
-
-  if(!micOn){
-
-    try{
-
-      await navigator.mediaDevices
-        .getUserMedia({
-          audio:true
-        });
-
-      micOn = true;
-
-      const btn =
-        document.getElementById("micButton");
-
-      btn.textContent =
-        "🎙 Mic On";
-
-      btn.classList.add("active");
-
-    }catch(error){
-
-      console.error(error);
-
-      alert(
-        "Microphone permission is required."
-      );
-    }
+    button.classList.remove("muted");
+    button.textContent="🎙";
 
   }else{
 
-    micOn = false;
+    button.classList.add("muted");
+    button.textContent="🔇";
 
-    const btn =
-      document.getElementById("micButton");
-
-    btn.textContent =
-      "🎙 Mic Off";
-
-    btn.classList.remove("active");
   }
+
 }
 
 
-/* SHARE */
+/* =========================
+   MINIMIZE
+========================= */
 
-async function shareRoom(){
+function toggleMinimize(){
+
+  minimized = !minimized;
+
+  const room =
+    document.getElementById("room");
+
+  const button =
+    document.querySelector(".header-btn");
+
+  room.classList.toggle(
+    "minimized",
+    minimized
+  );
+
+  button.textContent =
+    minimized ? "⌃" : "˅";
+
+}
+
+
+/* =========================
+   NOTICE
+========================= */
+
+function toggleNotice(){
+
+  noticeOpen = !noticeOpen;
+
+  const notice =
+    document.querySelector(".notice");
+
+  const toggle =
+    document.querySelector(".notice-toggle");
+
+  if(noticeOpen){
+
+    notice.style.maxHeight="100px";
+    toggle.textContent="˄";
+
+  }else{
+
+    notice.style.maxHeight="0";
+    notice.style.minHeight="0";
+    notice.style.padding="0";
+    notice.style.marginBottom="5px";
+    toggle.textContent="˅";
+
+  }
+
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+function toggleMenu(){
+
+  const menu =
+    document.getElementById("menuPopup");
+
+  menu.classList.toggle("show");
+
+}
+
+
+/* =========================
+   INVITE
+========================= */
+
+function inviteUser(){
 
   const url =
     window.location.href;
 
-  if(navigator.share){
+  if(
+    navigator.clipboard
+  ){
 
-    try{
-
-      await navigator.share({
-        title:"Join my Connect room",
-        text:"Join my room on Connect 🎙",
-        url:url
+    navigator.clipboard.writeText(url)
+      .then(()=>{
+        alert(
+          "Room invite link copied! 👋"
+        );
+      })
+      .catch(()=>{
+        alert(
+          "Invite link: "+url
+        );
       });
-
-    }catch(error){}
 
   }else{
 
-    await navigator.clipboard.writeText(url);
+    alert(
+      "Invite link: "+url
+    );
 
-    alert("Room link copied!");
   }
+
 }
 
 
-/* INFO */
+/* =========================
+   CHAT
+========================= */
 
-function roomInfo(){
+function handleMessage(event){
+
+  if(event.key !== "Enter"){
+    return;
+  }
+
+  const input =
+    document.getElementById(
+      "messageInput"
+    );
+
+  const text =
+    input.value.trim();
+
+  if(!text){
+    return;
+  }
+
+  const messages =
+    document.getElementById(
+      "chatMessages"
+    );
+
+  const msg =
+    document.createElement("div");
+
+  msg.className="chat-msg";
+
+  msg.textContent=text;
+
+  messages.appendChild(msg);
+
+  input.value="";
+
+  document
+    .getElementById("chatPanel")
+    .classList.add("show");
+
+  messages.scrollTop =
+    messages.scrollHeight;
+
+}
+
+
+/* =========================
+   HIDE
+========================= */
+
+function hideRoom(){
+
+  document.querySelector(
+    ".bottom"
+  ).style.display="none";
+
+  document.querySelector(
+    ".participants"
+  ).style.display="none";
+
+  document.querySelector(
+    ".header"
+  ).style.opacity=".65";
+
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+function showNotice(){
+
+  document.getElementById(
+    "menuPopup"
+  ).classList.remove("show");
 
   alert(
-    "Room: " +
-    room.name +
-    "\n\nRoom ID: " +
-    room.id
+    "Messages in this Talk room are temporary and are not saved after the room ends."
   );
+
 }
 
 
-/* LEAVE */
+/* =========================
+   COMING SOON
+========================= */
 
-function leaveRoom(){
+function showComingSoon(){
 
-  window.location.replace("home.html");
+  document.getElementById(
+    "menuPopup"
+  ).classList.remove("show");
+
+  alert(
+    "This Connect feature is coming soon 🚀"
+  );
+
 }
 
 
-/* ESCAPE */
+/* =========================
+   CLOSE POPUPS
+========================= */
 
-function escapeHTML(value){
+document.addEventListener(
+  "click",
+  function(event){
 
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+    if(
+      !event.target.closest(".menu") &&
+      !event.target.closest(".popup")
+    ){
 
+      document
+        .getElementById("menuPopup")
+        .classList.remove("show");
 
-/* AUTH */
-
-supabaseClient.auth.onAuthStateChange(
-  (event,session)=>{
-
-    if(event === "SIGNED_OUT"){
-
-      window.location.replace(
-        "index.html"
-      );
     }
 
   }
 );
-
-
-start();
 
 </script>
 
