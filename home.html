@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101014">
 <title>Connect</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,23 +15,10 @@
   -webkit-tap-highlight-color:transparent;
 }
 
-:root{
-  --bg:#101014;
-  --card:#1b1b21;
-  --card2:#222229;
-  --border:#2d2d35;
-  --text:#f7f7fa;
-  --muted:#9696a3;
-  --blue:#5b8cff;
-  --green:#45d483;
-}
-
 body{
-  background:
-    radial-gradient(circle at 50% -10%,rgba(91,140,255,.14),transparent 38%),
-    var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#09090d;
+  color:#fff;
   min-height:100vh;
 }
 
@@ -43,49 +29,68 @@ button,input{
 button{
   border:0;
   cursor:pointer;
-  color:inherit;
 }
 
+.app{
+  width:100%;
+  max-width:650px;
+  min-height:100vh;
+  margin:auto;
+  padding-bottom:82px;
+}
+
+/* LOADING */
 #loading{
   position:fixed;
   inset:0;
   z-index:9999;
+  background:#09090d;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#101014;
 }
 
-.loader-logo{
-  width:62px;
-  height:62px;
-  animation:pulse 1.2s infinite;
+.loaderBox{
+  text-align:center;
 }
 
-@keyframes pulse{
-  0%,100%{transform:scale(.92);opacity:.6}
-  50%{transform:scale(1);opacity:1}
+.loaderLogo{
+  width:64px;
+  height:64px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#7668ff,#3b91ff);
+  font-size:32px;
+  font-weight:900;
+  box-shadow:0 0 35px rgba(95,105,255,.35);
 }
 
-.app{
-  max-width:650px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:92px;
+.spinner{
+  width:29px;
+  height:29px;
+  margin:20px auto 0;
+  border:3px solid #292933;
+  border-top-color:#7b6cff;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
 }
 
 /* HEADER */
-
 .header{
-  height:72px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 18px;
   position:sticky;
   top:0;
   z-index:20;
-  background:rgba(16,16,20,.86);
+  padding:17px 16px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:rgba(9,9,13,.93);
   backdrop-filter:blur(18px);
 }
 
@@ -93,73 +98,63 @@ button{
   display:flex;
   align-items:center;
   gap:10px;
-  font-weight:800;
+}
+
+.brandLogo{
+  width:41px;
+  height:41px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#7668ff,#3b91ff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:0 0 22px rgba(90,105,255,.25);
+}
+
+.brandText{
   font-size:21px;
+  font-weight:800;
 }
 
-.brand-logo{
-  width:35px;
-  height:35px;
-}
-
-.header-actions{
+.headerActions{
   display:flex;
   gap:7px;
 }
 
-.icon-btn{
+.iconBtn{
   width:39px;
   height:39px;
-  border-radius:13px;
-  background:#1b1b21;
-  border:1px solid var(--border);
+  border-radius:12px;
+  background:#17171f;
+  color:white;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:18px;
-  transition:.2s;
+  font-size:17px;
 }
 
-.icon-btn:active{
-  transform:scale(.9);
+.iconBtn:active{
+  transform:scale(.91);
 }
 
-/* CONTENT */
-
-.content{
-  padding:8px 16px 20px;
+/* SCREEN */
+.screen{
+  display:none;
+  padding:3px 16px 20px;
 }
 
-.section{
-  margin-top:25px;
-}
-
-.section-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:13px;
-}
-
-.section-title{
-  font-size:18px;
-  font-weight:750;
-}
-
-.section-action{
-  background:transparent;
-  color:#7ea0ff;
-  font-size:14px;
-  font-weight:650;
+.screen.active{
+  display:block;
 }
 
 /* STORIES */
-
 .stories{
   display:flex;
-  gap:15px;
+  gap:14px;
   overflow-x:auto;
-  padding:4px 1px 8px;
+  padding:12px 2px 20px;
   scrollbar-width:none;
 }
 
@@ -168,748 +163,584 @@ button{
 }
 
 .story{
-  min-width:67px;
+  min-width:64px;
   text-align:center;
 }
 
-.avatar-ring{
-  width:58px;
-  height:58px;
-  margin:auto;
-  border-radius:50%;
-  padding:2px;
-  background:linear-gradient(135deg,#ff4fa3,#ffd15c,#5c91ff);
-}
-
-.avatar-ring.online{
-  background:linear-gradient(135deg,#35e88a,#5c91ff);
-}
-
-.avatar-ring.blue{
-  background:linear-gradient(135deg,#4e9fff,#766bff);
-}
-
-.avatar{
-  width:100%;
-  height:100%;
+.storyAvatar{
+  width:56px;
+  height:56px;
   border-radius:50%;
   object-fit:cover;
-  background:#303039;
-  border:3px solid #17171c;
+  border:3px solid #695dff;
+  padding:2px;
+  background:#171720;
+  display:block;
+  margin:auto;
 }
 
-.story-name{
-  margin-top:6px;
+.storyName{
+  margin-top:7px;
   font-size:11px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.story-status{
-  color:var(--muted);
+.storySub{
+  color:#777783;
   font-size:9px;
-  margin-top:2px;
+  margin-top:3px;
 }
 
-/* NOTICE */
+/* CARD */
+.card{
+  background:#15151d;
+  border:1px solid #24242f;
+  border-radius:20px;
+  padding:17px;
+  margin-bottom:14px;
+}
 
 .notice{
-  margin-top:22px;
-  background:linear-gradient(135deg,#20212a,#191a20);
-  border:1px solid #30313b;
-  border-radius:18px;
-  padding:15px;
-  position:relative;
+  background:linear-gradient(135deg,#171722,#111119);
 }
 
-.notice-top{
+.noticeTop{
   display:flex;
-  gap:11px;
+  align-items:flex-start;
+  justify-content:space-between;
 }
 
-.notice-icon{
-  width:38px;
-  height:38px;
-  flex-shrink:0;
-  border-radius:12px;
-  background:#2a2c39;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.noticeTitle{
+  font-size:15px;
+  font-weight:800;
 }
 
-.notice-title{
-  font-size:14px;
-  font-weight:700;
-}
-
-.notice-text{
-  color:var(--muted);
+.noticeText{
+  color:#898995;
   font-size:12px;
   line-height:1.5;
-  margin-top:4px;
-  padding-right:15px;
+  margin-top:6px;
 }
 
-.notice-close{
-  position:absolute;
-  right:12px;
-  top:10px;
+.close{
   background:none;
-  color:#777784;
-  font-size:18px;
+  color:#777783;
+  font-size:21px;
 }
 
 .learn{
-  display:inline-block;
-  margin-top:12px;
-  color:#789aff;
+  color:#8175ff;
+  font-size:12px;
+  font-weight:700;
+  margin-top:13px;
+}
+
+/* SECTION */
+.sectionTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:22px 2px 11px;
+}
+
+.sectionTitle h2{
+  font-size:18px;
+}
+
+.smallBtn{
+  color:#8b7fff;
+  background:#1a1926;
+  padding:8px 12px;
+  border-radius:10px;
   font-size:12px;
   font-weight:700;
 }
 
 /* LOBBY */
-
-.room{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:19px;
-  padding:14px;
+.lobby{
   display:flex;
   align-items:center;
-  gap:12px;
-  transition:.2s;
+  gap:13px;
 }
 
-.room:active{
-  transform:scale(.985);
-}
-
-.room-avatar{
-  width:49px;
-  height:49px;
-  border-radius:15px;
+.roomAvatar{
+  width:52px;
+  height:52px;
+  border-radius:16px;
   object-fit:cover;
-  background:#303039;
+  background:#20202a;
 }
 
-.room-info{
+.roomInfo{
   flex:1;
-  min-width:0;
 }
 
-.room-name{
-  font-weight:700;
+.roomName{
   font-size:14px;
+  font-weight:800;
 }
 
-.room-status{
+.roomStatus{
   display:flex;
   align-items:center;
   gap:5px;
-  color:var(--muted);
+  margin-top:6px;
+  color:#55df8a;
   font-size:11px;
-  margin-top:5px;
 }
 
-.green-dot{
+.dot{
   width:7px;
   height:7px;
-  background:var(--green);
+  background:#55df8a;
   border-radius:50%;
-  box-shadow:0 0 8px rgba(69,212,131,.7);
 }
 
-.open-btn{
-  background:#303b58;
-  color:#8eacff;
+.openBtn{
+  background:#6659ff;
+  color:#fff;
   padding:9px 14px;
   border-radius:11px;
   font-size:12px;
   font-weight:700;
 }
 
-.empty-room{
-  margin-top:10px;
-  border:1px dashed #34343d;
-  border-radius:18px;
-  padding:20px;
+/* EMPTY */
+.empty{
   text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
+  padding:25px 10px;
+  color:#777783;
 }
 
-/* PRIVATE */
+.emptyIcon{
+  font-size:30px;
+  margin-bottom:9px;
+}
 
-.group-card{
+.emptyText{
+  font-size:13px;
+}
+
+/* GROUP */
+.group{
   display:flex;
   align-items:center;
   gap:12px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:14px;
 }
 
-.group-icon{
-  width:48px;
-  height:48px;
+.groupIcon{
+  width:50px;
+  height:50px;
   border-radius:15px;
-  background:linear-gradient(135deg,#424250,#292934);
+  background:#25233b;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:23px;
 }
 
-.group-info{
-  flex:1;
-}
-
-.group-name{
+.groupName{
   font-size:14px;
-  font-weight:700;
-}
-
-.group-sub{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:4px;
-}
-
-/* BOTTOM NAV */
-
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(650px,100%);
-  padding:9px 12px calc(9px + env(safe-area-inset-bottom));
-  background:rgba(18,18,23,.94);
-  backdrop-filter:blur(22px);
-  border-top:1px solid #292930;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  z-index:100;
-}
-
-.nav-btn{
-  background:none;
-  color:#70707c;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-size:10px;
-  position:relative;
-}
-
-.nav-icon{
-  font-size:20px;
-  line-height:22px;
-}
-
-.nav-btn.active{
-  color:#fff;
-}
-
-.nav-btn.active .nav-icon{
-  filter:drop-shadow(0 0 7px rgba(112,150,255,.55));
-}
-
-.badge{
-  position:absolute;
-  top:-2px;
-  margin-left:25px;
-  min-width:15px;
-  height:15px;
-  padding:0 4px;
-  border-radius:20px;
-  background:#ff527c;
-  color:white;
-  font-size:9px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* SCREENS */
-
-.screen{
-  display:none;
-  animation:fadeUp .25s ease;
-}
-
-.screen.active{
-  display:block;
-}
-
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(7px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-/* SUB HEADER */
-
-.sub-header{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  padding:18px 0 5px;
-}
-
-.back-btn{
-  width:39px;
-  height:39px;
-  border-radius:12px;
-  background:var(--card);
-  border:1px solid var(--border);
-  font-size:21px;
-}
-
-.page-title{
-  font-size:21px;
   font-weight:800;
 }
 
-/* ADD FRIEND */
+.groupSub{
+  color:#777783;
+  font-size:11px;
+  margin-top:5px;
+}
 
+/* SEARCH */
 .search{
-  margin-top:18px;
-  height:48px;
+  width:100%;
+  background:#171720;
+  border:1px solid #252530;
+  color:#fff;
+  padding:14px 16px;
+  border-radius:14px;
+  outline:none;
+  margin:10px 0 16px;
+}
+
+.search:focus{
+  border-color:#6257ff;
+}
+
+.search::placeholder{
+  color:#666671;
+}
+
+/* ADD FRIEND */
+.back{
   display:flex;
   align-items:center;
   gap:10px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:0 14px;
+  margin-bottom:18px;
 }
 
-.search span{
-  color:#777783;
-}
-
-.search input{
-  flex:1;
-  background:none;
-  border:0;
-  outline:none;
+.back button{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#171720;
   color:white;
-  font-size:14px;
+  font-size:20px;
 }
 
-.search input::placeholder{
-  color:#6d6d78;
+.back h1{
+  font-size:21px;
 }
 
-.share-row{
-  display:flex;
-  gap:13px;
-  margin-top:18px;
+.shareRow{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
 }
 
 .share{
-  flex:1;
-  min-width:0;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:11px 5px;
+  background:#171720;
+  border:1px solid #242430;
+  padding:13px 4px;
+  border-radius:14px;
   text-align:center;
   font-size:11px;
 }
 
-.share-icon{
-  font-size:21px;
-  margin-bottom:5px;
+.shareIcon{
+  font-size:20px;
+  margin-bottom:6px;
 }
 
-.my-id{
-  margin-top:20px;
-  background:linear-gradient(135deg,#202431,#1a1b22);
-  border:1px solid #303544;
-  border-radius:19px;
-  padding:17px;
-}
-
-.small-label{
-  color:var(--muted);
-  font-size:11px;
-}
-
-.id-row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:7px;
-}
-
-.user-id{
-  font-size:18px;
-  font-weight:800;
-  flex:1;
-}
-
-.copy-btn{
-  background:#2c3a5b;
-  color:#8cabff;
-  border-radius:10px;
-  padding:8px 11px;
-  font-size:11px;
-  font-weight:700;
-}
-
-.link-banner{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px solid #30313a;
+.myId{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
 }
 
-.link-text{
-  font-size:12px;
-  color:#dddde5;
-}
-
-.link-btn{
-  background:#fff;
-  color:#111;
-  border-radius:9px;
-  padding:8px 12px;
+.myIdLabel{
+  color:#777783;
   font-size:11px;
-  font-weight:700;
+  margin-bottom:5px;
 }
 
-.recommendations{
-  margin-top:25px;
+.myIdValue{
+  font-size:14px;
+  font-weight:800;
+}
+
+.copyBtn{
+  background:#6659ff;
+  color:#fff;
+  padding:9px 13px;
+  border-radius:10px;
+  font-size:11px;
 }
 
 .person{
   display:flex;
   align-items:center;
-  gap:11px;
+  gap:12px;
   padding:13px 0;
-  border-bottom:1px solid #24242b;
+  border-bottom:1px solid #22222c;
 }
 
-.person-avatar{
-  width:47px;
-  height:47px;
+.person:last-child{
+  border-bottom:0;
+}
+
+.personAvatar{
+  width:45px;
+  height:45px;
   border-radius:50%;
-  object-fit:cover;
-  background:#303039;
+  background:#272733;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
 }
 
-.person-info{
+.personInfo{
   flex:1;
-  min-width:0;
 }
 
-.person-name{
+.personName{
   font-size:13px;
   font-weight:700;
 }
 
-.person-id{
+.personSub{
+  color:#70707c;
   font-size:10px;
-  color:var(--muted);
-  margin-top:3px;
+  margin-top:4px;
 }
 
-.person-context{
-  font-size:10px;
-  color:#7e98d9;
-  margin-top:3px;
-}
-
-.add-btn{
-  background:#527df4;
-  padding:8px 11px;
+.addBtn{
+  background:#6257ff;
+  color:#fff;
+  padding:8px 12px;
   border-radius:10px;
-  font-size:10px;
-  font-weight:700;
-}
-
-.dismiss{
-  background:none;
-  color:#777783;
-  font-size:18px;
-  padding:5px;
-}
-
-/* CHAT */
-
-.chat-list{
-  margin-top:12px;
-}
-
-.chat-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:13px 0;
-  border-bottom:1px solid #24242b;
-}
-
-.chat-avatar{
-  width:51px;
-  height:51px;
-  border-radius:16px;
-  object-fit:cover;
-  background:#303039;
-}
-
-.chat-info{
-  flex:1;
-  min-width:0;
-}
-
-.chat-name{
-  font-size:14px;
-  font-weight:700;
-}
-
-.chat-preview{
-  margin-top:5px;
-  color:var(--muted);
   font-size:11px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
-.chat-time{
-  color:#686873;
-  font-size:9px;
-  align-self:flex-start;
-  margin-top:5px;
-}
-
-.unread{
-  width:8px;
-  height:8px;
-  background:#5c89ff;
-  border-radius:50%;
-  margin-left:4px;
-}
-
-/* PROFILE */
-
-.profile-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.profile-top{
-  text-align:center;
-  margin-top:25px;
-}
-
-.profile-avatar-ring{
-  width:112px;
-  height:112px;
-  padding:3px;
-  margin:auto;
-  border-radius:50%;
-  background:linear-gradient(135deg,#ff4fa3,#ffc857,#667fff);
-}
-
-.profile-avatar{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  object-fit:cover;
-  background:#303039;
-  border:4px solid #17171c;
-}
-
-.profile-name{
-  font-size:21px;
+/* ENTERTAINMENT */
+.pageTitle{
+  font-size:23px;
   font-weight:800;
+  margin:12px 0 18px;
+}
+
+.hero{
+  background:linear-gradient(135deg,#211d4b,#141425);
+  border:1px solid #302b59;
+  border-radius:21px;
+  padding:22px;
+}
+
+.heroIcon{
+  font-size:35px;
+}
+
+.hero h1{
+  font-size:22px;
   margin-top:13px;
 }
 
-.profile-id{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  color:#92929e;
-  font-size:11px;
-  margin-top:6px;
-}
-
-.mini-copy{
-  background:none;
-  color:#7e9eff;
-}
-
-.bio{
-  color:#777783;
+.hero p{
+  color:#8b8b98;
   font-size:12px;
-  margin-top:9px;
+  line-height:1.5;
+  margin-top:7px;
 }
 
-.status-card{
-  margin-top:20px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:14px;
-  color:#777783;
+.hero button{
+  margin-top:15px;
+  background:#7568ff;
+  color:#fff;
+  padding:11px 15px;
+  border-radius:11px;
+  font-weight:700;
   font-size:12px;
 }
 
-.actions{
-  display:flex;
-  justify-content:center;
-  gap:28px;
-  margin-top:20px;
+.modeGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
 }
 
-.profile-action{
-  text-align:center;
-  color:#9a9aa5;
+.mode{
+  background:#15151d;
+  border:1px solid #242430;
+  border-radius:17px;
+  padding:18px;
+}
+
+.modeIcon{
+  font-size:25px;
+}
+
+.mode h3{
+  font-size:14px;
+  margin-top:10px;
+}
+
+.mode p{
+  color:#777783;
   font-size:10px;
+  margin-top:5px;
 }
 
-.action-circle{
-  width:47px;
-  height:47px;
-  border-radius:50%;
-  background:var(--card2);
-  border:1px solid var(--border);
+/* CHAT */
+.chat{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 4px;
+  border-bottom:1px solid #22222c;
+}
+
+.chatAvatar{
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  background:#22222d;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:19px;
-  margin:auto auto 6px;
+  font-size:21px;
 }
 
-.profile-section{
-  margin-top:27px;
+.chatInfo{
+  flex:1;
 }
 
-.frame-row{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  scrollbar-width:none;
+.chatName{
+  font-size:13px;
+  font-weight:800;
+}
+
+.chatMsg{
+  color:#777783;
+  font-size:11px;
+  margin-top:5px;
+}
+
+.chatTime{
+  color:#686873;
+  font-size:9px;
+}
+
+/* PROFILE */
+.profileTop{
+  text-align:center;
+  padding:15px 0 22px;
+}
+
+.bigAvatar{
+  width:92px;
+  height:92px;
+  border-radius:28px;
+  object-fit:cover;
+  background:#20202b;
+  border:3px solid #665bff;
   padding:3px;
 }
 
-.frame-row::-webkit-scrollbar{
-  display:none;
+.profileName{
+  font-size:21px;
+  font-weight:800;
+  margin-top:12px;
+}
+
+.profileId{
+  color:#777783;
+  font-size:12px;
+  margin-top:5px;
+}
+
+.status{
+  color:#9999a4;
+  font-size:12px;
+  margin-top:8px;
+}
+
+.profileActions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:17px;
+}
+
+.profileAction{
+  background:#171720;
+  border:1px solid #242430;
+  padding:12px 4px;
+  border-radius:13px;
+  color:#fff;
+  font-size:11px;
+}
+
+.frameGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
 .frame{
-  width:62px;
-  height:62px;
-  flex-shrink:0;
+  aspect-ratio:1;
   border-radius:50%;
-  border:1px dashed #4a4a54;
+  border:1px dashed #454551;
   display:flex;
   align-items:center;
   justify-content:center;
-  color:#6d6d78;
-  font-size:21px;
+  color:#555560;
+  font-size:20px;
 }
 
 .stats{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(3,1fr);
   gap:10px;
-  margin-top:12px;
 }
 
 .stat{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:15px;
+  background:#171720;
+  border-radius:14px;
+  padding:15px 8px;
+  text-align:center;
 }
 
-.stat-label{
-  color:var(--muted);
-  font-size:10px;
-}
-
-.stat-value{
-  font-size:23px;
+.statNum{
+  font-size:18px;
   font-weight:800;
+}
+
+.statText{
+  color:#777783;
+  font-size:9px;
   margin-top:5px;
 }
 
-.game{
-  margin-top:10px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:var(--card);
-  border:1px solid var(--border);
-  padding:12px;
-  border-radius:15px;
+/* NAV */
+.bottomNav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:650px;
+  height:70px;
+  background:rgba(17,17,24,.97);
+  border-top:1px solid #252530;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  z-index:100;
+  backdrop-filter:blur(18px);
 }
 
-.game-icon{
-  width:38px;
-  height:38px;
-  border-radius:11px;
-  background:#2b2c35;
+.navBtn{
+  background:none;
+  color:#656571;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
+  gap:5px;
+  font-size:10px;
 }
 
-.game-name{
-  font-size:12px;
-  font-weight:700;
+.navIcon{
+  font-size:20px;
 }
 
-.game-date{
-  color:var(--muted);
-  font-size:9px;
-  margin-top:3px;
-}
-
-.logout{
-  width:100%;
-  margin-top:25px;
-  padding:13px;
-  border-radius:14px;
-  background:#241b20;
-  color:#ff718e;
-  font-weight:700;
+.navBtn.active{
+  color:#8175ff;
 }
 
 /* TOAST */
-
-.toast{
+#toast{
   position:fixed;
   left:50%;
-  bottom:90px;
-  transform:translate(-50%,20px);
-  background:#292931;
-  border:1px solid #3b3b45;
-  padding:10px 15px;
+  bottom:88px;
+  transform:translateX(-50%) translateY(20px);
+  background:#252531;
+  color:#fff;
+  padding:11px 16px;
   border-radius:12px;
   font-size:12px;
   opacity:0;
   pointer-events:none;
   transition:.25s;
-  z-index:999;
+  z-index:500;
+  white-space:nowrap;
 }
 
-.toast.show{
+#toast.show{
   opacity:1;
-  transform:translate(-50%,0);
+  transform:translateX(-50%) translateY(0);
 }
 </style>
 </head>
@@ -917,889 +748,496 @@ button{
 <body>
 
 <div id="loading">
-  <svg class="loader-logo" viewBox="0 0 100 100">
-    <defs>
-      <linearGradient id="lg" x1="0" x2="1">
-        <stop offset="0" stop-color="#6d8cff"/>
-        <stop offset="1" stop-color="#a16dff"/>
-      </linearGradient>
-    </defs>
-    <path d="M50 10C27 10 10 27 10 50s17 40 40 40c23 0 40-17 40-40S73 10 50 10Zm0 13c15 0 27 12 27 27S65 77 50 77 23 65 23 50s12-27 27-27Z" fill="url(#lg)"/>
-    <circle cx="50" cy="50" r="10" fill="#101014"/>
-  </svg>
+  <div class="loaderBox">
+    <div class="loaderLogo">C</div>
+    <div class="spinner"></div>
+  </div>
 </div>
 
 <div class="app">
 
 <!-- HOME -->
-<main id="homeScreen" class="screen active">
+<section id="homeScreen" class="screen active">
 
 <header class="header">
 
 <div class="brand">
-<svg class="brand-logo" viewBox="0 0 100 100">
-<defs>
-<linearGradient id="logoGrad" x1="0" x2="1">
-<stop offset="0" stop-color="#6d8cff"/>
-<stop offset="1" stop-color="#a16dff"/>
-</linearGradient>
-</defs>
-<path d="M50 8C26.8 8 8 26.8 8 50s18.8 42 42 42 42-18.8 42-42S73.2 8 50 8Zm0 14c15.5 0 28 12.5 28 28S65.5 78 50 78 22 65.5 22 50s12.5-28 28-28Z" fill="url(#logoGrad)"/>
-<circle cx="50" cy="50" r="11" fill="#101014"/>
-</svg>
-Connect
+  <div class="brandLogo">C</div>
+  <div class="brandText">Connect</div>
 </div>
 
-<div class="header-actions">
-<button class="icon-btn">🚀</button>
-<button class="icon-btn">☑️</button>
-<button class="icon-btn">🛍️</button>
-<button class="icon-btn" onclick="openAddFriend()">＋</button>
+<div class="headerActions">
+  <button class="iconBtn" onclick="showEntertainment()">🚀</button>
+  <button class="iconBtn">☑️</button>
+  <button class="iconBtn">🛍️</button>
+  <button class="iconBtn" onclick="showAddFriend()">＋</button>
 </div>
 
 </header>
 
-<div class="content">
-
 <div class="stories">
 
 <div class="story">
-<div class="avatar-ring online">
-<img id="storyAvatar" class="avatar">
-</div>
-<div id="storyName" class="story-name">You</div>
-<div class="story-status">Online</div>
-</div>
-
-<div class="story">
-<div class="avatar-ring">
-<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
-</div>
-<div class="story-name">Rohit</div>
-<div class="story-status">Online</div>
+<img id="storyAvatar"
+class="storyAvatar"
+src=""
+onerror="this.style.display='none'">
+<div id="storyName" class="storyName">You</div>
+<div class="storySub">Online</div>
 </div>
 
 <div class="story">
-<div class="avatar-ring blue">
-<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🎮</div>
-</div>
-<div class="story-name">RONY</div>
-<div class="story-status">Online</div>
+<div class="storyAvatar" style="display:flex;align-items:center;justify-content:center;font-size:22px;">🎮</div>
+<div class="storyName">Gaming</div>
+<div class="storySub">Explore</div>
 </div>
 
 <div class="story">
-<div class="avatar-ring">
-<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🔥</div>
-</div>
-<div class="story-name">Aditya</div>
-<div class="story-status">2h ago</div>
+<div class="storyAvatar" style="display:flex;align-items:center;justify-content:center;font-size:22px;">🔥</div>
+<div class="storyName">Friends</div>
+<div class="storySub">Online</div>
 </div>
 
 <div class="story">
-<div class="avatar-ring blue">
-<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-size:20px;">⚡</div>
-</div>
-<div class="story-name">Vivek</div>
-<div class="story-status">5h ago</div>
+<div class="storyAvatar" style="display:flex;align-items:center;justify-content:center;font-size:22px;">⚡</div>
+<div class="storyName">Rooms</div>
+<div class="storySub">Live</div>
 </div>
 
 </div>
 
-<div id="notice" class="notice">
+<div class="card notice">
 
-<button class="notice-close" onclick="closeNotice()">×</button>
-
-<div class="notice-top">
-
-<div class="notice-icon">ℹ️</div>
+<div class="noticeTop">
 
 <div>
-<div class="notice-title">Welcome to Connect</div>
+<div class="noticeTitle">Welcome to Connect 👋</div>
+<div class="noticeText">
+Meet friends, join gaming rooms and hang out together.
+</div>
+</div>
 
-<div class="notice-text">
-Your social gaming space is ready. Find friends,
-join lobbies and connect with your community.
+<button class="close">×</button>
+
 </div>
 
 <div class="learn">Learn more →</div>
-</div>
-
-</div>
-</div>
-
-
-<section class="section">
-
-<div class="section-head">
-<div class="section-title">Lobby</div>
-<button class="section-action">See all</button>
-</div>
-
-<div class="room">
-
-<img id="roomAvatar" class="room-avatar">
-
-<div class="room-info">
-<div id="roomName" class="room-name">Your Lobby</div>
-
-<div class="room-status">
-<span class="green-dot"></span>
-Waiting
-</div>
-</div>
-
-<button class="open-btn" onclick="toast('Lobby opening soon')">
-Open
-</button>
 
 </div>
 
-<div class="empty-room">
-Your online friends will be displayed here<br>
-Invite your friends 👋
+<div class="sectionTitle">
+<h2>Lobby</h2>
+<button class="smallBtn">Explore</button>
 </div>
 
-</section>
+<div class="card">
 
+<div class="lobby">
 
-<section class="section">
+<img id="roomAvatar"
+class="roomAvatar"
+src=""
+onerror="this.style.display='none'">
 
-<div class="section-head">
-<div class="section-title">Private</div>
+<div class="roomInfo">
+<div id="roomName" class="roomName">Your Lobby</div>
 
-<button class="section-action"
-onclick="toast('Group creation coming soon')">
-＋ Create
-</button>
+<div class="roomStatus">
+<span class="dot"></span>
+Waiting • Open
+</div>
 
 </div>
 
-<div class="group-card">
+<button class="openBtn">Open</button>
 
-<div class="group-icon">👥</div>
-
-<div class="group-info">
-<div class="group-name">My first group</div>
-<div class="group-sub">Private group · 1 member</div>
 </div>
 
-<span style="color:#777783;">›</span>
+</div>
+
+<div class="card empty">
+
+<div class="emptyIcon">👥</div>
+
+<div class="emptyText">
+Your online friends will be displayed here
+</div>
+
+<div class="learn">Invite your friends 👋</div>
+
+</div>
+
+<div class="sectionTitle">
+<h2>Private</h2>
+<button class="smallBtn">Create</button>
+</div>
+
+<div class="card group">
+
+<div class="groupIcon">👥</div>
+
+<div>
+<div class="groupName">Your first group</div>
+<div class="groupSub">Private • 0 members</div>
+</div>
 
 </div>
 
 </section>
-
-</div>
-</main>
 
 
 <!-- ADD FRIEND -->
+<section id="addFriendScreen" class="screen">
 
-<main id="addFriendScreen" class="screen">
-
-<div class="content">
-
-<div class="sub-header">
-
-<button class="back-btn"
-onclick="showScreen('homeScreen')">
-‹
-</button>
-
-<div class="page-title">
-Add friend
+<div class="back">
+<button onclick="showHome()">←</button>
+<h1>Add friend</h1>
 </div>
-
-</div>
-
-
-<div class="search">
-
-<span>⌕</span>
 
 <input
 id="friendSearch"
-type="text"
-placeholder="Search by ID">
+class="search"
+placeholder="Search by ID"
+oninput="filterPeople()">
 
+<div class="card">
+
+<div style="font-size:14px;font-weight:800;margin-bottom:12px;">
+Quick share
 </div>
 
+<div class="shareRow">
 
-<div class="share-row">
-
-<button class="share"
-onclick="toast('Instagram sharing')">
-<div class="share-icon">◎</div>
+<div class="share">
+<div class="shareIcon">📷</div>
 Instagram
-</button>
+</div>
 
-<button class="share"
-onclick="toast('Messenger sharing')">
-<div class="share-icon">💬</div>
+<div class="share">
+<div class="shareIcon">💬</div>
 Messenger
-</button>
+</div>
 
-<button class="share"
-onclick="toast('QR scanner coming soon')">
-<div class="share-icon">▦</div>
+<div class="share" onclick="shareID()">
+<div class="shareIcon">▦</div>
 QR Code
-</button>
+</div>
 
-<button class="share"
-onclick="shareID()">
-<div class="share-icon">↗</div>
+<div class="share" onclick="shareID()">
+<div class="shareIcon">↗</div>
 Others
+</div>
+
+</div>
+</div>
+
+<div class="card myId">
+
+<div>
+<div class="myIdLabel">My Connect ID</div>
+<div id="myId" class="myIdValue">Loading...</div>
+</div>
+
+<button class="copyBtn" onclick="copyID()">Copy</button>
+
+</div>
+
+<div class="card">
+
+<div style="font-size:14px;font-weight:800;">
+Link your account
+</div>
+
+<div class="noticeText">
+Connect your gaming account to find more friends.
+</div>
+
+<button class="smallBtn" style="margin-top:12px;">
+Link account
 </button>
 
 </div>
 
-
-<div class="my-id">
-
-<div class="small-label">
-My ID
+<div class="sectionTitle">
+<h2>People you may know</h2>
 </div>
 
-<div class="id-row">
-
-<div id="myId" class="user-id">
-Loading...
-</div>
-
-<button class="copy-btn"
-onclick="copyID()">
-Copy
-</button>
-
-</div>
-
-
-<div class="link-banner">
-
-<div class="link-text">
-🔗 Link X to Connect
-</div>
-
-<button class="link-btn"
-onclick="toast('Linking coming soon')">
-Link
-</button>
-
-</div>
-
-</div>
-
-
-<div class="recommendations">
-
-<div class="section-title">
-Friend recommendations
-</div>
-
+<div class="card">
 
 <div class="person">
+<div class="personAvatar">🎮</div>
 
-<div class="person-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-👤
+<div class="personInfo">
+<div class="personName">Gaming Friend</div>
+<div class="personSub">Suggested for you</div>
 </div>
 
-<div class="person-info">
-
-<div class="person-name">
-Rohit Raj
+<button class="addBtn">Add</button>
 </div>
-
-<div class="person-id">
-ID: rohit_raj
-</div>
-
-<div class="person-context">
-joins Scrims
-</div>
-
-</div>
-
-<button class="add-btn"
-onclick="toast('Friend request sent')">
-Add
-</button>
-
-<button class="dismiss">
-×
-</button>
-
-</div>
-
 
 <div class="person">
+<div class="personAvatar">⚡</div>
 
-<div class="person-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-🎮
+<div class="personInfo">
+<div class="personName">Pro Player</div>
+<div class="personSub">Gaming</div>
 </div>
 
-<div class="person-info">
-
-<div class="person-name">
-RONY
+<button class="addBtn">Add</button>
 </div>
-
-<div class="person-id">
-ID: rony_ff
-</div>
-
-<div class="person-context">
-had call before
-</div>
-
-</div>
-
-<button class="add-btn"
-onclick="toast('Friend request sent')">
-Add
-</button>
-
-<button class="dismiss">
-×
-</button>
-
-</div>
-
 
 <div class="person">
+<div class="personAvatar">🔥</div>
 
-<div class="person-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-⚡
+<div class="personInfo">
+<div class="personName">Squad Mate</div>
+<div class="personSub">Mutual connection</div>
 </div>
 
-<div class="person-info">
-
-<div class="person-name">
-Aditya
-</div>
-
-<div class="person-id">
-ID: aditya_07
-</div>
-
-<div class="person-context">
-joins Scrims
+<button class="addBtn">Add</button>
 </div>
 
 </div>
 
-<button class="add-btn"
-onclick="toast('Friend request sent')">
-Add
-</button>
-
-<button class="dismiss">
-×
-</button>
-
-</div>
-
-</div>
-
-</div>
-</main>
+</section>
 
 
 <!-- ENTERTAINMENT -->
+<section id="entertainmentScreen" class="screen">
 
-<main id="entertainmentScreen" class="screen">
+<div class="pageTitle">Entertainment</div>
 
-<div class="content">
+<div class="hero">
 
-<div class="sub-header">
-<div class="page-title">
-Entertainment
-</div>
-</div>
+<div class="heroIcon">🚀</div>
 
+<h1>Play. Talk. Connect.</h1>
 
-<div class="notice">
+<p>
+Join gaming rooms, create squads and spend time with your friends.
+</p>
 
-<div class="notice-top">
-
-<div class="notice-icon">
-🚀
-</div>
-
-<div>
-
-<div class="notice-title">
-Discover something new
-</div>
-
-<div class="notice-text">
-Games, activities and community experiences
-will appear here.
-</div>
+<button>Explore rooms</button>
 
 </div>
 
+<div class="sectionTitle">
+<h2>Gaming</h2>
 </div>
 
+<div class="modeGrid">
+
+<div class="mode">
+<div class="modeIcon">🎮</div>
+<h3>Game Rooms</h3>
+<p>Join active gaming rooms</p>
 </div>
 
-
-<section class="section">
-
-<div class="section-head">
-<div class="section-title">
-Games
-</div>
+<div class="mode">
+<div class="modeIcon">🔥</div>
+<h3>Scrims</h3>
+<p>Find your next match</p>
 </div>
 
-
-<div class="group-card"
-onclick="toast('Game lobby coming soon')">
-
-<div class="group-icon">
-🎮
+<div class="mode">
+<div class="modeIcon">🎤</div>
+<h3>Voice Rooms</h3>
+<p>Talk with your squad</p>
 </div>
 
-<div class="group-info">
-
-<div class="group-name">
-Gaming Lobby
+<div class="mode">
+<div class="modeIcon">🏆</div>
+<h3>Events</h3>
+<p>Upcoming activities</p>
 </div>
-
-<div class="group-sub">
-Find people to play with
-</div>
-
-</div>
-
-<span>›</span>
-
-</div>
-
-
-<div class="group-card"
-style="margin-top:10px;"
-onclick="toast('Scrims coming soon')">
-
-<div class="group-icon">
-🏆
-</div>
-
-<div class="group-info">
-
-<div class="group-name">
-Scrims
-</div>
-
-<div class="group-sub">
-Join a competitive room
-</div>
-
-</div>
-
-<span>›</span>
 
 </div>
 
 </section>
-
-</div>
-</main>
 
 
 <!-- CHAT -->
+<section id="chatScreen" class="screen">
 
-<main id="chatScreen" class="screen">
+<div class="pageTitle">Chat</div>
 
-<div class="content">
+<div class="chat">
 
-<div class="sub-header">
-<div class="page-title">
-Chat
-</div>
-</div>
+<div class="chatAvatar">👥</div>
 
-
-<div class="chat-list">
-
-<div class="chat-item">
-
-<div class="chat-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-👥
+<div class="chatInfo">
+<div class="chatName">Your first group</div>
+<div class="chatMsg">Send a first message!</div>
 </div>
 
-<div class="chat-info">
-
-<div class="chat-name">
-Fifa <span style="color:#777783;font-size:10px;">(8)</span>
-</div>
-
-<div class="chat-preview">
-RONY joined the group
-</div>
+<div class="chatTime">Now</div>
 
 </div>
 
-<div class="chat-time">
-9/28 21:15
+<div class="chat">
+
+<div class="chatAvatar">🎮</div>
+
+<div class="chatInfo">
+<div class="chatName">Gaming Squad</div>
+<div class="chatMsg">Start a conversation</div>
 </div>
 
-</div>
-
-
-<div class="chat-item">
-
-<div class="chat-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-🎮
-</div>
-
-<div class="chat-info">
-
-<div class="chat-name">
-RONY
-</div>
-
-<div class="chat-preview">
-Send a first message!
-</div>
+<div class="chatTime">—</div>
 
 </div>
 
-<div class="unread"></div>
+<div class="chat">
 
-<div class="chat-time">
-9/28
+<div class="chatAvatar">⚡</div>
+
+<div class="chatInfo">
+<div class="chatName">Connect Community</div>
+<div class="chatMsg">Welcome to Connect</div>
 </div>
 
-</div>
-
-
-<div class="chat-item">
-
-<div class="chat-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-👤
-</div>
-
-<div class="chat-info">
-
-<div class="chat-name">
-Rohit Raj
-</div>
-
-<div class="chat-preview">
-Let's play later
-</div>
-
-</div>
-
-<div class="chat-time">
-9/27
-</div>
-
-</div>
-
-
-<div class="chat-item">
-
-<div class="chat-avatar"
-style="display:flex;align-items:center;justify-content:center;font-size:22px;">
-⚡
-</div>
-
-<div class="chat-info">
-
-<div class="chat-name">
-Aditya
-</div>
-
-<div class="chat-preview">
-Voice room is open
-</div>
-
-</div>
-
-<div class="chat-time">
-9/26
-</div>
-
-</div>
-
-</div>
-
-</div>
-</main>
-
-
-<!-- PROFILE -->
-
-<main id="profileScreen" class="screen">
-
-<div class="content">
-
-<div class="profile-head">
-
-<div class="page-title">
-Profile
-</div>
-
-<button class="icon-btn"
-onclick="toast('Settings coming soon')">
-⚙️
-</button>
-
-</div>
-
-
-<div class="status-card">
-A quick note
-</div>
-
-
-<div class="profile-top">
-
-<div class="profile-avatar-ring">
-
-<img
-id="profileAvatar"
-class="profile-avatar">
-
-</div>
-
-
-<div id="profileName" class="profile-name">
-User
-</div>
-
-
-<div class="profile-id">
-
-<span id="profileID">
-ID
-</span>
-
-<button class="mini-copy"
-onclick="copyID()">
-▣
-</button>
-
-</div>
-
-
-<div class="bio">
-No bio
-</div>
-
-</div>
-
-
-<div class="actions">
-
-<button class="profile-action"
-onclick="toast('Edit profile coming soon')">
-
-<div class="action-circle">
-✎
-</div>
-
-Edit
-
-</button>
-
-
-<button class="profile-action"
-onclick="toast('Favorites coming soon')">
-
-<div class="action-circle">
-★
-</div>
-
-Favorite
-
-</button>
-
-
-<button class="profile-action"
-onclick="openAddFriend()">
-
-<div class="action-circle">
-♙
-</div>
-
-Add friend
-
-</button>
-
-</div>
-
-
-<section class="profile-section">
-
-<div class="section-head">
-
-<div class="section-title">
-Favorite Frame
-</div>
-
-</div>
-
-
-<div class="frame-row">
-
-<div class="frame">＋</div>
-<div class="frame">＋</div>
-<div class="frame">＋</div>
-<div class="frame">＋</div>
+<div class="chatTime">—</div>
 
 </div>
 
 </section>
 
 
-<section class="profile-section">
+<!-- PROFILE -->
+<section id="profileScreen" class="screen">
 
-<div class="section-head">
+<div class="pageTitle">Profile</div>
 
-<div class="section-title">
-Play History
+<div class="card profileTop">
+
+<img
+id="profileAvatar"
+class="bigAvatar"
+src=""
+onerror="this.style.display='none'">
+
+<div id="profileName" class="profileName">User</div>
+
+<div id="profileID" class="profileId">@user</div>
+
+<div class="status">A quick note</div>
+
+<div class="profileActions">
+
+<button class="profileAction">✏️ Edit</button>
+
+<button class="profileAction">⭐ Favorite</button>
+
+<button class="profileAction" onclick="showAddFriend()">
+＋ Friend
+</button>
+
 </div>
 
 </div>
 
+<div class="sectionTitle">
+<h2>Favorite Frame</h2>
+</div>
+
+<div class="card">
+
+<div class="frameGrid">
+<div class="frame">＋</div>
+<div class="frame">＋</div>
+<div class="frame">＋</div>
+<div class="frame">＋</div>
+</div>
+
+</div>
+
+<div class="sectionTitle">
+<h2>Play History & Stats</h2>
+</div>
 
 <div class="stats">
 
 <div class="stat">
-
-<div class="stat-label">
-Content Highlight
+<div class="statNum">0</div>
+<div class="statText">Games</div>
 </div>
-
-<div class="stat-value">
-0
-</div>
-
-</div>
-
 
 <div class="stat">
-
-<div class="stat-label">
-Launch count
+<div class="statNum">0</div>
+<div class="statText">Rooms</div>
 </div>
 
-<div class="stat-value">
-0
-</div>
-
-</div>
-
-</div>
-
-
-<div class="game">
-
-<div class="game-icon">
-🎮
-</div>
-
-<div>
-
-<div class="game-name">
-No recent games
-</div>
-
-<div class="game-date">
-Start playing to build your history
+<div class="stat">
+<div class="statNum">0</div>
+<div class="statText">Friends</div>
 </div>
 
 </div>
 
-</div>
-
-</section>
-
-
-<button class="logout"
-onclick="logout()">
+<button
+onclick="logout()"
+style="
+width:100%;
+margin-top:18px;
+padding:14px;
+border-radius:14px;
+background:#21171c;
+color:#ff6f7f;
+font-weight:700;
+">
 Log out
 </button>
 
-</div>
-
-</main>
+</section>
 
 </div>
 
 
 <!-- BOTTOM NAV -->
+<nav class="bottomNav">
 
-<nav class="bottom-nav">
-
-<button class="nav-btn active"
+<button
+id="navHome"
+class="navBtn active"
 onclick="navigate('homeScreen',this)">
-
-<div class="nav-icon">
-⌂
-</div>
-
+<div class="navIcon">⌂</div>
 Home
-
 </button>
 
-
-<button class="nav-btn"
+<button
+id="navEntertainment"
+class="navBtn"
 onclick="navigate('entertainmentScreen',this)">
-
-<div class="nav-icon">
-🚀
-</div>
-
+<div class="navIcon">🚀</div>
 Entertainment
-
 </button>
 
-
-<button class="nav-btn"
+<button
+id="navChat"
+class="navBtn"
 onclick="navigate('chatScreen',this)">
-
-<div class="nav-icon">
-▱
-</div>
-
-<span class="badge">
-1
-</span>
-
+<div class="navIcon">💬</div>
 Chat
-
 </button>
 
-
-<button class="nav-btn"
+<button
+id="navProfile"
+class="navBtn"
 onclick="navigate('profileScreen',this)">
-
-<div class="nav-icon">
-♙
-</div>
-
+<div class="navIcon">👤</div>
 Profile
-
 </button>
 
 </nav>
 
-
-<div id="toast" class="toast"></div>
+<div id="toast"></div>
 
 
 <script>
 
-/* SUPABASE */
+/* =================================
+   SUPABASE CONFIG
+================================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
@@ -1807,153 +1245,69 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
-const supabase =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY,
-{
-auth:{
-persistSession:true,
-autoRefreshToken:true,
-detectSessionInUrl:true
-}
-}
-);
-
+let supabaseClient=null;
 let currentUser=null;
 let currentProfile=null;
 
 
-/* INITIALIZE */
+/* =================================
+   LOADING
+================================= */
 
-async function init(){
+function hideLoading(){
 
-const {
-data:{session},
-error
-}=await supabase.auth.getSession();
+const loader=document.getElementById("loading");
 
-if(error || !session){
-
-window.location.href="index.html";
-return;
-
-}
-
-currentUser=session.user;
-
-await loadProfile();
-
-document.getElementById("loading").style.display="none";
-
-}
-
-
-/* LOAD PROFILE */
-
-async function loadProfile(){
-
-const {
-data,
-error
-}=await supabase
-.from("profiles")
-.select("*")
-.eq("id",currentUser.id)
-.maybeSingle();
-
-if(error){
-
-console.error(error);
-
-toast("Could not load profile");
-
-return;
-
-}
-
-currentProfile=data;
-
-
-const username =
-data?.username ||
-currentUser.user_metadata?.full_name ||
-currentUser.email?.split("@")[0] ||
-"User";
-
-
-const avatar =
-data?.avatar_url ||
-currentUser.user_metadata?.avatar_url ||
-currentUser.user_metadata?.picture ||
-"";
-
-
-document.getElementById("profileName")
-.textContent=username;
-
-
-document.getElementById("profileID")
-.textContent="@"+username;
-
-
-document.getElementById("myId")
-.textContent=username;
-
-
-document.getElementById("storyName")
-.textContent=
-username.length>10
-?username.slice(0,10)+"…"
-:username;
-
-
-document.getElementById("roomName")
-.textContent=
-username+"'s Lobby";
-
-
-if(avatar){
-
-document.getElementById("profileAvatar")
-.src=avatar;
-
-document.getElementById("storyAvatar")
-.src=avatar;
-
-document.getElementById("roomAvatar")
-.src=avatar;
-
+if(loader){
+loader.style.display="none";
 }
 
 }
 
 
-/* NAVIGATION */
+/* =================================
+   TOAST
+================================= */
+
+function toast(message){
+
+const t=document.getElementById("toast");
+
+t.textContent=message;
+t.classList.add("show");
+
+setTimeout(()=>{
+t.classList.remove("show");
+},2200);
+
+}
+
+
+/* =================================
+   NAVIGATION
+================================= */
 
 function navigate(screenId,button){
 
-document
-.querySelectorAll(".screen")
+document.querySelectorAll(".screen")
 .forEach(screen=>{
 screen.classList.remove("active");
 });
 
+const screen=document.getElementById(screenId);
 
-document
-.getElementById(screenId)
-.classList.add("active");
+if(screen){
+screen.classList.add("active");
+}
 
-
-document
-.querySelectorAll(".nav-btn")
+document.querySelectorAll(".navBtn")
 .forEach(btn=>{
 btn.classList.remove("active");
 });
 
-
+if(button){
 button.classList.add("active");
-
+}
 
 window.scrollTo({
 top:0,
@@ -1963,86 +1317,152 @@ behavior:"smooth"
 }
 
 
-/* SCREEN */
+function showHome(){
 
-function showScreen(screenId){
-
-document
-.querySelectorAll(".screen")
-.forEach(screen=>{
-screen.classList.remove("active");
-});
-
-
-document
-.getElementById(screenId)
-.classList.add("active");
-
-
-document
-.querySelectorAll(".nav-btn")
-.forEach(btn=>{
-btn.classList.remove("active");
-});
-
-
-window.scrollTo(0,0);
+navigate(
+"homeScreen",
+document.getElementById("navHome")
+);
 
 }
 
 
-/* ADD FRIEND */
+function showAddFriend(){
 
-function openAddFriend(){
-
-showScreen("addFriendScreen");
+navigate("addFriendScreen");
 
 }
 
 
-/* NOTICE */
+function showEntertainment(){
 
-function closeNotice(){
-
-document
-.getElementById("notice")
-.style.display="none";
+navigate(
+"entertainmentScreen",
+document.getElementById("navEntertainment")
+);
 
 }
 
 
-/* COPY ID */
+/* =================================
+   LOAD PROFILE
+================================= */
 
-async function copyID(){
+async function loadProfile(){
 
-const username=
-currentProfile?.username ||
-currentUser?.email?.split("@")[0] ||
-"user";
+if(!supabaseClient || !currentUser){
+return;
+}
 
 try{
 
-await navigator.clipboard.writeText(username);
+const result=await supabaseClient
+.from("profiles")
+.select("*")
+.eq("id",currentUser.id)
+.maybeSingle();
 
-toast("ID copied");
+if(result.error){
 
-}catch{
+console.log(
+"Profile query error:",
+result.error
+);
 
-toast("Copy not supported");
+return;
+
+}
+
+currentProfile=result.data;
+
+const username=
+currentProfile?.username ||
+currentUser.user_metadata?.full_name ||
+currentUser.user_metadata?.name ||
+currentUser.email?.split("@")[0] ||
+"User";
+
+const avatar=
+currentProfile?.avatar_url ||
+currentUser.user_metadata?.avatar_url ||
+currentUser.user_metadata?.picture ||
+"";
+
+document.getElementById("profileName")
+.textContent=username;
+
+document.getElementById("profileID")
+.textContent="@"+username;
+
+document.getElementById("myId")
+.textContent=username;
+
+document.getElementById("storyName")
+.textContent=
+username.length>10
+?username.substring(0,10)+"…"
+:username;
+
+document.getElementById("roomName")
+.textContent=username+"'s Lobby";
+
+if(avatar){
+
+document.getElementById("profileAvatar").src=avatar;
+document.getElementById("profileAvatar").style.display="block";
+
+document.getElementById("storyAvatar").src=avatar;
+document.getElementById("storyAvatar").style.display="block";
+
+document.getElementById("roomAvatar").src=avatar;
+document.getElementById("roomAvatar").style.display="block";
+
+}
+
+}catch(error){
+
+console.log(
+"Profile loading failed:",
+error
+);
 
 }
 
 }
 
 
-/* SHARE */
+/* =================================
+   COPY ID
+================================= */
+
+async function copyID(){
+
+const value=
+document.getElementById("myId").textContent;
+
+try{
+
+await navigator.clipboard.writeText(value);
+
+toast("ID copied ✓");
+
+}catch(error){
+
+toast("Copy failed");
+
+}
+
+}
+
+
+/* =================================
+   SHARE
+================================= */
 
 async function shareID(){
 
 const username=
-currentProfile?.username ||
-currentUser?.email?.split("@")[0] ||
-"user";
+document.getElementById("myId").textContent;
 
 const text=
 "Add me on Connect: "+username;
@@ -2056,7 +1476,7 @@ title:"Connect",
 text:text
 });
 
-}catch{}
+}catch(e){}
 
 }else{
 
@@ -2064,55 +1484,62 @@ try{
 
 await navigator.clipboard.writeText(text);
 
-toast("Share text copied");
+toast("Share text copied ✓");
 
-}catch{
+}catch(e){
 
-toast("Sharing not supported");
-
-}
+toast(text);
 
 }
 
 }
 
+}
 
-/* TOAST */
 
-let toastTimer;
+/* =================================
+   SEARCH
+================================= */
 
-function toast(message){
+function filterPeople(){
 
-const el=
-document.getElementById("toast");
+const query=
+document.getElementById("friendSearch")
+.value
+.toLowerCase()
+.trim();
 
-el.textContent=message;
+document.querySelectorAll(".person")
+.forEach(person=>{
 
-el.classList.add("show");
+const text=
+person.textContent.toLowerCase();
 
-clearTimeout(toastTimer);
+person.style.display=
+text.includes(query)
+?"flex"
+:"none";
 
-toastTimer=setTimeout(()=>{
-
-el.classList.remove("show");
-
-},1800);
+});
 
 }
 
 
-/* LOGOUT */
+/* =================================
+   LOGOUT
+================================= */
 
 async function logout(){
 
-const {error}=
-await supabase.auth.signOut();
+try{
 
-if(error){
+if(supabaseClient){
+await supabaseClient.auth.signOut();
+}
 
-toast("Logout failed");
+}catch(error){
 
-return;
+console.log(error);
 
 }
 
@@ -2121,36 +1548,152 @@ window.location.href="index.html";
 }
 
 
-/* SEARCH */
+/* =================================
+   START
+================================= */
 
-document
-.getElementById("friendSearch")
-.addEventListener("input",function(){
+async function startApp(){
 
-const value=
-this.value.trim().toLowerCase();
+/* Check Supabase library */
 
+if(!window.supabase){
 
-document
-.querySelectorAll(".person")
-.forEach(person=>{
+console.log("Supabase library unavailable");
 
-const text=
-person.innerText.toLowerCase();
+hideLoading();
 
-person.style.display=
-!value || text.includes(value)
-?"flex"
-:"none";
+toast("Supabase failed to load");
 
-});
+return;
 
-});
+}
 
 
-/* START */
+/* Create Supabase client */
 
-init();
+try{
+
+supabaseClient=
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+}
+);
+
+}catch(error){
+
+console.log(
+"Supabase client error:",
+error
+);
+
+hideLoading();
+
+toast("Connection failed");
+
+return;
+
+}
+
+
+/* Get session */
+
+try{
+
+const result=
+await supabaseClient.auth.getSession();
+
+if(result.error){
+
+console.log(
+"Session error:",
+result.error
+);
+
+hideLoading();
+
+toast("Session error");
+
+return;
+
+}
+
+const session=result.data.session;
+
+
+/* No session */
+
+if(!session){
+
+window.location.href="index.html";
+return;
+
+}
+
+
+/* User found */
+
+currentUser=session.user;
+
+
+/* Load profile but don't block Home */
+
+await loadProfile();
+
+
+/* Show Home */
+
+hideLoading();
+
+
+}catch(error){
+
+console.log(
+"START ERROR:",
+error
+);
+
+hideLoading();
+
+toast("Something went wrong");
+
+}
+
+}
+
+
+/* =================================
+   EMERGENCY LOADING FALLBACK
+================================= */
+
+setTimeout(()=>{
+
+const loader=
+document.getElementById("loading");
+
+if(
+loader &&
+loader.style.display!=="none"
+){
+
+console.log("Loading timeout");
+
+hideLoading();
+
+}
+
+},8000);
+
+
+/* START APP */
+
+startApp();
 
 </script>
 
