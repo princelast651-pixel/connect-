@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
-<title>Conversation • Connect</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"><title>Conversation • Connect</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
 *{
   box-sizing:border-box;
   margin:0;
@@ -58,16 +51,11 @@ button{
   display:flex;
   flex-direction:column;
   background:
-    radial-gradient(
-      circle at 50% -15%,
-      rgba(121,101,255,.17),
-      transparent 38%
-    ),
+    radial-gradient(circle at 50% -15%,rgba(121,101,255,.17),transparent 38%),
     var(--bg);
 }
 
-
-/* ================= HEADER ================= */
+/* HEADER */
 
 .header{
   height:70px;
@@ -129,8 +117,7 @@ button{
   font-size:11px;
 }
 
-
-/* ================= MESSAGES ================= */
+/* MESSAGES */
 
 .messages{
   flex:1;
@@ -181,8 +168,7 @@ button{
   margin-bottom:5px;
 }
 
-
-/* ================= DATE ================= */
+/* DATE */
 
 .dateSeparator{
   display:flex;
@@ -199,8 +185,7 @@ button{
   font-size:10px;
 }
 
-
-/* ================= MESSAGE ================= */
+/* MESSAGE */
 
 .messageRow{
   width:100%;
@@ -228,11 +213,7 @@ button{
 }
 
 .mine .bubble{
-  background:linear-gradient(
-    135deg,
-    #7059ed,
-    #5540cc
-  );
+  background:linear-gradient(135deg,#7059ed,#5540cc);
   border-bottom-right-radius:5px;
 }
 
@@ -266,16 +247,12 @@ button{
   line-height:1;
 }
 
-
-/* ================= COMPOSER ================= */
+/* COMPOSER */
 
 .composer{
   min-height:68px;
   padding:9px 10px;
-  padding-bottom:max(
-    9px,
-    env(safe-area-inset-bottom)
-  );
+  padding-bottom:max(9px,env(safe-area-inset-bottom));
   display:flex;
   align-items:flex-end;
   gap:8px;
@@ -319,17 +296,12 @@ button{
   height:47px;
   min-width:47px;
   border-radius:50%;
-  background:linear-gradient(
-    135deg,
-    #806cff,
-    #5743d7
-  );
+  background:linear-gradient(135deg,#806cff,#5743d7);
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:19px;
-  box-shadow:
-    0 6px 20px rgba(93,70,220,.3);
+  box-shadow:0 6px 20px rgba(93,70,220,.3);
 }
 
 .sendBtn:active{
@@ -340,8 +312,7 @@ button{
   opacity:.45;
 }
 
-
-/* ================= LOADING ================= */
+/* LOADING */
 
 .loadingScreen{
   position:fixed;
@@ -363,13 +334,10 @@ button{
 }
 
 @keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
+  to{transform:rotate(360deg);}
 }
 
-
-/* ================= ERROR ================= */
+/* ERROR */
 
 .errorBox{
   height:100%;
@@ -402,16 +370,13 @@ button{
   word-break:break-word;
 }
 
-
-/* ================= TOAST ================= */
+/* TOAST */
 
 .toast{
   position:fixed;
   left:50%;
   bottom:83px;
-  transform:
-    translateX(-50%)
-    translateY(18px);
+  transform:translateX(-50%) translateY(18px);
   max-width:90%;
   background:#22252e;
   border:1px solid #353944;
@@ -427,14 +392,10 @@ button{
 
 .toast.show{
   opacity:1;
-  transform:
-    translateX(-50%)
-    translateY(0);
+  transform:translateX(-50%) translateY(0);
 }
 
-
 @media(max-width:380px){
-
   .bubble{
     max-width:84%;
   }
@@ -443,118 +404,63 @@ button{
     height:66px;
     min-height:66px;
   }
-
 }
-</style>
-</head>
+</style></head><body><div class="app">  <header class="header"><button id="backBtn" class="backBtn" aria-label="Back">
+  ‹
+</button>
 
-<body>
+<img
+  id="headerAvatar"
+  class="headerAvatar"
+  src=""
+  alt="Profile"
+>
 
-<div class="app">
+<div class="headerInfo">
 
-  <!-- HEADER -->
+  <div id="headerName" class="headerName">
+    Loading...
+  </div>
 
-  <header class="header">
-
-    <button
-      id="backBtn"
-      class="backBtn"
-      aria-label="Back"
-    >
-      ‹
-    </button>
-
-    <img
-      id="headerAvatar"
-      class="headerAvatar"
-      src=""
-      alt="Profile"
-    >
-
-    <div class="headerInfo">
-
-      <div
-        id="headerName"
-        class="headerName"
-      >
-        Loading...
-      </div>
-
-      <div
-        id="headerStatus"
-        class="headerStatus"
-      >
-        Connect
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <!-- MESSAGES -->
-
-  <main
-    id="messages"
-    class="messages"
-  ></main>
-
-
-  <!-- INPUT -->
-
-  <div class="composer">
-
-    <div class="inputBox">
-
-      <textarea
-        id="messageInput"
-        class="messageInput"
-        rows="1"
-        maxlength="2000"
-        placeholder="Message..."
-      ></textarea>
-
-    </div>
-
-    <button
-      id="sendBtn"
-      class="sendBtn"
-      aria-label="Send message"
-    >
-      ➤
-    </button>
-
+  <div id="headerStatus" class="headerStatus">
+    Connect
   </div>
 
 </div>
 
+  </header>  <main id="messages" class="messages"></main>  <div class="composer"><div class="inputBox">
 
-<div
-  id="loadingScreen"
-  class="loadingScreen"
->
-  <div class="spinner"></div>
+  <textarea
+    id="messageInput"
+    class="messageInput"
+    rows="1"
+    maxlength="2000"
+    placeholder="Message..."
+  ></textarea>
+
 </div>
 
+<button
+  id="sendBtn"
+  class="sendBtn"
+  aria-label="Send message"
+>
+  ➤
+</button>
 
-<div
-  id="toast"
-  class="toast"
-></div>
-
-
-<script>
+  </div></div><div id="loadingScreen" class="loadingScreen">
+  <div class="spinner"></div>
+</div><div id="toast" class="toast"></div><script>
 
 /* =========================================
-   SUPABASE
-   EXACT SAME KEY AS YOUR CHAT.HTML
+   SUPABASE CONFIG
 ========================================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoxNTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -615,9 +521,7 @@ function showToast(text){
 
   toast.classList.add("show");
 
-  clearTimeout(
-    showToast.timeout
-  );
+  clearTimeout(showToast.timeout);
 
   showToast.timeout =
     setTimeout(()=>{
@@ -640,12 +544,11 @@ function fallbackAvatar(name){
 
   return "data:image/svg+xml;charset=UTF-8," +
     encodeURIComponent(`
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="200"
-        height="200"
-        viewBox="0 0 200 200"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="200"
+           height="200"
+           viewBox="0 0 200 200">
+
         <rect
           width="200"
           height="200"
@@ -660,10 +563,10 @@ function fallbackAvatar(name){
           font-family="Arial"
           font-size="82"
           font-weight="700"
-          fill="#aaa0ff"
-        >
+          fill="#aaa0ff">
           ${letter}
         </text>
+
       </svg>
     `);
 }
@@ -683,15 +586,12 @@ async function init(){
     } =
       await supabaseClient.auth.getSession();
 
-
     if(error){
       throw error;
     }
 
-
     currentUser =
       data.session?.user;
-
 
     if(!currentUser){
 
@@ -701,22 +601,13 @@ async function init(){
       return;
     }
 
-
-    /*
-      chat.html sends:
-
-      conversation.html?id=FRIEND_UUID
-    */
-
     const params =
       new URLSearchParams(
         window.location.search
       );
 
-
     friendId =
       params.get("id");
-
 
     if(!friendId){
 
@@ -725,14 +616,12 @@ async function init(){
       );
     }
 
-
     if(friendId === currentUser.id){
 
       throw new Error(
         "Invalid friend."
       );
     }
-
 
     await loadFriend();
 
@@ -742,15 +631,12 @@ async function init(){
 
     subscribeRealtime();
 
-
     loading.style.display =
       "none";
-
 
     setTimeout(()=>{
       scrollBottom(false);
     },100);
-
 
   }catch(error){
 
@@ -759,22 +645,19 @@ async function init(){
       error
     );
 
-
     loading.style.display =
       "none";
-
 
     showError(
       error.message ||
       "Couldn't open chat."
     );
-
   }
 }
 
 
 /* =========================================
-   LOAD FRIEND
+   LOAD FRIEND PROFILE
 ========================================= */
 
 async function loadFriend(){
@@ -794,7 +677,6 @@ async function loadFriend(){
       )
       .maybeSingle();
 
-
   if(error){
 
     console.error(
@@ -808,7 +690,6 @@ async function loadFriend(){
     );
   }
 
-
   if(!data){
 
     throw new Error(
@@ -816,23 +697,18 @@ async function loadFriend(){
     );
   }
 
-
   friendProfile =
     data;
-
 
   const name =
     data.username ||
     "Connect User";
 
-
   headerName.textContent =
     name;
 
-
   headerStatus.textContent =
     "Connect";
-
 
   if(
     data.avatar_url &&
@@ -846,9 +722,7 @@ async function loadFriend(){
 
     headerAvatar.src =
       fallbackAvatar(name);
-
   }
-
 
   headerAvatar.onerror =
     function(){
@@ -857,7 +731,6 @@ async function loadFriend(){
 
       this.src =
         fallbackAvatar(name);
-
     };
 }
 
@@ -874,7 +747,6 @@ async function getConversation(){
       friendId
     ].sort();
 
-
   const userOne =
     sorted[0];
 
@@ -882,9 +754,7 @@ async function getConversation(){
     sorted[1];
 
 
-  /*
-    Look for existing conversation.
-  */
+  /* FIND EXISTING */
 
   let result =
     await supabaseClient
@@ -926,9 +796,7 @@ async function getConversation(){
   }
 
 
-  /*
-    Create new conversation.
-  */
+  /* CREATE */
 
   result =
     await supabaseClient
@@ -952,15 +820,12 @@ async function getConversation(){
   }
 
 
-  /*
-    If creation failed, try fetching again.
-  */
+  /* RETRY */
 
   console.error(
     "CONVERSATION CREATE ERROR:",
     result.error
   );
-
 
   const retry =
     await supabaseClient
@@ -989,7 +854,6 @@ async function getConversation(){
       result.error.message
     );
   }
-
 
   conversationId =
     retry.data.id;
@@ -1082,7 +946,7 @@ async function loadMessages(){
 
 
 /* =========================================
-   EMPTY STATE
+   EMPTY
 ========================================= */
 
 function showEmpty(){
@@ -1150,7 +1014,7 @@ function showError(errorMessage){
 
 
 /* =========================================
-   DATE KEY
+   DATE
 ========================================= */
 
 function getDateKey(value){
@@ -1161,20 +1025,12 @@ function getDateKey(value){
   return (
     date.getFullYear() +
     "-" +
-    String(
-      date.getMonth()+1
-    ).padStart(2,"0") +
+    String(date.getMonth()+1).padStart(2,"0") +
     "-" +
-    String(
-      date.getDate()
-    ).padStart(2,"0")
+    String(date.getDate()).padStart(2,"0")
   );
 }
 
-
-/* =========================================
-   DATE LABEL
-========================================= */
 
 function getDateLabel(value){
 
@@ -1273,10 +1129,6 @@ function addDateSeparator(value){
 
 function renderMessage(msg){
 
-  /*
-    Don't duplicate realtime messages.
-  */
-
   if(
     document.querySelector(
       '[data-message-id="' +
@@ -1288,10 +1140,6 @@ function renderMessage(msg){
     return;
   }
 
-
-  /*
-    Remove empty state.
-  */
 
   const empty =
     messages.querySelector(
@@ -1309,9 +1157,7 @@ function renderMessage(msg){
 
 
   const row =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   row.className =
     "messageRow " +
@@ -1325,20 +1171,21 @@ function renderMessage(msg){
   row.dataset.messageId =
     msg.id;
 
+  row.dataset.date =
+    getDateKey(
+      msg.created_at
+    );
+
 
   const bubble =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   bubble.className =
     "bubble";
 
 
   const messageText =
-    document.createElement(
-      "span"
-    );
+    document.createElement("span");
 
   messageText.className =
     "messageText";
@@ -1348,18 +1195,14 @@ function renderMessage(msg){
 
 
   const meta =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   meta.className =
     "messageMeta";
 
 
   const time =
-    document.createElement(
-      "span"
-    );
+    document.createElement("span");
 
   time.className =
     "messageTime";
@@ -1376,9 +1219,7 @@ function renderMessage(msg){
   if(mine){
 
     const tick =
-      document.createElement(
-        "span"
-      );
+      document.createElement("span");
 
     tick.className =
       "tick";
@@ -1386,9 +1227,7 @@ function renderMessage(msg){
     tick.textContent =
       "✓";
 
-    meta.appendChild(
-      tick
-    );
+    meta.appendChild(tick);
   }
 
 
@@ -1405,11 +1244,6 @@ function renderMessage(msg){
   );
 
 
-  /*
-    Add date separator for
-    realtime messages too.
-  */
-
   const rows =
     messages.querySelectorAll(
       ".messageRow"
@@ -1425,14 +1259,10 @@ function renderMessage(msg){
   }else{
 
     const lastRow =
-      rows[rows.length-1];
-
-    const previousDate =
-      lastRow.dataset.date;
-
+      rows[rows.length - 1];
 
     if(
-      previousDate !==
+      lastRow.dataset.date !==
       getDateKey(
         msg.created_at
       )
@@ -1445,12 +1275,6 @@ function renderMessage(msg){
   }
 
 
-  row.dataset.date =
-    getDateKey(
-      msg.created_at
-    );
-
-
   messages.appendChild(
     row
   );
@@ -1458,7 +1282,7 @@ function renderMessage(msg){
 
 
 /* =========================================
-   SEND
+   SEND MESSAGE
 ========================================= */
 
 async function sendMessage(){
@@ -1527,12 +1351,10 @@ async function sendMessage(){
       error
     );
 
-
     input.value =
       oldText;
 
     resizeInput();
-
 
     showToast(
       "Send failed: " +
@@ -1543,15 +1365,7 @@ async function sendMessage(){
   }
 
 
-  /*
-    Show immediately.
-    Realtime won't duplicate it.
-  */
-
-  renderMessage(
-    data
-  );
-
+  renderMessage(data);
 
   scrollBottom(true);
 }
@@ -1601,10 +1415,7 @@ function subscribeRealtime(){
           }
 
 
-          renderMessage(
-            message
-          );
-
+          renderMessage(message);
 
           scrollBottom(true);
 
@@ -1632,7 +1443,6 @@ function resizeInput(){
   input.style.height =
     "auto";
 
-
   input.style.height =
     Math.min(
       input.scrollHeight,
@@ -1648,7 +1458,7 @@ input.addEventListener(
 
 
 /* =========================================
-   ENTER TO SEND
+   ENTER
 ========================================= */
 
 input.addEventListener(
@@ -1688,10 +1498,8 @@ document
   .addEventListener(
     "click",
     ()=>{
-
       location.href =
         "chat.html";
-
     }
   );
 
@@ -1723,26 +1531,11 @@ function scrollBottom(smooth){
 function escapeHtml(value){
 
   return String(value)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
 
@@ -1760,7 +1553,6 @@ window.addEventListener(
         .removeChannel(
           realtimeChannel
         );
-
     }
 
   }
@@ -1773,7 +1565,5 @@ window.addEventListener(
 
 init();
 
-</script>
-
-</body>
+</script></body>
 </html>
