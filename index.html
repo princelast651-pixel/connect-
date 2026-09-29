@@ -9,393 +9,1174 @@
 
 <style>
 *{
-  box-sizing:border-box;
   margin:0;
   padding:0;
-  font-family:Arial,sans-serif;
+  box-sizing:border-box;
+  font-family:Inter,Arial,sans-serif;
 }
 
 body{
+  background:#0b0d10;
+  color:#fff;
   min-height:100vh;
-  background:#0f1117;
-  color:white;
+  overflow:hidden;
+}
+
+/* ================= SPLASH ================= */
+
+#splash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:
+    radial-gradient(circle at center,#20242d 0%,#0b0d10 60%);
   display:flex;
   align-items:center;
   justify-content:center;
+  transition:opacity .7s ease,visibility .7s ease;
 }
 
-.card{
-  width:92%;
-  max-width:400px;
-  background:#191c24;
-  border:1px solid #292e3a;
-  border-radius:18px;
-  padding:30px;
+#splash.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.splash-content{
+  text-align:center;
+  animation:splashIn 1s ease;
 }
 
 .logo{
-  text-align:center;
-  margin-bottom:25px;
-}
-
-.logoIcon{
-  width:60px;
-  height:60px;
+  width:88px;
+  height:88px;
+  border-radius:25px;
   margin:auto;
-  border-radius:17px;
-  background:#5865f2;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:28px;
-  font-weight:bold;
+  font-size:43px;
+  font-weight:900;
+  background:linear-gradient(135deg,#5865f2,#7b83ff);
+  box-shadow:
+    0 0 35px rgba(88,101,242,.45),
+    inset 0 0 20px rgba(255,255,255,.08);
+  animation:logoPulse 1.8s infinite ease-in-out;
 }
 
-h1{
-  margin-top:12px;
+.logo-symbol{
+  transform:rotate(-8deg);
 }
 
-.subtitle{
-  color:#9aa1ad;
-  margin-top:6px;
+.splash-title{
+  font-size:31px;
+  font-weight:800;
+  letter-spacing:2px;
+  margin-top:22px;
+}
+
+.splash-sub{
+  color:#8e96a3;
+  margin-top:8px;
   font-size:14px;
 }
 
-h2{
-  margin-bottom:8px;
+.loading{
+  margin-top:25px;
+  display:flex;
+  justify-content:center;
+  gap:7px;
 }
 
-.desc{
-  color:#9aa1ad;
-  font-size:14px;
-  margin-bottom:22px;
+.loading span{
+  width:7px;
+  height:7px;
+  background:#7d86ff;
+  border-radius:50%;
+  animation:dot 1.2s infinite;
 }
 
-button{
+.loading span:nth-child(2){
+  animation-delay:.15s;
+}
+
+.loading span:nth-child(3){
+  animation-delay:.3s;
+}
+
+@keyframes splashIn{
+  from{
+    opacity:0;
+    transform:scale(.8);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+@keyframes logoPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.06)}
+}
+
+@keyframes dot{
+  0%,100%{
+    opacity:.3;
+    transform:translateY(0);
+  }
+  50%{
+    opacity:1;
+    transform:translateY(-5px);
+  }
+}
+
+/* ================= AUTH ================= */
+
+#auth{
+  min-height:100vh;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(88,101,242,.13),transparent 30%),
+    radial-gradient(circle at 80% 80%,rgba(123,131,255,.08),transparent 30%),
+    #0b0d10;
+}
+
+.auth-card{
   width:100%;
-  padding:13px;
-  border-radius:9px;
-  border:none;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
+  max-width:410px;
+  padding:34px;
+  border:1px solid #242832;
+  border-radius:22px;
+  background:rgba(18,21,27,.94);
+  box-shadow:0 25px 80px rgba(0,0,0,.5);
+  animation:authIn .6s ease;
+}
+
+@keyframes authIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.auth-logo{
+  width:58px;
+  height:58px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 18px;
+  background:linear-gradient(135deg,#5865f2,#7b83ff);
+  font-size:27px;
+  font-weight:900;
+}
+
+.auth-card h1{
+  text-align:center;
+  font-size:26px;
+}
+
+.welcome{
+  text-align:center;
+  color:#8d95a3;
+  margin-top:8px;
+  margin-bottom:25px;
+  font-size:14px;
 }
 
 .google{
-  background:white;
-  color:#111;
+  width:100%;
+  height:48px;
+  border:1px solid #303540;
+  border-radius:12px;
+  background:#171a20;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.google:hover{
+  background:#20242c;
 }
 
 .divider{
   display:flex;
   align-items:center;
   gap:10px;
-  color:#727986;
+  color:#6e7683;
   font-size:12px;
-  margin:20px 0;
+  margin:22px 0;
 }
 
-.divider span{
+.divider::before,
+.divider::after{
+  content:"";
   height:1px;
-  background:#303541;
+  background:#292e37;
   flex:1;
 }
 
 label{
   display:block;
-  color:#c8ccd4;
+  color:#b8bec8;
   font-size:13px;
-  margin:12px 0 6px;
+  margin:14px 0 7px;
 }
 
 input{
   width:100%;
-  padding:13px;
-  border-radius:9px;
-  border:1px solid #303541;
-  background:#0f1117;
-  color:white;
+  height:46px;
+  padding:0 14px;
+  border-radius:11px;
+  border:1px solid #2b3039;
   outline:none;
+  background:#101318;
+  color:white;
+  font-size:14px;
 }
 
-.login{
+input:focus{
+  border-color:#5865f2;
+  box-shadow:0 0 0 3px rgba(88,101,242,.12);
+}
+
+.main-btn{
+  width:100%;
+  height:48px;
+  margin-top:20px;
+  border:0;
+  border-radius:12px;
   background:#5865f2;
   color:white;
-  margin-top:17px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.signup{
-  background:#292e3a;
-  color:white;
-  margin-top:9px;
+.main-btn:hover{
+  background:#6975f5;
 }
 
-#message{
-  min-height:20px;
+.switch{
   text-align:center;
-  color:#aeb4c0;
+  margin-top:20px;
+  color:#858d99;
   font-size:13px;
+}
+
+.switch span:last-child{
+  color:#7580ff;
+  cursor:pointer;
+  font-weight:600;
+}
+
+#error{
+  display:none;
+  color:#ff7474;
+  background:rgba(255,70,70,.08);
+  border:1px solid rgba(255,70,70,.15);
+  padding:10px;
+  border-radius:9px;
+  font-size:12px;
   margin-top:15px;
 }
 
-#home{
+/* ================= APP ================= */
+
+#app{
   display:none;
-  text-align:center;
+  height:100vh;
 }
 
-.avatar{
-  width:65px;
-  height:65px;
-  border-radius:50%;
-  background:#5865f2;
-  margin:0 auto 15px;
+.app{
+  height:100vh;
+  display:flex;
+}
+
+/* SERVER BAR */
+
+.servers{
+  width:72px;
+  background:#090b0e;
+  border-right:1px solid #1e2229;
+  padding:12px 10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+
+.server{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  background:#1a1e25;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:25px;
-  font-weight:bold;
+  font-weight:800;
+  color:#aeb5c1;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.userEmail{
-  color:#9aa1ad;
-  margin-top:7px;
-  word-break:break-word;
-}
-
-.logout{
-  margin-top:25px;
-  background:#ed4245;
+.server:hover,
+.server.active{
+  background:#5865f2;
   color:white;
+  border-radius:14px;
+}
+
+.add-server{
+  color:#58d68d;
+  font-size:24px;
+}
+
+/* CHANNELS */
+
+.channels{
+  width:235px;
+  background:#111419;
+  border-right:1px solid #20242b;
+}
+
+.channel-head{
+  height:62px;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid #20242b;
+  font-weight:700;
+}
+
+.channel-list{
+  padding:15px 10px;
+}
+
+.category{
+  color:#737b88;
+  font-size:11px;
+  font-weight:700;
+  padding:10px 8px 7px;
+  text-transform:uppercase;
+}
+
+.channel{
+  padding:10px 12px;
+  border-radius:8px;
+  color:#9299a5;
+  cursor:pointer;
+  margin:2px 0;
+}
+
+.channel:hover,
+.channel.selected{
+  background:#22262e;
+  color:white;
+}
+
+/* CHAT */
+
+.chat{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  background:#15181d;
+}
+
+.chat-head{
+  height:62px;
+  border-bottom:1px solid #252a32;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  gap:10px;
+  font-weight:700;
+}
+
+.chat-head span{
+  color:#6e7682;
+}
+
+.messages{
+  flex:1;
+  overflow:auto;
+  padding:25px;
+}
+
+.message{
+  display:flex;
+  gap:13px;
+  margin-bottom:22px;
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  flex-shrink:0;
+  border-radius:13px;
+  background:#5865f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+
+.message-name{
+  font-weight:700;
+  font-size:14px;
+}
+
+.time{
+  color:#626a76;
+  font-size:10px;
+  margin-left:7px;
+}
+
+.message-text{
+  color:#c4c9d1;
+  margin-top:5px;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.chat-input{
+  padding:15px 20px 20px;
+}
+
+.chat-input-box{
+  height:48px;
+  border-radius:12px;
+  background:#20242b;
+  display:flex;
+  align-items:center;
+  padding:0 15px;
+  color:#707885;
+}
+
+/* MEMBERS */
+
+.members{
+  width:210px;
+  background:#111419;
+  border-left:1px solid #20242b;
+  padding:20px 12px;
+}
+
+.members-title{
+  color:#777f8c;
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:15px;
+}
+
+.member{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:7px;
+  color:#aeb4bf;
+  font-size:13px;
+}
+
+.member-dot{
+  width:9px;
+  height:9px;
+  background:#4bd184;
+  border-radius:50%;
+}
+
+/* MOBILE */
+
+.mobile-menu{
+  display:none;
+}
+
+@media(max-width:800px){
+
+  .channels{
+    position:fixed;
+    left:-260px;
+    top:0;
+    bottom:0;
+    z-index:50;
+    transition:.3s;
+  }
+
+  .channels.open{
+    left:58px;
+  }
+
+  .members{
+    display:none;
+  }
+
+  .mobile-menu{
+    display:block;
+    font-size:22px;
+    cursor:pointer;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .auth-card{
+    padding:25px 20px;
+    border-radius:18px;
+  }
+
+  .logo{
+    width:76px;
+    height:76px;
+    font-size:36px;
+  }
+
+  .splash-title{
+    font-size:27px;
+  }
+
+  .servers{
+    width:58px;
+  }
+
+  .server{
+    width:42px;
+    height:42px;
+  }
+
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<!-- SPLASH -->
 
-<div id="login">
+<div id="splash">
 
-<div class="logo">
-<div class="logoIcon">C</div>
-<h1>Connect</h1>
-<p class="subtitle">Chat. Connect. Community.</p>
-</div>
+  <div class="splash-content">
 
-<h2>Welcome back</h2>
-<p class="desc">Sign in to continue</p>
+    <div class="logo">
+      <div class="logo-symbol">C</div>
+    </div>
 
-<button class="google" id="googleButton">
-Continue with Google
-</button>
+    <div class="splash-title">
+      CONNECT
+    </div>
 
-<div class="divider">
-<span></span>
-OR
-<span></span>
-</div>
+    <div class="splash-sub">
+      Connect with everyone.
+    </div>
 
-<label>Email</label>
-<input id="email" type="email" placeholder="Enter your email">
+    <div class="loading">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
-<label>Password</label>
-<input id="password" type="password" placeholder="Enter your password">
-
-<button class="login" id="loginButton">
-Login
-</button>
-
-<button class="signup" id="signupButton">
-Create New Account
-</button>
-
-<div id="message"></div>
+  </div>
 
 </div>
 
-<div id="home">
 
-<div class="avatar" id="avatar">C</div>
+<!-- LOGIN / SIGNUP -->
 
-<h2>Welcome to Connect 🎉</h2>
+<section id="auth">
 
-<p class="userEmail" id="userEmail"></p>
+  <div class="auth-card">
 
-<button class="logout" id="logoutButton">
-Logout
-</button>
+    <div class="auth-logo">
+      C
+    </div>
 
-</div>
+    <h1 id="authTitle">
+      Welcome back
+    </h1>
 
-</div>
+    <p class="welcome" id="authSub">
+      Sign in to continue to Connect
+    </p>
+
+    <button class="google" id="googleBtn">
+      Continue with Google
+    </button>
+
+    <div class="divider">
+      OR
+    </div>
+
+    <label>Email</label>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+    >
+
+    <label>Password</label>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Your password"
+      autocomplete="current-password"
+    >
+
+    <button class="main-btn" id="authBtn">
+      Login
+    </button>
+
+    <div id="error"></div>
+
+    <div class="switch">
+
+      <span id="switchText">
+        Don't have an account?
+      </span>
+
+      &nbsp;
+
+      <span id="switchBtn">
+        Create account
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- MAIN APP -->
+
+<section id="app">
+
+  <div class="app">
+
+    <!-- SERVERS -->
+
+    <aside class="servers">
+
+      <div class="server active">
+        C
+      </div>
+
+      <div class="server">
+        🎮
+      </div>
+
+      <div class="server">
+        💬
+      </div>
+
+      <div class="server add-server">
+        +
+      </div>
+
+    </aside>
+
+
+    <!-- CHANNELS -->
+
+    <aside class="channels" id="channels">
+
+      <div class="channel-head">
+        Connect
+      </div>
+
+      <div class="channel-list">
+
+        <div class="category">
+          TEXT CHANNELS
+        </div>
+
+        <div class="channel selected">
+          # general
+        </div>
+
+        <div class="channel">
+          # announcements
+        </div>
+
+        <div class="channel">
+          # gaming
+        </div>
+
+        <div class="category">
+          VOICE CHANNELS
+        </div>
+
+        <div class="channel">
+          🔊 General
+        </div>
+
+        <div class="channel">
+          🔊 Gaming
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- CHAT -->
+
+    <main class="chat">
+
+      <div class="chat-head">
+
+        <div
+          class="mobile-menu"
+          id="menuBtn"
+        >
+          ☰
+        </div>
+
+        <span>#</span>
+        general
+
+      </div>
+
+
+      <div class="messages">
+
+        <div class="message">
+
+          <div class="avatar">
+            C
+          </div>
+
+          <div>
+
+            <div class="message-name">
+              Connect
+              <span class="time">
+                Today
+              </span>
+            </div>
+
+            <div class="message-text">
+              Welcome to Connect 👋
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="message">
+
+          <div class="avatar">
+            A
+          </div>
+
+          <div>
+
+            <div class="message-name">
+              Admin
+              <span class="time">
+                Today
+              </span>
+            </div>
+
+            <div class="message-text">
+              This is your new community space.
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="chat-input">
+
+        <div class="chat-input-box">
+          Message #general
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <!-- MEMBERS -->
+
+    <aside class="members">
+
+      <div class="members-title">
+        ONLINE — 2
+      </div>
+
+      <div class="member">
+        <div class="member-dot"></div>
+        Connect
+      </div>
+
+      <div class="member">
+        <div class="member-dot"></div>
+        Admin
+      </div>
+
+    </aside>
+
+  </div>
+
+</section>
+
 
 <script>
+
+/* ================= SUPABASE ================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
-const client =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY
+const supabaseClient =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
 );
 
-const message =
-document.getElementById("message");
 
+/* ================= ELEMENTS ================= */
 
-document.getElementById("googleButton")
-.addEventListener("click", async function(){
+const splash =
+document.getElementById("splash");
 
-message.innerText="Connecting to Google...";
+const auth =
+document.getElementById("auth");
 
-const {error} =
-await client.auth.signInWithOAuth({
-provider:"google",
-options:{
-redirectTo:"https://princelast651-pixel.github.io/connect-/"
-}
-});
+const app =
+document.getElementById("app");
 
-if(error){
-message.innerText=
-"Error: "+error.message;
-}
+const googleBtn =
+document.getElementById("googleBtn");
 
-});
+const authBtn =
+document.getElementById("authBtn");
 
+const switchBtn =
+document.getElementById("switchBtn");
 
-document.getElementById("loginButton")
-.addEventListener("click", async function(){
+const switchText =
+document.getElementById("switchText");
 
-const email =
-document.getElementById("email").value.trim();
+const authTitle =
+document.getElementById("authTitle");
 
-const password =
-document.getElementById("password").value;
-
-if(!email || !password){
-message.innerText="Enter email and password.";
-return;
-}
-
-message.innerText="Logging in...";
-
-const {error} =
-await client.auth.signInWithPassword({
-email:email,
-password:password
-});
-
-if(error){
-message.innerText=error.message;
-return;
-}
-
-showHome();
-
-});
-
-
-document.getElementById("signupButton")
-.addEventListener("click", async function(){
+const authSub =
+document.getElementById("authSub");
 
 const email =
-document.getElementById("email").value.trim();
+document.getElementById("email");
 
 const password =
-document.getElementById("password").value;
+document.getElementById("password");
 
-if(!email || !password){
-message.innerText="Enter email and password.";
-return;
+const errorBox =
+document.getElementById("error");
+
+let signupMode = false;
+
+
+/* ================= SPLASH ================= */
+
+setTimeout(async () => {
+
+  splash.classList.add("hide");
+
+  const {
+    data: {
+      session
+    }
+  } =
+  await supabaseClient.auth.getSession();
+
+  if(session){
+
+    showApp();
+
+  }else{
+
+    auth.style.display = "flex";
+
+  }
+
+},2300);
+
+
+/* ================= GOOGLE LOGIN ================= */
+
+googleBtn.addEventListener(
+  "click",
+  async () => {
+
+    hideError();
+
+    googleBtn.disabled = true;
+    googleBtn.textContent =
+      "Connecting...";
+
+    const {
+      error
+    } =
+    await supabaseClient.auth.signInWithOAuth({
+
+      provider:"google",
+
+      options:{
+        redirectTo:
+        "https://princelast651-pixel.github.io/connect-/"
+      }
+
+    });
+
+    if(error){
+
+      showError(error.message);
+
+      googleBtn.disabled = false;
+      googleBtn.textContent =
+        "Continue with Google";
+
+    }
+
+  }
+);
+
+
+/* ================= EMAIL AUTH ================= */
+
+authBtn.addEventListener(
+  "click",
+  async () => {
+
+    hideError();
+
+    const e =
+      email.value.trim();
+
+    const p =
+      password.value;
+
+    if(!e || !p){
+
+      showError(
+        "Please enter email and password."
+      );
+
+      return;
+
+    }
+
+    authBtn.disabled = true;
+
+    authBtn.textContent =
+      signupMode
+      ? "Creating account..."
+      : "Logging in...";
+
+
+    if(signupMode){
+
+      const {
+        error
+      } =
+      await supabaseClient.auth.signUp({
+
+        email:e,
+        password:p
+
+      });
+
+      if(error){
+
+        showError(
+          error.message
+        );
+
+      }else{
+
+        showError(
+          "Account created. Check your email if verification is required."
+        );
+
+      }
+
+    }else{
+
+      const {
+        error
+      } =
+      await supabaseClient.auth.signInWithPassword({
+
+        email:e,
+        password:p
+
+      });
+
+      if(error){
+
+        showError(
+          error.message
+        );
+
+      }else{
+
+        showApp();
+
+      }
+
+    }
+
+
+    authBtn.disabled = false;
+
+    authBtn.textContent =
+      signupMode
+      ? "Create account"
+      : "Login";
+
+  }
+);
+
+
+/* ================= LOGIN / SIGNUP SWITCH ================= */
+
+switchBtn.addEventListener(
+  "click",
+  () => {
+
+    signupMode =
+      !signupMode;
+
+    hideError();
+
+    if(signupMode){
+
+      authTitle.textContent =
+        "Create your account";
+
+      authSub.textContent =
+        "Join Connect and start chatting";
+
+      authBtn.textContent =
+        "Create account";
+
+      switchText.textContent =
+        "Already have an account?";
+
+      switchBtn.textContent =
+        "Login";
+
+    }else{
+
+      authTitle.textContent =
+        "Welcome back";
+
+      authSub.textContent =
+        "Sign in to continue to Connect";
+
+      authBtn.textContent =
+        "Login";
+
+      switchText.textContent =
+        "Don't have an account?";
+
+      switchBtn.textContent =
+        "Create account";
+
+    }
+
+  }
+);
+
+
+/* ================= AUTH STATE ================= */
+
+supabaseClient.auth.onAuthStateChange(
+  (event,session) => {
+
+    if(session){
+
+      showApp();
+
+    }
+
+  }
+);
+
+
+/* ================= SHOW APP ================= */
+
+function showApp(){
+
+  splash.classList.add("hide");
+
+  auth.style.display =
+    "none";
+
+  app.style.display =
+    "block";
+
 }
 
-if(password.length<6){
-message.innerText="Password must be at least 6 characters.";
-return;
+
+/* ================= ERROR ================= */
+
+function showError(message){
+
+  errorBox.textContent =
+    message;
+
+  errorBox.style.display =
+    "block";
+
 }
 
-message.innerText="Creating account...";
+function hideError(){
 
-const {data,error} =
-await client.auth.signUp({
-email:email,
-password:password
-});
-
-if(error){
-message.innerText=error.message;
-return;
-}
-
-if(data.session){
-showHome();
-}else{
-message.innerText=
-"Account created. Check your email.";
-}
-
-});
-
-
-async function showHome(){
-
-const {data,error} =
-await client.auth.getUser();
-
-if(error || !data.user){
-return;
-}
-
-const user=data.user;
-
-document.getElementById("login")
-.style.display="none";
-
-document.getElementById("home")
-.style.display="block";
-
-document.getElementById("userEmail")
-.innerText=user.email || "User";
-
-document.getElementById("avatar")
-.innerText=
-(user.email || "U").charAt(0).toUpperCase();
+  errorBox.style.display =
+    "none";
 
 }
 
 
-document.getElementById("logoutButton")
-.addEventListener("click", async function(){
+/* ================= MOBILE MENU ================= */
 
-await client.auth.signOut();
+const menuBtn =
+document.getElementById("menuBtn");
 
-document.getElementById("home")
-.style.display="none";
+const channels =
+document.getElementById("channels");
 
-document.getElementById("login")
-.style.display="block";
+menuBtn.addEventListener(
+  "click",
+  () => {
 
-message.innerText="";
+    channels.classList.toggle("open");
 
-});
-
-
-client.auth.onAuthStateChange(
-function(event,session){
-
-if(session){
-showHome();
-}
-
-});
-
-
-showHome();
+  }
+);
 
 </script>
 
