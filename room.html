@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Room • Connect</title>
+<meta name="theme-color" content="#121212">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  background:#121212;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+
+.app{
+  max-width:650px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:90px;
+}
+
+/* HEADER */
+
+header{
+  height:70px;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #29292c;
+  background:rgba(18,18,18,.94);
+  backdrop-filter:blur(16px);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.back{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  background:#1d1d1f;
+  border:1px solid #303033;
+  color:white;
+  font-size:21px;
+}
+
+.room-header{
+  flex:1;
+  margin-left:12px;
+  min-width:0;
+}
+
+.room-name{
+  font-size:17px;
+  font-weight:750;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.room-status{
+  color:#85858a;
+  font-size:11px;
+  margin-top:4px;
+}
+
+.more{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  background:#1d1d1f;
+  border:1px solid #303033;
+  color:white;
+  font-size:20px;
+}
+
+/* CONTENT */
+
+.content{
+  padding:20px 16px;
+}
+
+.hero{
+  text-align:center;
+  padding:20px 0 28px;
+}
+
+.room-icon{
+  width:82px;
+  height:82px;
+  border-radius:25px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  background:linear-gradient(135deg,#8d6cff,#4b35d4);
+  box-shadow:0 15px 45px rgba(124,92,255,.22);
+}
+
+.hero h1{
+  margin-top:16px;
+  font-size:22px;
+}
+
+.hero p{
+  margin-top:6px;
+  color:#8e8e93;
+  font-size:13px;
+}
+
+/* PARTICIPANTS */
+
+.section-title{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.participants{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.person{
+  background:#1d1d1f;
+  border:1px solid #303033;
+  border-radius:18px;
+  padding:18px 8px;
+  text-align:center;
+}
+
+.avatar{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  margin:auto;
+  overflow:hidden;
+  border:2px solid #7055ef;
+  background:#29292b;
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.person-name{
+  margin-top:9px;
+  font-size:12px;
+  font-weight:650;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.person-state{
+  color:#77777d;
+  font-size:10px;
+  margin-top:4px;
+}
+
+.owner{
+  display:inline-block;
+  margin-top:6px;
+  font-size:9px;
+  color:#9b7cff;
+}
+
+/* INFO */
+
+.info{
+  margin-top:22px;
+  background:#1d1d1f;
+  border:1px solid #303033;
+  border-radius:18px;
+  padding:15px;
+}
+
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  padding:7px 0;
+  font-size:12px;
+}
+
+.info-row span:first-child{
+  color:#77777d;
+}
+
+.info-row span:last-child{
+  color:#ddd;
+}
+
+/* CONTROLS */
+
+.controls{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:650px;
+  height:82px;
+  padding:13px 18px;
+  display:flex;
+  gap:10px;
+  background:rgba(22,22,24,.97);
+  border-top:1px solid #2c2c2f;
+  backdrop-filter:blur(18px);
+  z-index:50;
+}
+
+.control{
+  flex:1;
+  border-radius:15px;
+  background:#29292c;
+  border:1px solid #39393d;
+  color:white;
+  font-weight:700;
+  font-size:12px;
+}
+
+.mic.active{
+  background:#7c5cff;
+  border-color:#7c5cff;
+}
+
+.leave{
+  background:#382126;
+  border-color:#513039;
+  color:#ff8594;
+}
+
+/* LOADING */
+
+.loading{
+  position:fixed;
+  inset:0;
+  background:#121212;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  font-size:13px;
+}
+
+.hidden{
+  display:none;
+}
+
+/* EMPTY */
+
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  color:#777;
+  padding:25px;
+  border:1px dashed #343438;
+  border-radius:18px;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading" id="loading">
+  Loading room...
+</div>
+
+<div class="app">
+
+<header>
+  <button class="back" onclick="leaveRoom()">‹</button>
+
+  <div class="room-header">
+    <div class="room-name" id="roomName">
+      Loading...
+    </div>
+
+    <div class="room-status" id="roomStatus">
+      Connecting...
+    </div>
+  </div>
+
+  <button class="more" onclick="roomInfo()">⋯</button>
+</header>
+
+<main class="content">
+
+  <div class="hero">
+    <div class="room-icon">🎙</div>
+
+    <h1 id="heroName">
+      Loading Room
+    </h1>
+
+    <p id="heroMeta">
+      Connecting to room...
+    </p>
+  </div>
+
+
+  <div class="section-title">
+    👥 Participants
+  </div>
+
+  <div class="participants" id="participants">
+
+    <div class="empty">
+      Loading participants...
+    </div>
+
+  </div>
+
+
+  <div class="info">
+
+    <div class="info-row">
+      <span>Room type</span>
+      <span id="visibility">—</span>
+    </div>
+
+    <div class="info-row">
+      <span>Room ID</span>
+      <span id="roomIdText">—</span>
+    </div>
+
+    <div class="info-row">
+      <span>Created</span>
+      <span id="created">—</span>
+    </div>
+
+  </div>
+
+</main>
+
+</div>
+
+
+<div class="controls">
+
+  <button
+    class="control mic"
+    id="micButton"
+    onclick="toggleMic()">
+    🎙 Mic Off
+  </button>
+
+  <button
+    class="control"
+    onclick="shareRoom()">
+    ↗ Share
+  </button>
+
+  <button
+    class="control leave"
+    onclick="leaveRoom()">
+    🚪 Leave
+  </button>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://riversitunmzvuprecbt.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true
+    }
+  }
+);
+
+
+let currentUser = null;
+let room = null;
+let micOn = false;
+
+
+/* GET ROOM ID */
+
+const params =
+new URLSearchParams(window.location.search);
+
+const roomId =
+params.get("id");
+
+
+/* START */
+
+async function start(){
+
+  if(!roomId){
+    window.location.replace("home.html");
+    return;
+  }
+
+  const {
+    data:{
+      session
+    }
+  } =
+  await supabaseClient.auth.getSession();
+
+  if(!session){
+    window.location.replace("index.html");
+    return;
+  }
+
+  currentUser =
+  session.user;
+
+  await loadRoom();
+}
+
+
+/* LOAD ROOM */
+
+async function loadRoom(){
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("rooms")
+    .select(
+      "id,owner_id,name,visibility,created_at"
+    )
+    .eq("id",roomId)
+    .maybeSingle();
+
+
+  if(error){
+
+    console.error(error);
+
+    alert("Couldn't load room.");
+
+    window.location.replace("home.html");
+
+    return;
+  }
+
+
+  if(!data){
+
+    alert("Room not found.");
+
+    window.location.replace("home.html");
+
+    return;
+  }
+
+
+  room = data;
+
+
+  document.getElementById("roomName")
+    .textContent = room.name;
+
+  document.getElementById("heroName")
+    .textContent = room.name;
+
+  document.getElementById("roomStatus")
+    .textContent =
+      room.visibility === "private"
+      ? "🔒 Private room"
+      : "🌐 Public room";
+
+  document.getElementById("heroMeta")
+    .textContent =
+      room.visibility === "private"
+      ? "Private Connect room"
+      : "Public Connect room";
+
+
+  document.getElementById("visibility")
+    .textContent =
+      room.visibility;
+
+
+  document.getElementById("roomIdText")
+    .textContent =
+      room.id.slice(0,8) + "...";
+
+
+  document.getElementById("created")
+    .textContent =
+      new Date(room.created_at)
+      .toLocaleDateString();
+
+
+  renderOwner();
+
+
+  document.getElementById("loading")
+    .classList.add("hidden");
+}
+
+
+/* OWNER */
+
+async function renderOwner(){
+
+  const box =
+    document.getElementById("participants");
+
+
+  let username =
+    currentUser.email
+    ?.split("@")[0] ||
+    "User";
+
+  let avatar =
+    "https://ui-avatars.com/api/?name=" +
+    encodeURIComponent(username) +
+    "&background=29292b&color=fff";
+
+
+  const {
+    data
+  } =
+  await supabaseClient
+    .from("profiles")
+    .select("username,avatar_url")
+    .eq("id",room.owner_id)
+    .maybeSingle();
+
+
+  if(data){
+
+    username =
+      data.username ||
+      username;
+
+    avatar =
+      data.avatar_url ||
+      "https://ui-avatars.com/api/?name=" +
+      encodeURIComponent(username) +
+      "&background=29292b&color=fff";
+  }
+
+
+  const isOwner =
+    room.owner_id === currentUser.id;
+
+
+  box.innerHTML = `
+
+    <div class="person">
+
+      <div class="avatar">
+        <img
+          src="${escapeHTML(avatar)}"
+          alt="">
+      </div>
+
+      <div class="person-name">
+        ${escapeHTML(username)}
+      </div>
+
+      <div class="person-state">
+        🟢 In room
+      </div>
+
+      ${
+        isOwner
+        ? `<div class="owner">ROOM OWNER</div>`
+        : ""
+      }
+
+    </div>
+
+  `;
+}
+
+
+/* MIC UI */
+
+async function toggleMic(){
+
+  if(!micOn){
+
+    try{
+
+      await navigator.mediaDevices
+        .getUserMedia({
+          audio:true
+        });
+
+      micOn = true;
+
+      const btn =
+        document.getElementById("micButton");
+
+      btn.textContent =
+        "🎙 Mic On";
+
+      btn.classList.add("active");
+
+    }catch(error){
+
+      console.error(error);
+
+      alert(
+        "Microphone permission is required."
+      );
+    }
+
+  }else{
+
+    micOn = false;
+
+    const btn =
+      document.getElementById("micButton");
+
+    btn.textContent =
+      "🎙 Mic Off";
+
+    btn.classList.remove("active");
+  }
+}
+
+
+/* SHARE */
+
+async function shareRoom(){
+
+  const url =
+    window.location.href;
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+        title:"Join my Connect room",
+        text:"Join my room on Connect 🎙",
+        url:url
+      });
+
+    }catch(error){}
+
+  }else{
+
+    await navigator.clipboard.writeText(url);
+
+    alert("Room link copied!");
+  }
+}
+
+
+/* INFO */
+
+function roomInfo(){
+
+  alert(
+    "Room: " +
+    room.name +
+    "\n\nRoom ID: " +
+    room.id
+  );
+}
+
+
+/* LEAVE */
+
+function leaveRoom(){
+
+  window.location.replace("home.html");
+}
+
+
+/* ESCAPE */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* AUTH */
+
+supabaseClient.auth.onAuthStateChange(
+  (event,session)=>{
+
+    if(event === "SIGNED_OUT"){
+
+      window.location.replace(
+        "index.html"
+      );
+    }
+
+  }
+);
+
+
+start();
+
+</script>
+
+</body>
+</html>
