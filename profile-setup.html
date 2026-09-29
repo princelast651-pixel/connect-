@@ -42,17 +42,20 @@ body{
   margin-bottom:8px;
 }
 
-.logo span{
+.logo-box{
   display:inline-flex;
-  width:48px;
-  height:48px;
-  border-radius:16px;
+  width:52px;
+  height:52px;
+  border-radius:17px;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg,#6c63ff,#8d7cff);
-  font-size:25px;
-  font-weight:800;
+  background:linear-gradient(135deg,#5865f2,#8b5cf6);
   box-shadow:0 10px 30px rgba(108,99,255,.3);
+}
+
+.logo-box svg{
+  width:34px;
+  height:34px;
 }
 
 h1{
@@ -207,7 +210,39 @@ button:disabled{
 <div class="card">
 
   <div class="logo">
-    <span>C</span>
+    <div class="logo-box">
+
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+
+        <path
+          d="M72 31C66 24 57 20 47 20C30 20 17 33 17 50C17 67 30 80 47 80C57 80 66 76 72 69"
+          stroke="white"
+          stroke-width="11"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M55 50H83"
+          stroke="white"
+          stroke-width="11"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M76 43L83 50L76 57"
+          stroke="white"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+      </svg>
+
+    </div>
   </div>
 
   <h1>Set up your profile</h1>
@@ -280,118 +315,60 @@ button:disabled{
 
 </div>
 
+
 <script>
 
 const SUPABASE_URL =
-  "https://riversitunmzvuprecbt.supabase.co";
+"https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkwNjMxNjQwLCJleHAiOjIxMDYyMDc2NDB9.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 
 const avatarInput =
-  document.getElementById("avatarInput");
+document.getElementById("avatarInput");
 
 const avatarPreview =
-  document.getElementById("avatarPreview");
+document.getElementById("avatarPreview");
 
 const usernameInput =
-  document.getElementById("username");
+document.getElementById("username");
 
 const dobInput =
-  document.getElementById("dob");
+document.getElementById("dob");
 
 const guidelinesInput =
-  document.getElementById("guidelines");
+document.getElementById("guidelines");
 
 const continueBtn =
-  document.getElementById("continueBtn");
+document.getElementById("continueBtn");
 
 const statusText =
-  document.getElementById("status");
+document.getElementById("status");
 
 let selectedAvatar = null;
+let currentUser = null;
 
 
-// Maximum DOB = today
+/* TODAY */
+
 const today =
-  new Date().toISOString().split("T")[0];
+new Date().toISOString().split("T")[0];
 
 dobInput.max = today;
 
 
-// Check login
-async function checkUser(){
+/* STATUS */
 
-  const {
-    data,
-    error
-  } = await supabaseClient.auth.getSession();
-
-  if(error || !data.session){
-
-    window.location.href =
-      "index.html";
-
-    return null;
-  }
-
-  return data.session.user;
-}
-
-
-let currentUser = null;
-
-
-// Avatar preview
-avatarInput.addEventListener("change", function(){
-
-  const file =
-    this.files[0];
-
-  if(!file) return;
-
-  if(file.size > 5 * 1024 * 1024){
-
-    statusText.textContent =
-      "Profile picture must be under 5 MB.";
-
-    statusText.className =
-      "status error";
-
-    this.value = "";
-
-    return;
-  }
-
-  selectedAvatar = file;
-
-  const reader =
-    new FileReader();
-
-  reader.onload = function(e){
-
-    avatarPreview.innerHTML =
-      `<img src="${e.target.result}" alt="Profile picture">`;
-
-  };
-
-  reader.readAsDataURL(file);
-
-});
-
-
-// Set status
 function setStatus(message,type=""){
 
-  statusText.textContent =
-    message;
+  statusText.textContent = message;
 
   statusText.className =
     "status " + type;
@@ -399,146 +376,266 @@ function setStatus(message,type=""){
 }
 
 
-// Complete profile
-continueBtn.addEventListener("click", async function(){
+/* CHECK USER */
 
-  if(!currentUser){
-
-    setStatus(
-      "Session expired. Please login again.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  const username =
-    usernameInput.value.trim();
-
-  const dob =
-    dobInput.value;
-
-
-  // Username validation
-  if(!/^[A-Za-z0-9_]{3,30}$/.test(username)){
-
-    setStatus(
-      "Username must be 3–30 characters using letters, numbers or underscore.",
-      "error"
-    );
-
-    usernameInput.focus();
-
-    return;
-  }
-
-
-  // DOB validation
-  if(!dob){
-
-    setStatus(
-      "Please enter your date of birth.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if(dob > today){
-
-    setStatus(
-      "Please enter a valid date of birth.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  // Guidelines
-  if(!guidelinesInput.checked){
-
-    setStatus(
-      "Please accept the Connect Guidelines.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  continueBtn.disabled = true;
-
-  setStatus(
-    "Checking username..."
-  );
-
+async function checkUser(){
 
   try{
 
-    // Check username already exists
     const {
-      data: existingUser,
-      error: usernameError
+      data,
+      error
     } =
-      await supabaseClient
-        .from("profiles")
-        .select("id")
-        .eq("username", username)
-        .neq("id", currentUser.id)
-        .maybeSingle();
+    await supabaseClient.auth.getSession();
 
 
-    if(usernameError){
+    if(error){
 
-      console.error(usernameError);
-
-      throw new Error(
-        "Could not check username."
+      console.error(
+        "Session error:",
+        error
       );
 
+      window.location.href =
+        "index.html";
+
+      return null;
     }
 
 
-    if(existingUser){
+    if(!data.session){
+
+      window.location.href =
+        "index.html";
+
+      return null;
+    }
+
+
+    return data.session.user;
+
+  }catch(error){
+
+    console.error(error);
+
+    window.location.href =
+      "index.html";
+
+    return null;
+
+  }
+
+}
+
+
+/* AVATAR PREVIEW */
+
+avatarInput.addEventListener(
+  "change",
+  function(){
+
+    const file =
+      this.files[0];
+
+    if(!file) return;
+
+
+    if(file.size > 5 * 1024 * 1024){
 
       setStatus(
-        "That username is already taken.",
+        "Profile picture must be under 5 MB.",
         "error"
       );
 
-      continueBtn.disabled = false;
+      this.value = "";
 
       return;
     }
 
 
-    let avatarUrl = null;
+    selectedAvatar = file;
 
 
-    // Upload avatar
-    if(selectedAvatar){
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      function(e){
+
+        avatarPreview.innerHTML =
+          `<img src="${e.target.result}" alt="Profile picture">`;
+
+      };
+
+
+    reader.readAsDataURL(file);
+
+  }
+);
+
+
+/* COMPLETE PROFILE */
+
+continueBtn.addEventListener(
+  "click",
+  async function(){
+
+    if(!currentUser){
 
       setStatus(
-        "Uploading profile picture..."
+        "Session expired. Please login again.",
+        "error"
       );
 
+      return;
+    }
 
-      const extension =
-        selectedAvatar.name
-          .split(".")
-          .pop()
-          .toLowerCase();
 
-      const filePath =
-        `${currentUser.id}/avatar.${extension}`;
+    const username =
+      usernameInput.value.trim();
 
+    const dob =
+      dobInput.value;
+
+
+    /* USERNAME */
+
+    if(!/^[A-Za-z0-9_]{3,30}$/.test(username)){
+
+      setStatus(
+        "Username must be 3–30 characters using letters, numbers or underscore.",
+        "error"
+      );
+
+      usernameInput.focus();
+
+      return;
+    }
+
+
+    /* DOB */
+
+    if(!dob){
+
+      setStatus(
+        "Please enter your date of birth.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if(dob > today){
+
+      setStatus(
+        "Please enter a valid date of birth.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* GUIDELINES */
+
+    if(!guidelinesInput.checked){
+
+      setStatus(
+        "Please accept the Connect Guidelines.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    continueBtn.disabled = true;
+
+    setStatus(
+      "Checking username..."
+    );
+
+
+    try{
+
+      /*
+        IMPORTANT:
+        Use limit(1) instead of maybeSingle().
+        This prevents an error if duplicate
+        usernames already exist in the table.
+      */
 
       const {
-        error: uploadError
+        data: existingUsers,
+        error: usernameError
       } =
+      await supabaseClient
+        .from("profiles")
+        .select("id,username")
+        .ilike("username", username)
+        .neq("id", currentUser.id)
+        .limit(1);
+
+
+      if(usernameError){
+
+        console.error(
+          "Username check error:",
+          usernameError
+        );
+
+        throw new Error(
+          usernameError.message ||
+          "Could not check username."
+        );
+
+      }
+
+
+      if(
+        existingUsers &&
+        existingUsers.length > 0
+      ){
+
+        setStatus(
+          "That username is already taken.",
+          "error"
+        );
+
+        continueBtn.disabled = false;
+
+        return;
+      }
+
+
+      let avatarUrl = null;
+
+
+      /* AVATAR UPLOAD */
+
+      if(selectedAvatar){
+
+        setStatus(
+          "Uploading profile picture..."
+        );
+
+
+        const extension =
+          selectedAvatar.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+        const filePath =
+          `${currentUser.id}/avatar.${extension}`;
+
+
+        const {
+          error: uploadError
+        } =
         await supabaseClient
           .storage
           .from("avatars")
@@ -552,40 +649,48 @@ continueBtn.addEventListener("click", async function(){
           );
 
 
-      if(uploadError){
+        if(uploadError){
 
-        console.error(uploadError);
+          console.error(
+            "Avatar upload error:",
+            uploadError
+          );
 
-        throw new Error(
-          "Profile picture upload failed."
-        );
+          throw new Error(
+            uploadError.message ||
+            "Profile picture upload failed."
+          );
+
+        }
+
+
+        const {
+          data:publicData
+        } =
+        supabaseClient
+          .storage
+          .from("avatars")
+          .getPublicUrl(
+            filePath
+          );
+
+
+        avatarUrl =
+          publicData.publicUrl;
 
       }
 
 
+      /* SAVE PROFILE */
+
+      setStatus(
+        "Saving profile..."
+      );
+
+
       const {
-        data: publicData
+        error:profileError
       } =
-        supabaseClient
-          .storage
-          .from("avatars")
-          .getPublicUrl(filePath);
-
-
-      avatarUrl =
-        publicData.publicUrl;
-    }
-
-
-    setStatus(
-      "Saving profile..."
-    );
-
-
-    // Save profile
-    const {
-      error: profileError
-    } =
       await supabaseClient
         .from("profiles")
         .upsert(
@@ -602,49 +707,62 @@ continueBtn.addEventListener("click", async function(){
         );
 
 
-    if(profileError){
+      if(profileError){
 
-      console.error(profileError);
+        console.error(
+          "Profile save error:",
+          profileError
+        );
 
-      throw new Error(
-        "Could not save profile."
+        throw new Error(
+          profileError.message ||
+          "Could not save profile."
+        );
+
+      }
+
+
+      setStatus(
+        "Profile completed! Opening Connect...",
+        "success"
       );
+
+
+      setTimeout(
+        function(){
+
+          window.location.replace(
+            "home.html"
+          );
+
+        },
+        800
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "PROFILE SETUP ERROR:",
+        error
+      );
+
+      setStatus(
+        error.message ||
+        "Something went wrong. Please try again.",
+        "error"
+      );
+
+      continueBtn.disabled = false;
 
     }
 
-
-    setStatus(
-      "Profile completed! Opening Connect...",
-      "success"
-    );
-
-
-    setTimeout(function(){
-
-      window.location.href =
-        "home.html";
-
-    },800);
-
-
-  }catch(error){
-
-    console.error(error);
-
-    setStatus(
-      error.message ||
-      "Something went wrong. Please try again.",
-      "error"
-    );
-
-    continueBtn.disabled = false;
-
   }
+);
 
-});
 
+/* START */
 
-// Start
 (async function(){
 
   currentUser =
