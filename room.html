@@ -389,6 +389,11 @@ button{
   font-weight:700;
 }
 
+.invite.pending{
+  background:#252a34;
+  color:#aab0bd;
+}
+
 /* MENU */
 
 .menu-item{
@@ -530,9 +535,7 @@ button{
 
   <div class="top-left">
 
-    <button class="icon-btn" id="backBtn">
-      ‹
-    </button>
+    <button class="icon-btn" id="backBtn">‹</button>
 
     <div class="room-info">
 
@@ -562,7 +565,6 @@ button{
 
 </header>
 
-
 <main class="main">
 
 <section class="room-center">
@@ -576,7 +578,6 @@ button{
   </div>
 
 </section>
-
 
 <footer class="bottom">
 
@@ -614,7 +615,6 @@ button{
 
 </footer>
 
-
 <!-- INVITE -->
 
 <div class="overlay" id="inviteOverlay">
@@ -634,7 +634,6 @@ button{
   </div>
 
 </div>
-
 
 <!-- CHAT -->
 
@@ -667,7 +666,6 @@ button{
   </div>
 
 </div>
-
 
 <!-- MENU -->
 
@@ -702,7 +700,6 @@ button{
 </div>
 
 <div class="toast" id="toast"></div>
-
 
 <script>
 
@@ -749,7 +746,6 @@ let realtimeChannel = null;
 
 const peers = new Map();
 const remoteAudios = new Map();
-
 const participants = new Map();
 
 
@@ -929,6 +925,34 @@ async function loadMyProfile(){
 
 
 /* =========================================================
+   PERMANENT ROOM MEMBERSHIP
+========================================================= */
+
+async function joinPermanentRoom(){
+
+  const {
+    error
+  } =
+  await supabaseClient
+    .from("room_members")
+    .upsert(
+      {
+        room_id:roomId,
+        user_id:currentUser.id,
+        joined_at:new Date().toISOString()
+      },
+      {
+        onConflict:
+          "room_id,user_id"
+      }
+    );
+
+  if(error)
+    throw error;
+}
+
+
+/* =========================================================
    DATABASE PARTICIPANT
 ========================================================= */
 
@@ -1007,17 +1031,13 @@ async function loadParticipants(){
       )
     ];
 
-
   participants.clear();
-
 
   if(!ids.length){
 
     renderParticipants();
-
     return;
   }
-
 
   const {
     data:profiles,
@@ -1033,7 +1053,6 @@ async function loadParticipants(){
   if(profileError)
     throw profileError;
 
-
   for(
     const p of profiles || []
   ){
@@ -1046,12 +1065,10 @@ async function loadParticipants(){
           p.id === currentUser.id
             ? !micOn
             : false,
-
         speaking:false
       }
     );
   }
-
 
   renderParticipants();
 }
@@ -1073,22 +1090,18 @@ function avatarHTML(profile){
       .charAt(0)
       .toUpperCase();
 
-
   if(profile.avatar_url){
 
     return `
       <div class="avatar">
         <img
-          src="${escapeHTML(
-            profile.avatar_url
-          )}"
+          src="${escapeHTML(profile.avatar_url)}"
           alt=""
         >
       </div>
     `;
 
   }
-
 
   return `
     <div class="avatar">
@@ -1102,7 +1115,6 @@ function renderParticipants(){
 
   participantsEl.innerHTML =
     "";
-
 
   if(!participants.size){
 
@@ -1118,10 +1130,8 @@ function renderParticipants(){
     return;
   }
 
-
   onlineCountEl.textContent =
     participants.size;
-
 
   participants.forEach(
     (p,id)=>{
@@ -1134,14 +1144,12 @@ function renderParticipants(){
       item.className =
         "participant";
 
-
       if(id === currentUser.id){
 
         item.classList.add(
           "active"
         );
       }
-
 
       if(p.speaking){
 
@@ -1150,12 +1158,10 @@ function renderParticipants(){
         );
       }
 
-
       const muted =
         id === currentUser.id
           ? !micOn
           : !!p.muted;
-
 
       item.innerHTML = `
 
@@ -1184,15 +1190,12 @@ function renderParticipants(){
           roomData &&
           roomData.owner_id === id
           ?
-          `<div class="host">
-             HOST
-           </div>`
+          `<div class="host">HOST</div>`
           :
           ""
         }
 
       `;
-
 
       participantsEl
         .appendChild(item);
@@ -1209,21 +1212,18 @@ async function setupRealtime(){
 
   realtimeChannel =
     supabaseClient.channel(
-      "connect-room-" +
-      roomId,
+      "connect-room-" + roomId,
       {
         config:{
           broadcast:{
             self:false
           },
           presence:{
-            key:
-              currentUser.id
+            key:currentUser.id
           }
         }
       }
     );
-
 
   realtimeChannel
 
@@ -1238,7 +1238,6 @@ async function setupRealtime(){
       }
     )
 
-
     .on(
       "presence",
       {
@@ -1249,7 +1248,6 @@ async function setupRealtime(){
       })=>{
 
         await loadParticipants();
-
 
         for(
           const p
@@ -1262,15 +1260,19 @@ async function setupRealtime(){
               currentUser.id
           ){
 
+            /*
+              Only one side creates the offer.
+              This prevents duplicate WebRTC offers.
+            */
             await createPeerConnection(
               p.user_id,
-              true
+              currentUser.id <
+                p.user_id
             );
           }
         }
       }
     )
-
 
     .on(
       "presence",
@@ -1282,7 +1284,6 @@ async function setupRealtime(){
       })=>{
 
         await loadParticipants();
-
 
         for(
           const p
@@ -1298,7 +1299,6 @@ async function setupRealtime(){
         }
       }
     )
-
 
     /* WEBRTC SIGNALING */
 
@@ -1326,7 +1326,6 @@ async function setupRealtime(){
       }
     )
 
-
     /* CHAT */
 
     .on(
@@ -1349,7 +1348,6 @@ async function setupRealtime(){
         );
       }
     );
-
 
   await realtimeChannel.subscribe(
     async status=>{
@@ -1407,7 +1405,6 @@ async function createPeerConnection(
     return;
   }
 
-
   if(
     peers.has(
       remoteUserId
@@ -1419,18 +1416,15 @@ async function createPeerConnection(
     );
   }
 
-
   const pc =
     new RTCPeerConnection(
       rtcConfig
     );
 
-
   peers.set(
     remoteUserId,
     pc
   );
-
 
   if(localStream){
 
@@ -1446,7 +1440,6 @@ async function createPeerConnection(
       });
   }
 
-
   pc.ontrack =
     event=>{
 
@@ -1454,7 +1447,6 @@ async function createPeerConnection(
         remoteAudios.get(
           remoteUserId
         );
-
 
       if(!audio){
 
@@ -1478,7 +1470,6 @@ async function createPeerConnection(
         );
       }
 
-
       audio.srcObject =
         event.streams[0];
 
@@ -1487,18 +1478,15 @@ async function createPeerConnection(
           ? 1
           : 0;
 
-
       audio.play()
         .catch(()=>{});
     };
-
 
   pc.onicecandidate =
     async event=>{
 
       if(!event.candidate)
         return;
-
 
       await sendSignal(
         remoteUserId,
@@ -1509,7 +1497,6 @@ async function createPeerConnection(
         }
       );
     };
-
 
   pc.onconnectionstatechange =
     ()=>{
@@ -1529,17 +1516,14 @@ async function createPeerConnection(
       }
     };
 
-
   if(createOffer){
 
     const offer =
       await pc.createOffer();
 
-
     await pc.setLocalDescription(
       offer
     );
-
 
     await sendSignal(
       remoteUserId,
@@ -1549,7 +1533,6 @@ async function createPeerConnection(
       }
     );
   }
-
 
   return pc;
 }
@@ -1566,7 +1549,6 @@ async function sendSignal(
 
   if(!realtimeChannel)
     return;
-
 
   await realtimeChannel.send({
 
@@ -1594,14 +1576,11 @@ async function handleSignal(
   const from =
     payload.from;
 
-
   if(!from)
     return;
 
-
   let pc =
     peers.get(from);
-
 
   if(!pc){
 
@@ -1611,7 +1590,6 @@ async function handleSignal(
         false
       );
   }
-
 
   if(
     payload.type ===
@@ -1624,15 +1602,12 @@ async function handleSignal(
       )
     );
 
-
     const answer =
       await pc.createAnswer();
-
 
     await pc.setLocalDescription(
       answer
     );
-
 
     await sendSignal(
       from,
@@ -1642,7 +1617,6 @@ async function handleSignal(
       }
     );
   }
-
 
   else if(
     payload.type ===
@@ -1655,7 +1629,6 @@ async function handleSignal(
       )
     );
   }
-
 
   else if(
     payload.type ===
@@ -1688,7 +1661,6 @@ function removePeer(
   const pc =
     peers.get(userId);
 
-
   if(pc){
 
     try{
@@ -1700,12 +1672,10 @@ function removePeer(
     );
   }
 
-
   const audio =
     remoteAudios.get(
       userId
     );
-
 
   if(audio){
 
@@ -1749,12 +1719,10 @@ async function startMicrophone(){
           video:false
         });
 
-
     micOn =
       true;
 
     updateMicUI();
-
 
   }catch(error){
 
@@ -1765,7 +1733,6 @@ async function startMicrophone(){
     toast(
       "Microphone permission required"
     );
-
 
     micOn =
       false;
@@ -1784,10 +1751,8 @@ function toggleMic(){
     return;
   }
 
-
   micOn =
     !micOn;
-
 
   localStream
     .getAudioTracks()
@@ -1797,7 +1762,6 @@ function toggleMic(){
           micOn;
       }
     );
-
 
   updateMicUI();
 
@@ -1811,7 +1775,6 @@ function updateMicUI(){
     micOn
       ? "🎙"
       : "🔇";
-
 
   micBtn.classList.toggle(
     "off",
@@ -1827,7 +1790,6 @@ function updateOwnParticipant(){
       currentUser.id
     );
 
-
   if(p){
 
     p.muted =
@@ -1838,7 +1800,6 @@ function updateOwnParticipant(){
       p
     );
   }
-
 
   renderParticipants();
 }
@@ -1853,18 +1814,15 @@ async function toggleNoiseCancellation(){
   noiseCancellation =
     !noiseCancellation;
 
-
   noiseLabel.textContent =
     noiseCancellation
       ? "Noise cancellation ON"
       : "Noise cancellation OFF";
 
-
   noiseLabel.classList.toggle(
     "active",
     noiseCancellation
   );
-
 
   if(!localStream){
 
@@ -1877,10 +1835,8 @@ async function toggleNoiseCancellation(){
     return;
   }
 
-
   const wasMicOn =
     micOn;
-
 
   localStream
     .getTracks()
@@ -1889,7 +1845,6 @@ async function toggleNoiseCancellation(){
         track.stop();
       }
     );
-
 
   try{
 
@@ -1913,10 +1868,8 @@ async function toggleNoiseCancellation(){
           video:false
         });
 
-
     micOn =
       wasMicOn;
-
 
     localStream
       .getAudioTracks()
@@ -1926,7 +1879,6 @@ async function toggleNoiseCancellation(){
             micOn;
         }
       );
-
 
     for(
       const pc
@@ -1942,11 +1894,9 @@ async function toggleNoiseCancellation(){
                 "audio"
           );
 
-
       const track =
         localStream
           .getAudioTracks()[0];
-
 
       if(
         sender &&
@@ -1959,19 +1909,15 @@ async function toggleNoiseCancellation(){
       }
     }
 
-
     updateMicUI();
 
-
     updateOwnParticipant();
-
 
     toast(
       noiseCancellation
         ? "Noise cancellation ON"
         : "Noise cancellation OFF"
     );
-
 
   }catch(error){
 
@@ -1995,18 +1941,15 @@ function toggleSpeaker(){
   speakerOn =
     !speakerOn;
 
-
   speakerBtn.textContent =
     speakerOn
       ? "🔊"
       : "🔇";
 
-
   speakerBtn.classList.toggle(
     "off",
     !speakerOn
   );
-
 
   remoteAudios.forEach(
     audio=>{
@@ -2020,7 +1963,7 @@ function toggleSpeaker(){
 
 
 /* =========================================================
-   FRIENDS
+   FRIENDS + REAL INVITES
 ========================================================= */
 
 async function loadFriends(){
@@ -2028,10 +1971,8 @@ async function loadFriends(){
   const list =
     $("friendsList");
 
-
   list.textContent =
     "Loading friends…";
-
 
   const {
     data,
@@ -2053,15 +1994,15 @@ async function loadFriends(){
       currentUser.id
     );
 
-
   if(error){
+
+    console.error(error);
 
     list.textContent =
       "Couldn't load friends.";
 
     return;
   }
-
 
   const ids =
     [
@@ -2076,7 +2017,6 @@ async function loadFriends(){
       )
     ];
 
-
   if(!ids.length){
 
     list.textContent =
@@ -2085,9 +2025,9 @@ async function loadFriends(){
     return;
   }
 
-
   const {
-    data:profiles
+    data:profiles,
+    error:profileError
   } =
   await supabaseClient
     .from("profiles")
@@ -2096,10 +2036,74 @@ async function loadFriends(){
     )
     .in("id",ids);
 
+  if(profileError){
+
+    console.error(profileError);
+
+    list.textContent =
+      "Couldn't load profiles.";
+
+    return;
+  }
+
+  /*
+    Check which friends already have a pending
+    invitation for this room.
+  */
+  const {
+    data:pendingInvites
+  } =
+  await supabaseClient
+    .from("room_invites")
+    .select(
+      "receiver_id,status"
+    )
+    .eq(
+      "room_id",
+      roomId
+    )
+    .eq(
+      "sender_id",
+      currentUser.id
+    )
+    .eq(
+      "status",
+      "pending"
+    );
+
+  const pendingIds =
+    new Set(
+      (pendingInvites || [])
+        .map(x=>x.receiver_id)
+    );
+
+
+  /*
+    Check permanent members so we don't invite
+    somebody who has already joined this room.
+  */
+  const {
+    data:members
+  } =
+  await supabaseClient
+    .from("room_members")
+    .select(
+      "user_id"
+    )
+    .eq(
+      "room_id",
+      roomId
+    );
+
+  const memberIds =
+    new Set(
+      (members || [])
+        .map(x=>x.user_id)
+    );
+
 
   list.innerHTML =
     "";
-
 
   for(
     const p
@@ -2111,10 +2115,40 @@ async function loadFriends(){
         "div"
       );
 
-
     row.className =
       "friend";
 
+    let buttonText =
+      "Invite";
+
+    let buttonClass =
+      "invite";
+
+    let disabled =
+      false;
+
+    if(memberIds.has(p.id)){
+
+      buttonText =
+        "Joined";
+
+      buttonClass =
+        "invite pending";
+
+      disabled =
+        true;
+
+    }else if(pendingIds.has(p.id)){
+
+      buttonText =
+        "Pending";
+
+      buttonClass =
+        "invite pending";
+
+      disabled =
+        true;
+    }
 
     row.innerHTML = `
 
@@ -2150,52 +2184,165 @@ async function loadFriends(){
         </div>
 
         <div class="friend-sub">
-          Friend
+          ${
+            memberIds.has(p.id)
+              ? "Already in room"
+              : pendingIds.has(p.id)
+                ? "Invitation sent"
+                : "Friend"
+          }
         </div>
 
       </div>
 
       <button
-        class="invite"
-        data-id="${escapeHTML(
-          p.id
-        )}"
+        class="${buttonClass}"
+        data-id="${escapeHTML(p.id)}"
+        ${disabled ? "disabled" : ""}
       >
-        Invite
+        ${buttonText}
       </button>
     `;
 
 
-    row
-      .querySelector(
+    const inviteButton =
+      row.querySelector(
         ".invite"
-      )
-      .onclick =
-      async ()=>{
+      );
 
-        try{
 
-          await navigator
-            .clipboard
-            .writeText(
-              location.href
-            );
+    if(!disabled){
 
-          toast(
-            "Room link copied"
+      inviteButton.onclick =
+        async ()=>{
+
+          await sendRoomInvite(
+            p.id,
+            inviteButton
           );
 
-        }catch(e){
-
-          toast(
-            "Couldn't copy link"
-          );
-        }
-      };
+        };
+    }
 
 
     list.appendChild(
       row
+    );
+  }
+}
+
+
+/* =========================================================
+   SEND ROOM INVITE
+========================================================= */
+
+async function sendRoomInvite(
+  receiverId,
+  button
+){
+
+  if(
+    !currentUser ||
+    !roomId
+  )
+    return;
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Sending…";
+
+  try{
+
+    /*
+      Double-check for an existing pending invite.
+    */
+    const {
+      data:existing,
+      error:checkError
+    } =
+    await supabaseClient
+      .from("room_invites")
+      .select("id")
+      .eq("room_id",roomId)
+      .eq("sender_id",currentUser.id)
+      .eq("receiver_id",receiverId)
+      .eq("status","pending")
+      .maybeSingle();
+
+    if(checkError)
+      throw checkError;
+
+    if(existing){
+
+      button.textContent =
+        "Pending";
+
+      button.classList.add(
+        "pending"
+      );
+
+      toast(
+        "Invitation already sent"
+      );
+
+      return;
+    }
+
+
+    const {
+      error
+    } =
+    await supabaseClient
+      .from("room_invites")
+      .insert({
+
+        room_id:
+          roomId,
+
+        sender_id:
+          currentUser.id,
+
+        receiver_id:
+          receiverId,
+
+        status:
+          "pending"
+
+      });
+
+    if(error)
+      throw error;
+
+
+    button.textContent =
+      "Pending";
+
+    button.classList.add(
+      "pending"
+    );
+
+    toast(
+      "Invitation sent"
+    );
+
+  }catch(error){
+
+    console.error(
+      "Invite error:",
+      error
+    );
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Invite";
+
+    toast(
+      error.message ||
+      "Couldn't send invitation"
     );
   }
 }
@@ -2213,16 +2360,13 @@ function addChatMessage(
   const list =
     $("chatList");
 
-
   const item =
     document.createElement(
       "div"
     );
 
-
   item.className =
     "message";
-
 
   item.innerHTML = `
 
@@ -2236,11 +2380,9 @@ function addChatMessage(
 
   `;
 
-
   list.appendChild(
     item
   );
-
 
   list.scrollTop =
     list.scrollHeight;
@@ -2252,25 +2394,20 @@ async function sendChatMessage(){
   const input =
     $("chatInput");
 
-
   const text =
     input.value.trim();
-
 
   if(!text)
     return;
 
-
   input.value =
     "";
-
 
   addChatMessage(
     myProfile?.username ||
       "You",
     text
   );
-
 
   if(realtimeChannel){
 
@@ -2473,9 +2610,13 @@ async function leaveRoom(){
 
   closeAllSheets();
 
-
   try{
 
+    /*
+      IMPORTANT:
+      We only remove live presence.
+      room_members stays permanently.
+    */
     await leaveParticipant();
 
   }catch(e){
@@ -2483,13 +2624,11 @@ async function leaveRoom(){
     console.warn(e);
   }
 
-
   if(realtimeChannel){
 
     try{
       await realtimeChannel.untrack();
     }catch(e){}
-
 
     try{
 
@@ -2500,7 +2639,6 @@ async function leaveRoom(){
 
     }catch(e){}
   }
-
 
   if(localStream){
 
@@ -2513,7 +2651,6 @@ async function leaveRoom(){
       );
   }
 
-
   peers.forEach(
     pc=>{
       try{
@@ -2521,7 +2658,6 @@ async function leaveRoom(){
       }catch(e){}
     }
   );
-
 
   location.href =
     "home.html";
@@ -2542,11 +2678,19 @@ async function init(){
     if(!currentUser)
       return;
 
-
     await loadRoom();
 
     await loadMyProfile();
 
+    /*
+      Permanent membership is created immediately
+      whenever this room successfully opens.
+    */
+    await joinPermanentRoom();
+
+    /*
+      Live participation is temporary.
+    */
     await joinParticipant();
 
     await loadParticipants();
@@ -2565,7 +2709,6 @@ async function init(){
             realtimeChannel
               ?.presenceState() ||
             {};
-
 
           for(
             const key
@@ -2602,17 +2745,14 @@ async function init(){
       "hidden"
     );
 
-
   }catch(error){
 
     console.error(
       error
     );
 
-
     loading.textContent =
       "Unable to open this room.";
-
 
     toast(
       error.message ||
