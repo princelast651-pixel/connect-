@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chat • Connect</title>
+<meta name="theme-color" content="#121212">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#121212;color:#fff;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+.app{max-width:650px;margin:auto;min-height:100vh;padding-bottom:82px}
+
+/* HEADER */
+header{
+height:70px;padding:0 16px;display:flex;align-items:center;
+border-bottom:1px solid #29292c;background:rgba(18,18,18,.95);
+backdrop-filter:blur(16px);position:sticky;top:0;z-index:20
+}
+.back{
+width:42px;height:42px;border-radius:13px;background:#1d1d1f;
+border:1px solid #303033;color:#fff;font-size:22px
+}
+.title{font-size:21px;font-weight:800;margin-left:12px}
+
+/* CONTENT */
+.content{padding:17px 16px}
+
+/* SEARCH */
+.search{
+width:100%;padding:14px 16px;border-radius:15px;
+background:#1d1d1f;border:1px solid #303033;color:#fff;
+outline:none;font-size:14px;margin-bottom:20px
+}
+.search:focus{border-color:#7659f5}
+.search::placeholder{color:#777}
+
+/* CHAT LIST */
+.section-title{
+font-size:14px;color:#8e8e93;font-weight:700;
+margin:0 0 10px 3px
+}
+.chat-list{display:flex;flex-direction:column;gap:8px}
+.chat{
+display:flex;align-items:center;gap:12px;padding:13px;
+background:#1d1d1f;border:1px solid #29292c;
+border-radius:17px;text-decoration:none;color:#fff
+}
+.chat:active{transform:scale(.985)}
+.avatar{
+width:51px;height:51px;border-radius:50%;overflow:hidden;
+background:#29292b;flex-shrink:0;border:1px solid #39393d
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.chat-info{min-width:0;flex:1}
+.name{font-size:14px;font-weight:700;margin-bottom:5px}
+.last{
+font-size:12px;color:#777;white-space:nowrap;
+overflow:hidden;text-overflow:ellipsis
+}
+.time{font-size:10px;color:#68686d}
+.badge{
+margin-top:7px;display:inline-flex;min-width:18px;height:18px;
+padding:0 5px;border-radius:9px;background:#7c5cff;
+align-items:center;justify-content:center;font-size:9px;font-weight:bold
+}
+
+/* EMPTY */
+.empty{
+padding:42px 15px;text-align:center;
+border:1px dashed #343438;border-radius:18px;color:#777
+}
+.empty-icon{font-size:32px;margin-bottom:10px}
+.empty h3{color:#ccc;font-size:15px;margin-bottom:5px}
+.empty p{font-size:12px}
+
+/* NEW CHAT */
+.fab{
+position:fixed;right:20px;bottom:92px;width:55px;height:55px;
+border-radius:18px;background:linear-gradient(135deg,#8d6cff,#573de4);
+color:#fff;font-size:25px;box-shadow:0 10px 30px rgba(124,92,255,.3);
+z-index:30
+}
+
+/* BOTTOM */
+.bottom-nav{
+position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+width:100%;max-width:650px;height:74px;background:rgba(22,22,24,.97);
+backdrop-filter:blur(18px);border-top:1px solid #2c2c2f;
+display:grid;grid-template-columns:repeat(4,1fr);z-index:50
+}
+.nav{
+color:#777;text-decoration:none;display:flex;flex-direction:column;
+justify-content:center;align-items:center;gap:5px;font-size:10px;font-weight:600
+}
+.nav-icon{font-size:21px}
+.nav.active{color:#fff}
+.nav.active .nav-icon{color:#9b7cff}
+
+/* LOADING */
+.loading{
+position:fixed;inset:0;background:#121212;z-index:100;
+display:flex;align-items:center;justify-content:center;
+color:#999;font-size:13px
+}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<div class="loading" id="loading">Loading Connect...</div>
+
+<div class="app">
+
+<header>
+<button class="back" onclick="go('home.html')">‹</button>
+<div class="title">Chat</div>
+</header>
+
+<main class="content">
+
+<input
+id="search"
+class="search"
+type="search"
+placeholder="Search conversations..."
+oninput="filterChats()"
+>
+
+<div class="section-title">RECENT</div>
+
+<div class="chat-list" id="chatList">
+
+<div class="empty">
+<div class="empty-icon">💬</div>
+<h3>No conversations yet</h3>
+<p>Add friends and start chatting.</p>
+</div>
+
+</div>
+
+</main>
+</div>
+
+<button class="fab" onclick="newChat()">＋</button>
+
+<nav class="bottom-nav">
+
+<a class="nav" href="home.html">
+<span class="nav-icon">⌂</span>
+<span>Home</span>
+</a>
+
+<a class="nav" href="entertainment.html">
+<span class="nav-icon">🚀</span>
+<span>Entertainment</span>
+</a>
+
+<a class="nav active" href="chat.html">
+<span class="nav-icon">💬</span>
+<span>Chat</span>
+</a>
+
+<a class="nav" href="profile.html">
+<span class="nav-icon">◉</span>
+<span>Profile</span>
+</a>
+
+</nav>
+
+<script>
+
+const SUPABASE_URL =
+"https://riversitunmzvuprecbt.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+});
+
+let currentUser=null;
+let conversations=[];
+
+
+/* START */
+
+async function start(){
+
+const {
+data:{session}
+}=await supabaseClient.auth.getSession();
+
+if(!session){
+window.location.replace("index.html");
+return;
+}
+
+currentUser=session.user;
+
+await loadChats();
+
+document.getElementById("loading")
+.classList.add("hidden");
+}
+
+
+/* LOAD CHATS */
+
+async function loadChats(){
+
+/*
+ Future database table:
+
+ conversations
+ messages
+
+ This page is intentionally ready for them.
+*/
+
+conversations=[];
+
+renderChats();
+}
+
+
+/* RENDER */
+
+function renderChats(){
+
+const box=document.getElementById("chatList");
+
+if(!conversations.length){
+
+box.innerHTML=`
+<div class="empty">
+<div class="empty-icon">💬</div>
+<h3>No conversations yet</h3>
+<p>Add friends and start chatting.</p>
+</div>
+`;
+
+return;
+}
+
+box.innerHTML=conversations.map(chat=>`
+
+<a class="chat" href="conversation.html?id=${encodeURIComponent(chat.id)}">
+
+<div class="avatar">
+<img src="${escapeHTML(chat.avatar)}">
+</div>
+
+<div class="chat-info">
+<div class="name">${escapeHTML(chat.name)}</div>
+<div class="last">${escapeHTML(chat.last)}</div>
+</div>
+
+<div>
+<div class="time">${escapeHTML(chat.time)}</div>
+${chat.unread ? `<div class="badge">${chat.unread}</div>` : ""}
+</div>
+
+</a>
+
+`).join("");
+}
+
+
+/* SEARCH */
+
+function filterChats(){
+
+const value=
+document.getElementById("search")
+.value
+.trim()
+.toLowerCase();
+
+document
+.querySelectorAll(".chat")
+.forEach(item=>{
+
+const name=
+item.querySelector(".name")
+.textContent
+.toLowerCase();
+
+item.style.display=
+name.includes(value)
+?"flex"
+:"none";
+
+});
+}
+
+
+/* NEW CHAT */
+
+function newChat(){
+
+window.location.href="friends.html";
+}
+
+
+/* NAV */
+
+function go(page){
+window.location.href=page;
+}
+
+
+/* ESCAPE */
+
+function escapeHTML(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* AUTH */
+
+supabaseClient.auth.onAuthStateChange(
+(event,session)=>{
+
+if(event==="SIGNED_OUT"){
+window.location.replace("index.html");
+}
+
+});
+
+
+start();
+
+</script>
+
+</body>
+</html>
