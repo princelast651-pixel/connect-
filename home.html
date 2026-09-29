@@ -12,19 +12,20 @@
 }
 
 :root{
-  --bg:#121212;
-  --card:#1d1d1f;
-  --border:#303033;
+  --bg:#101010;
+  --card:#191919;
+  --card2:#202020;
+  --border:#2b2b2b;
   --text:#fff;
-  --muted:#9b9b9f;
+  --muted:#8d8d8d;
   --accent:#7c5cff;
-  --accent2:#9b7cff;
+  --accent2:#a18aff;
 }
 
 body{
   background:var(--bg);
   color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Inter,Arial,Helvetica,sans-serif;
   min-height:100vh;
 }
 
@@ -45,18 +46,20 @@ button{
   padding-bottom:90px;
 }
 
+/* HEADER */
+
 header{
   height:70px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 18px;
+  padding:0 17px;
   position:sticky;
   top:0;
-  z-index:20;
-  background:rgba(18,18,18,.94);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid #202023;
+  z-index:30;
+  background:rgba(16,16,16,.94);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid #202020;
 }
 
 .brand{
@@ -66,21 +69,22 @@ header{
 }
 
 .logo{
-  width:40px;
-  height:40px;
-  border-radius:13px;
-  background:linear-gradient(135deg,#8d6cff,#5a3ee8);
+  width:41px;
+  height:41px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#987dff,#6245e8);
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:21px;
   font-weight:900;
-  box-shadow:0 7px 25px rgba(124,92,255,.28);
+  box-shadow:0 8px 28px rgba(124,92,255,.25);
 }
 
 .brand-name{
-  font-size:22px;
-  font-weight:800;
+  font-size:21px;
+  font-weight:850;
+  letter-spacing:-.5px;
 }
 
 .header-actions{
@@ -98,32 +102,46 @@ header{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:18px;
+  font-size:19px;
 }
 
+.icon-btn:active{
+  transform:scale(.93);
+}
+
+/* CONTENT */
+
 .content{
-  padding:18px;
+  padding:18px 16px;
 }
 
 .welcome{
-  margin-bottom:22px;
+  margin:3px 2px 20px;
 }
 
 .welcome h1{
   font-size:26px;
-  margin-bottom:6px;
+  line-height:1.15;
+  margin-bottom:7px;
+  letter-spacing:-.6px;
 }
 
 .welcome p{
   color:var(--muted);
-  font-size:14px;
+  font-size:13px;
+}
+
+/* FRIEND STORIES */
+
+.stories-wrap{
+  margin-bottom:21px;
 }
 
 .stories{
   display:flex;
-  gap:14px;
+  gap:15px;
   overflow-x:auto;
-  padding:4px 0 18px;
+  padding:3px 2px 5px;
   scrollbar-width:none;
 }
 
@@ -132,7 +150,8 @@ header{
 }
 
 .story{
-  min-width:64px;
+  min-width:62px;
+  width:62px;
   text-align:center;
 }
 
@@ -141,8 +160,8 @@ header{
   height:58px;
   border-radius:50%;
   padding:2px;
-  background:linear-gradient(135deg,#8d6cff,#4b35d4);
-  margin:auto auto 6px;
+  background:linear-gradient(135deg,#8d6cff,#4d35d5);
+  margin:0 auto 6px;
 }
 
 .story-avatar img{
@@ -150,44 +169,113 @@ header{
   height:100%;
   border-radius:50%;
   object-fit:cover;
-  background:#29292b;
+  background:#292929;
 }
 
 .story-name{
+  color:#d1d1d1;
   font-size:11px;
-  color:#ccc;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.notice{
-  background:linear-gradient(135deg,#211c3d,#1c1c20);
-  border:1px solid #39315e;
-  border-radius:18px;
-  padding:15px;
+.story-add{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#1d1d1d;
+  border:1px solid #343434;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+}
+
+/* QUICK ACTIONS */
+
+.quick-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
   margin-bottom:22px;
+}
+
+.quick-action{
+  min-height:82px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  color:white;
+  padding:12px 7px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+
+.quick-action:active{
+  transform:scale(.96);
+}
+
+.quick-action-icon{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  background:#252525;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+
+.quick-action span:last-child{
+  font-size:10px;
+  color:#c5c5c5;
+  font-weight:650;
+}
+
+/* NOTICE */
+
+.notice{
+  background:linear-gradient(135deg,#211d3a,#19191b);
+  border:1px solid #39325d;
+  border-radius:19px;
+  padding:15px;
   display:flex;
   gap:12px;
+  margin-bottom:24px;
 }
 
 .notice-icon{
-  font-size:22px;
+  width:38px;
+  height:38px;
+  flex-shrink:0;
+  border-radius:12px;
+  background:#2b2550;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
 }
 
 .notice h3{
   font-size:14px;
-  margin-bottom:5px;
+  margin:1px 0 5px;
 }
 
 .notice p{
-  color:#aaa;
-  font-size:12px;
-  line-height:1.5;
+  color:#999;
+  font-size:11px;
+  line-height:1.55;
 }
 
+/* SECTIONS */
+
 .section{
-  margin-top:22px;
+  margin-top:24px;
 }
 
 .section-head{
@@ -198,57 +286,74 @@ header{
 }
 
 .section-title{
-  font-size:18px;
-  font-weight:750;
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:-.2px;
 }
 
 .section-action{
-  color:var(--accent2);
-  font-size:13px;
-  font-weight:600;
   background:none;
+  color:var(--accent2);
+  font-size:12px;
+  font-weight:700;
 }
+
+/* ROOM */
 
 .room-card{
   background:var(--card);
   border:1px solid var(--border);
   border-radius:19px;
-  padding:16px;
-  margin-bottom:11px;
+  padding:15px;
+  margin-bottom:10px;
 }
 
 .room-card:active{
-  transform:scale(.985);
+  transform:scale(.988);
 }
 
 .room-top{
   display:flex;
-  justify-content:space-between;
   gap:12px;
+  align-items:center;
+}
+
+.room-icon{
+  width:47px;
+  height:47px;
+  flex-shrink:0;
+  border-radius:15px;
+  background:linear-gradient(135deg,#29213f,#252525);
+  border:1px solid #38304e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
 }
 
 .room-info{
   min-width:0;
+  flex:1;
 }
 
 .room-title{
-  font-size:16px;
-  font-weight:700;
-  margin-bottom:6px;
+  font-size:15px;
+  font-weight:750;
+  margin-bottom:5px;
   overflow:hidden;
-  text-overflow:ellipsis;
   white-space:nowrap;
+  text-overflow:ellipsis;
 }
 
 .room-meta{
   color:var(--muted);
-  font-size:12px;
+  font-size:11px;
 }
 
 .room-buttons{
   display:flex;
   gap:8px;
-  margin-top:14px;
+  margin-top:13px;
 }
 
 .join-btn,
@@ -256,13 +361,13 @@ header{
   flex:1;
   padding:10px;
   border-radius:12px;
-  font-size:13px;
-  font-weight:700;
+  font-size:12px;
+  font-weight:750;
 }
 
 .join-btn{
   background:var(--accent);
-  color:white;
+  color:#fff;
 }
 
 .delete-btn{
@@ -270,88 +375,160 @@ header{
   color:#ff8796;
 }
 
+/* EMPTY */
+
 .empty{
-  border:1px dashed #343438;
-  background:#18181a;
+  border:1px dashed #303030;
+  background:#171717;
   border-radius:18px;
-  padding:25px 15px;
+  padding:23px 14px;
   text-align:center;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.empty-icon{
-  font-size:28px;
-  margin-bottom:9px;
-}
-
-.create-card{
-  background:linear-gradient(135deg,#211c3b,#1c1c1f);
-  border:1px solid #39315c;
-  border-radius:19px;
-  padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-}
-
-.create-card h3{
-  font-size:16px;
-  margin-bottom:5px;
-}
-
-.create-card p{
-  color:var(--muted);
+  color:#777;
   font-size:12px;
 }
 
+.empty-icon{
+  font-size:27px;
+  margin-bottom:8px;
+}
+
+/* CREATE */
+
+.create-card{
+  background:linear-gradient(135deg,#211d3b,#19191b);
+  border:1px solid #39325d;
+  border-radius:20px;
+  padding:17px;
+}
+
+.create-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.create-icon{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:#2a2449;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+
+.create-info{
+  flex:1;
+}
+
+.create-card h3{
+  font-size:15px;
+  margin-bottom:4px;
+}
+
+.create-card p{
+  color:#919191;
+  font-size:11px;
+}
+
 .create-btn{
-  flex-shrink:0;
-  padding:11px 15px;
+  width:100%;
+  margin-top:14px;
+  padding:11px;
   border-radius:13px;
   background:var(--accent);
   color:white;
-  font-weight:700;
-  font-size:13px;
+  font-size:12px;
+  font-weight:750;
 }
 
-.quick-grid{
+/* EXPLORE */
+
+.explore-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:11px;
+  gap:10px;
 }
 
-.quick-card{
+.explore-card{
   background:var(--card);
   border:1px solid var(--border);
   border-radius:18px;
-  padding:18px;
-  min-height:100px;
+  padding:16px;
+  color:#fff;
   text-align:left;
-  color:white;
+  min-height:105px;
 }
 
-.quick-icon{
-  font-size:23px;
+.explore-card:active{
+  transform:scale(.97);
+}
+
+.explore-icon{
+  font-size:22px;
   margin-bottom:12px;
 }
 
-.quick-title{
-  font-size:14px;
-  font-weight:700;
+.explore-title{
+  font-size:13px;
+  font-weight:750;
 }
 
-.quick-sub{
-  color:var(--muted);
-  font-size:11px;
+.explore-sub{
+  color:#777;
+  font-size:10px;
   margin-top:4px;
 }
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:650px;
+  height:74px;
+  background:rgba(20,20,20,.97);
+  backdrop-filter:blur(18px);
+  border-top:1px solid #2a2a2a;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  z-index:50;
+}
+
+.nav-item{
+  color:#707070;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  font-size:10px;
+  font-weight:650;
+}
+
+.nav-icon{
+  font-size:20px;
+}
+
+.nav-item.active{
+  color:#fff;
+}
+
+.nav-item.active .nav-icon{
+  color:var(--accent2);
+}
+
+/* MODAL */
 
 .modal-bg{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.72);
+  background:rgba(0,0,0,.75);
   backdrop-filter:blur(8px);
   z-index:100;
   display:none;
@@ -367,7 +544,7 @@ header{
   width:100%;
   max-width:650px;
   background:#1b1b1d;
-  border:1px solid #343437;
+  border:1px solid #353535;
   border-radius:25px 25px 0 0;
   padding:22px 18px 28px;
   animation:slideUp .25s ease;
@@ -389,8 +566,8 @@ header{
 
 .field label{
   display:block;
-  font-size:12px;
-  color:#aaa;
+  font-size:11px;
+  color:#999;
   margin-bottom:7px;
 }
 
@@ -399,8 +576,8 @@ header{
   width:100%;
   padding:13px;
   border-radius:13px;
-  border:1px solid var(--border);
-  background:#121214;
+  border:1px solid #303030;
+  background:#121212;
   color:#fff;
   outline:none;
 }
@@ -408,18 +585,18 @@ header{
 .modal-actions{
   display:flex;
   gap:10px;
-  margin-top:20px;
+  margin-top:19px;
 }
 
 .modal-actions button{
   flex:1;
   padding:13px;
   border-radius:13px;
-  font-weight:700;
+  font-weight:750;
 }
 
 .cancel{
-  background:#29292b;
+  background:#292929;
   color:#ddd;
 }
 
@@ -432,57 +609,19 @@ header{
   opacity:.5;
 }
 
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:650px;
-  height:74px;
-  background:rgba(22,22,24,.96);
-  backdrop-filter:blur(18px);
-  border-top:1px solid #2c2c2f;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  z-index:50;
-}
-
-.nav-item{
-  color:#77777c;
-  text-decoration:none;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:5px;
-  font-size:11px;
-  font-weight:600;
-}
-
-.nav-icon{
-  font-size:21px;
-}
-
-.nav-item.active{
-  color:#fff;
-}
-
-.nav-item.active .nav-icon{
-  color:var(--accent2);
-}
+/* TOAST */
 
 .toast{
   position:fixed;
   left:50%;
-  bottom:90px;
-  transform:translateX(-50%) translateY(20px);
-  background:#29292c;
-  border:1px solid #3b3b40;
+  bottom:91px;
+  transform:translateX(-50%) translateY(18px);
+  background:#292929;
+  border:1px solid #414141;
   color:white;
   padding:11px 16px;
   border-radius:13px;
-  font-size:12px;
+  font-size:11px;
   opacity:0;
   pointer-events:none;
   transition:.25s;
@@ -496,16 +635,18 @@ header{
   transform:translateX(-50%) translateY(0);
 }
 
+/* LOADING */
+
 .loading{
   position:fixed;
   inset:0;
-  background:#121212;
+  background:#101010;
   z-index:500;
   display:flex;
   align-items:center;
   justify-content:center;
   flex-direction:column;
-  gap:14px;
+  gap:13px;
 }
 
 .loading-logo{
@@ -516,14 +657,14 @@ header{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:30px;
+  font-size:29px;
   font-weight:900;
   animation:pulse 1.2s infinite;
 }
 
 .loading-text{
-  color:#999;
-  font-size:13px;
+  color:#777;
+  font-size:12px;
 }
 
 @keyframes pulse{
@@ -537,147 +678,308 @@ header{
   display:none!important;
 }
 
-@media(max-width:380px){
-  .content{padding:15px}
-  .brand-name{font-size:20px}
+@media(max-width:390px){
+  .content{
+    padding:16px 13px;
+  }
+
+  .quick-actions{
+    gap:7px;
+  }
+
+  .quick-action{
+    min-height:78px;
+  }
 }
 </style></head><body><div class="loading" id="loading">
   <div class="loading-logo">C</div>
   <div class="loading-text">Connecting...</div>
-</div><div class="app"><header>
-  <div class="brand">
+</div><div class="app"><header>  <div class="brand">
     <div class="logo">C</div>
     <div class="brand-name">Connect</div>
-  </div>  <div class="header-actions">
-    <button class="icon-btn" onclick="go('friends.html')">＋</button>
-    <button class="icon-btn" onclick="openCreateRoom()">🎙</button>
-  </div>
-</header><main class="content"><div class="welcome">
-  <h1 id="welcomeTitle">Welcome 👋</h1>
-  <p>Connect with people, join lobbies and have fun.</p>
-</div><div class="stories">  <div class="story">
-    <div class="story-avatar">
-      <img id="storyAvatar" src="" alt="">
-    </div>
-    <div class="story-name" id="storyName">You</div>
-  </div>  <div class="story">
-    <div class="story-avatar">
-      <img src="https://ui-avatars.com/api/?name=Friend&background=29292b&color=fff" alt="">
-    </div>
-    <div class="story-name">Friends</div>
-  </div>  <div class="story">
-    <div class="story-avatar">
-      <img src="https://ui-avatars.com/api/?name=Gaming&background=29292b&color=fff" alt="">
-    </div>
-    <div class="story-name">Gaming</div>
-  </div>  <div class="story">
-    <div class="story-avatar">
-      <img src="https://ui-avatars.com/api/?name=Party&background=29292b&color=fff" alt="">
-    </div>
-    <div class="story-name">Party</div>
-  </div></div><div class="notice">
-  <div class="notice-icon">✨</div>
-  <div>
-    <h3>Welcome to Connect</h3>
-    <p>Create a room, invite friends and enjoy voice-based social gaming.</p>
-  </div>
-</div><section class="section">  <div class="section-head">
-    <div class="section-title">🎙 Public Lobbies</div>
-    <button class="section-action" onclick="loadRooms()">Refresh</button>
-  </div>  <div id="publicRooms">
-    <div class="empty">
-      <div class="empty-icon">🎙</div>
-      Loading rooms...
-    </div>
-  </div></section><section class="section">  <div class="section-head">
-    <div class="section-title">🏠 My Rooms</div>
-    <button class="section-action" onclick="openCreateRoom()">Create</button>
-  </div>  <div id="myRooms">
-    <div class="empty">
-      <div class="empty-icon">🏠</div>
-      You haven't created a room yet.
-    </div>
-  </div></section><section class="section">  <div class="section-head">
-    <div class="section-title">🔒 Private</div>
-  </div>  <div class="create-card"><div>
-  <h3>Create a private room</h3>
-  <p>Make a room and invite your friends.</p>
-</div>
-
-<button class="create-btn" onclick="openCreateRoom()">
-  Create
-</button>
-
-  </div></section><section class="section">  <div class="section-head">
-    <div class="section-title">Explore</div>
-  </div>  <div class="quick-grid"><button class="quick-card" onclick="go('entertainment.html')">
-  <div class="quick-icon">🚀</div>
-  <div class="quick-title">Entertainment</div>
-  <div class="quick-sub">Games & activities</div>
-</button>
-
-<button class="quick-card" onclick="go('chat.html')">
-  <div class="quick-icon">💬</div>
-  <div class="quick-title">Chat</div>
-  <div class="quick-sub">Talk with friends</div>
-</button>
-
-<button class="quick-card" onclick="go('friends.html')">
-  <div class="quick-icon">👥</div>
-  <div class="quick-title">Friends</div>
-  <div class="quick-sub">Find people</div>
-</button>
-
-<button class="quick-card" onclick="go('profile.html')">
-  <div class="quick-icon">👤</div>
-  <div class="quick-title">Profile</div>
-  <div class="quick-sub">Your account</div>
-</button>
-
-  </div></section></main>
-</div><nav class="bottom-nav"><a class="nav-item active" href="home.html">
-  <span class="nav-icon">⌂</span>
-  <span>Home</span>
-</a><a class="nav-item" href="entertainment.html">
-  <span class="nav-icon">🚀</span>
-  <span>Entertainment</span>
-</a><a class="nav-item" href="chat.html">
-  <span class="nav-icon">💬</span>
-  <span>Chat</span>
-</a><a class="nav-item" href="profile.html">
-  <span class="nav-icon">◉</span>
-  <span>Profile</span>
-</a></nav><div class="modal-bg" id="roomModal" onclick="closeModalOutside(event)"><div class="modal">  <h2>Create Room</h2>  <div class="field"><label>Room name</label>
-
-<input
-  id="roomName"
-  type="text"
-  maxlength="40"
-  placeholder="e.g. Night Gaming"
->
-
-  </div>  <div class="field"><label>Visibility</label>
-
-<select id="roomVisibility">
-
-  <option value="public">Public</option>
-  <option value="private">Private</option>
-
-</select>
-
-  </div>  <div class="modal-actions"><button class="cancel" onclick="closeCreateRoom()">
-  Cancel
+  </div>  <div class="header-actions"><button
+  class="icon-btn"
+  onclick="go('friends.html')"
+  aria-label="Friends">
+  ＋
 </button>
 
 <button
-  id="createRoomButton"
-  class="create-confirm"
-  onclick="createRoom()"
->
-  Create Room
+  class="icon-btn"
+  onclick="openCreateRoom()"
+  aria-label="Create room">
+  🎙
 </button>
 
-  </div></div></div><div class="toast" id="toast"></div><script>
+  </div></header><main class="content"><!-- WELCOME --><div class="welcome">
+  <h1 id="welcomeTitle">Welcome 👋</h1>
+  <p>Find people, join lobbies and enjoy Connect.</p>
+</div><!-- FRIEND STORIES --><div class="stories-wrap">  <div
+    class="stories"
+    id="stories"><div class="story">
+
+  <button
+    class="story-add"
+    onclick="go('friends.html')">
+    ＋
+  </button>
+
+  <div class="story-name">
+    Add friend
+  </div>
+
+</div>
+
+  </div></div><!-- QUICK ACTIONS --><div class="quick-actions"><button
+class="quick-action"
+onclick="openCreateRoom()">
+
+<div class="quick-action-icon">🎙</div>
+<span>Create</span>
+
+  </button><button
+class="quick-action"
+onclick="go('friends.html')">
+
+<div class="quick-action-icon">👥</div>
+<span>Friends</span>
+
+  </button><button
+class="quick-action"
+onclick="go('chat.html')">
+
+<div class="quick-action-icon">💬</div>
+<span>Chat</span>
+
+  </button><button
+class="quick-action"
+onclick="go('entertainment.html')">
+
+<div class="quick-action-icon">🚀</div>
+<span>Explore</span>
+
+  </button></div><!-- NOTICE --><div class="notice">  <div class="notice-icon">✨</div>  <div><h3>Welcome to Connect</h3>
+
+<p>
+  Create your own lobby, invite friends and hang out
+  together in voice rooms.
+</p>
+
+  </div></div><!-- PUBLIC LOBBIES --><section class="section">  <div class="section-head"><div class="section-title">
+  🎙 Public Lobbies
+</div>
+
+<button
+  class="section-action"
+  onclick="loadRooms()">
+  Refresh
+</button>
+
+  </div>  <div id="publicRooms"><div class="empty">
+  <div class="empty-icon">🎙</div>
+  Loading rooms...
+</div>
+
+  </div></section><!-- MY ROOMS --><section class="section">  <div class="section-head"><div class="section-title">
+  🏠 My Rooms
+</div>
+
+<button
+  class="section-action"
+  onclick="openCreateRoom()">
+  Create
+</button>
+
+  </div>  <div id="myRooms"><div class="empty">
+  <div class="empty-icon">🏠</div>
+  You haven't created a room yet.
+</div>
+
+  </div></section><!-- PRIVATE --><section class="section">  <div class="section-head"><div class="section-title">
+  🔒 Private Lobby
+</div>
+
+  </div>  <div class="create-card"><div class="create-top">
+
+  <div class="create-icon">
+    🔒
+  </div>
+
+  <div class="create-info">
+
+    <h3>Start a private lobby</h3>
+
+    <p>
+      Create a room and invite your friends.
+    </p>
+
+  </div>
+
+</div>
+
+<button
+  class="create-btn"
+  onclick="openPrivateRoom()">
+  Create Private Room
+</button>
+
+  </div></section><!-- EXPLORE --><section class="section">  <div class="section-head"><div class="section-title">
+  Explore
+</div>
+
+  </div>  <div class="explore-grid"><button
+  class="explore-card"
+  onclick="go('entertainment.html')">
+
+  <div class="explore-icon">🚀</div>
+
+  <div class="explore-title">
+    Entertainment
+  </div>
+
+  <div class="explore-sub">
+    Games & activities
+  </div>
+
+</button>
+
+
+<button
+  class="explore-card"
+  onclick="go('chat.html')">
+
+  <div class="explore-icon">💬</div>
+
+  <div class="explore-title">
+    Messages
+  </div>
+
+  <div class="explore-sub">
+    Chat with friends
+  </div>
+
+</button>
+
+
+<button
+  class="explore-card"
+  onclick="go('friends.html')">
+
+  <div class="explore-icon">👥</div>
+
+  <div class="explore-title">
+    Find Friends
+  </div>
+
+  <div class="explore-sub">
+    Connect with people
+  </div>
+
+</button>
+
+
+<button
+  class="explore-card"
+  onclick="go('profile.html')">
+
+  <div class="explore-icon">👤</div>
+
+  <div class="explore-title">
+    My Profile
+  </div>
+
+  <div class="explore-sub">
+    Account & settings
+  </div>
+
+</button>
+
+  </div></section></main>
+</div><!-- BOTTOM NAV --><nav class="bottom-nav"><a
+class="nav-item active"
+href="home.html">
+
+<span class="nav-icon">⌂</span>
+<span>Home</span>
+
+</a><a
+class="nav-item"
+href="entertainment.html">
+
+<span class="nav-icon">🚀</span>
+<span>Entertainment</span>
+
+</a><a
+class="nav-item"
+href="chat.html">
+
+<span class="nav-icon">💬</span>
+<span>Chat</span>
+
+</a><a
+class="nav-item"
+href="profile.html">
+
+<span class="nav-icon">◉</span>
+<span>Profile</span>
+
+</a></nav><!-- CREATE ROOM MODAL --><div
+  class="modal-bg"
+  id="roomModal"
+  onclick="closeModalOutside(event)">  <div class="modal"><h2>Create Room</h2>
+
+<div class="field">
+
+  <label>Room name</label>
+
+  <input
+    id="roomName"
+    type="text"
+    maxlength="40"
+    placeholder="e.g. Night Gaming"
+    autocomplete="off">
+
+</div>
+
+<div class="field">
+
+  <label>Visibility</label>
+
+  <select id="roomVisibility">
+
+    <option value="public">
+      Public
+    </option>
+
+    <option value="private">
+      Private
+    </option>
+
+  </select>
+
+</div>
+
+<div class="modal-actions">
+
+  <button
+    class="cancel"
+    onclick="closeCreateRoom()">
+    Cancel
+  </button>
+
+  <button
+    id="createRoomButton"
+    class="create-confirm"
+    onclick="createRoom()">
+    Create Room
+  </button>
+
+</div>
+
+  </div></div><div
+  class="toast"
+  id="toast">
+</div><script>
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
@@ -699,8 +1001,10 @@ window.supabase.createClient(
 );
 
 let currentUser=null;
-let currentProfile=null;
 let toastTimer=null;
+
+
+/* START */
 
 async function startApp(){
 
@@ -723,6 +1027,8 @@ async function startApp(){
     currentUser=session.user;
 
     await loadProfile();
+
+    await loadFriendsStories();
 
     await loadRooms();
 
@@ -747,6 +1053,9 @@ async function startApp(){
 
 }
 
+
+/* PROFILE */
+
 async function loadProfile(){
 
   const {
@@ -766,8 +1075,6 @@ async function loadProfile(){
 
   }
 
-  currentProfile=data;
-
   const username =
     data?.username ||
     currentUser.email?.split("@")[0] ||
@@ -778,22 +1085,193 @@ async function loadProfile(){
     .textContent =
       "Welcome, " + username + " 👋";
 
-  document
-    .getElementById("storyName")
-    .textContent =
-      username;
+}
 
-  const avatar =
-    data?.avatar_url ||
-    "https://ui-avatars.com/api/?name=" +
-    encodeURIComponent(username) +
-    "&background=29292b&color=fff";
 
-  document
-    .getElementById("storyAvatar")
-    .src=avatar;
+/* FRIEND STORIES */
+
+async function loadFriendsStories(){
+
+  const box =
+    document.getElementById("stories");
+
+  /*
+    First get accepted friend relationships.
+  */
+
+  const {
+    data:relations,
+    error:relationError
+  } =
+  await supabaseClient
+    .from("friends")
+    .select("user_id,friend_id")
+    .eq("status","accepted")
+    .or(
+      "user_id.eq." +
+      currentUser.id +
+      ",friend_id.eq." +
+      currentUser.id
+    );
+
+  if(relationError){
+
+    console.error(
+      "Friends error:",
+      relationError
+    );
+
+    box.innerHTML=`
+
+      <div class="story">
+
+        <button
+          class="story-add"
+          onclick="go('friends.html')">
+          ＋
+        </button>
+
+        <div class="story-name">
+          Add friend
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  const friendIds=[];
+
+  (relations || []).forEach(row=>{
+
+    const id =
+      row.user_id===currentUser.id
+        ? row.friend_id
+        : row.user_id;
+
+    if(!friendIds.includes(id)){
+      friendIds.push(id);
+    }
+
+  });
+
+
+  /*
+    Always keep Add Friend first.
+  */
+
+  let html=`
+
+    <div class="story">
+
+      <button
+        class="story-add"
+        onclick="go('friends.html')">
+        ＋
+      </button>
+
+      <div class="story-name">
+        Add friend
+      </div>
+
+    </div>
+
+  `;
+
+
+  if(friendIds.length){
+
+    const {
+      data:profiles,
+      error:profileError
+    } =
+    await supabaseClient
+      .from("profiles")
+      .select("id,username,avatar_url")
+      .in("id",friendIds);
+
+    if(profileError){
+
+      console.error(
+        "Friend profiles error:",
+        profileError
+      );
+
+    }else{
+
+      const profileMap={};
+
+      (profiles || []).forEach(profile=>{
+        profileMap[profile.id]=profile;
+      });
+
+
+      friendIds.forEach(friendId=>{
+
+        const profile =
+          profileMap[friendId];
+
+        if(!profile)return;
+
+        const username =
+          profile.username ||
+          "Connect User";
+
+        const avatar =
+          profile.avatar_url ||
+          "https://ui-avatars.com/api/?name=" +
+          encodeURIComponent(username) +
+          "&background=29292b&color=fff";
+
+
+        html += `
+
+          <div
+            class="story"
+            onclick="openFriend('${friendId}')"
+            style="cursor:pointer">
+
+            <div class="story-avatar">
+
+              <img
+                src="${escapeHTML(avatar)}"
+                alt="">
+
+            </div>
+
+            <div class="story-name">
+              ${escapeHTML(username)}
+            </div>
+
+          </div>
+
+        `;
+
+      });
+
+    }
+
+  }
+
+
+  box.innerHTML=html;
 
 }
+
+
+function openFriend(friendId){
+
+  window.location.href =
+    "conversation.html?id=" +
+    encodeURIComponent(friendId);
+
+}
+
+
+/* ROOMS */
 
 async function loadRooms(){
 
@@ -806,18 +1284,23 @@ async function loadRooms(){
     document.getElementById("myRooms");
 
   publicBox.innerHTML=`
+
     <div class="empty">
       <div class="empty-icon">⏳</div>
       Loading rooms...
     </div>
+
   `;
 
   myBox.innerHTML=`
+
     <div class="empty">
       <div class="empty-icon">⏳</div>
       Loading...
     </div>
+
   `;
+
 
   const {
     data,
@@ -833,27 +1316,36 @@ async function loadRooms(){
       {ascending:false}
     );
 
+
   if(error){
 
-    console.error("ROOM LOAD ERROR:",error);
+    console.error(
+      "ROOM LOAD ERROR:",
+      error
+    );
 
     publicBox.innerHTML=`
+
       <div class="empty">
         <div class="empty-icon">⚠️</div>
         Couldn't load rooms.
       </div>
+
     `;
 
     myBox.innerHTML=`
+
       <div class="empty">
         <div class="empty-icon">⚠️</div>
         Couldn't load your rooms.
       </div>
+
     `;
 
     return;
 
   }
+
 
   const rooms=data || [];
 
@@ -871,6 +1363,9 @@ async function loadRooms(){
 
 }
 
+
+/* PUBLIC ROOMS */
+
 function renderPublicRooms(rooms){
 
   const box =
@@ -879,15 +1374,18 @@ function renderPublicRooms(rooms){
   if(!rooms.length){
 
     box.innerHTML=`
+
       <div class="empty">
         <div class="empty-icon">🎙</div>
         No public rooms available right now.
       </div>
+
     `;
 
     return;
 
   }
+
 
   box.innerHTML =
     rooms.map(room=>`
@@ -895,6 +1393,10 @@ function renderPublicRooms(rooms){
       <div class="room-card">
 
         <div class="room-top">
+
+          <div class="room-icon">
+            🎙
+          </div>
 
           <div class="room-info">
 
@@ -914,9 +1416,10 @@ function renderPublicRooms(rooms){
 
           <button
             class="join-btn"
-            onclick="openRoom('${room.id}')"
-          >
+            onclick="openRoom('${room.id}')">
+
             Join Room
+
           </button>
 
         </div>
@@ -927,6 +1430,9 @@ function renderPublicRooms(rooms){
 
 }
 
+
+/* MY ROOMS */
+
 function renderMyRooms(rooms){
 
   const box =
@@ -935,15 +1441,18 @@ function renderMyRooms(rooms){
   if(!rooms.length){
 
     box.innerHTML=`
+
       <div class="empty">
         <div class="empty-icon">🏠</div>
         You haven't created a room yet.
       </div>
+
     `;
 
     return;
 
   }
+
 
   box.innerHTML =
     rooms.map(room=>`
@@ -952,6 +1461,14 @@ function renderMyRooms(rooms){
 
         <div class="room-top">
 
+          <div class="room-icon">
+            ${
+              room.visibility==="private"
+              ? "🔒"
+              : "🎙"
+            }
+          </div>
+
           <div class="room-info">
 
             <div class="room-title">
@@ -959,11 +1476,13 @@ function renderMyRooms(rooms){
             </div>
 
             <div class="room-meta">
+
               ${
                 room.visibility==="private"
                 ? "🔒 Private room"
                 : "🌐 Public room"
               }
+
             </div>
 
           </div>
@@ -974,16 +1493,18 @@ function renderMyRooms(rooms){
 
           <button
             class="join-btn"
-            onclick="openRoom('${room.id}')"
-          >
+            onclick="openRoom('${room.id}')">
+
             Open
+
           </button>
 
           <button
             class="delete-btn"
-            onclick="deleteRoom('${room.id}')"
-          >
+            onclick="deleteRoom('${room.id}')">
+
             Delete
+
           </button>
 
         </div>
@@ -994,7 +1515,14 @@ function renderMyRooms(rooms){
 
 }
 
+
+/* CREATE ROOM */
+
 function openCreateRoom(){
+
+  document
+    .getElementById("roomVisibility")
+    .value="public";
 
   document
     .getElementById("roomModal")
@@ -1010,6 +1538,18 @@ function openCreateRoom(){
 
 }
 
+
+function openPrivateRoom(){
+
+  openCreateRoom();
+
+  document
+    .getElementById("roomVisibility")
+    .value="private";
+
+}
+
+
 function closeCreateRoom(){
 
   document
@@ -1022,6 +1562,7 @@ function closeCreateRoom(){
 
 }
 
+
 function closeModalOutside(event){
 
   if(event.target.id==="roomModal"){
@@ -1032,22 +1573,24 @@ function closeModalOutside(event){
 
 }
 
+
 async function createRoom(){
 
-  const name =
-    document
-      .getElementById("roomName")
-      .value
-      .trim();
+  const input =
+    document.getElementById("roomName");
 
-  const visibility =
-    document
-      .getElementById("roomVisibility")
-      .value;
+  const select =
+    document.getElementById("roomVisibility");
 
   const button =
-    document
-      .getElementById("createRoomButton");
+    document.getElementById("createRoomButton");
+
+  const name =
+    input.value.trim();
+
+  const visibility =
+    select.value;
+
 
   if(!name){
 
@@ -1056,23 +1599,20 @@ async function createRoom(){
 
   }
 
+
   if(!currentUser){
 
-    showToast("Session not ready. Login again.");
+    showToast("Session not ready");
     return;
 
   }
 
+
   button.disabled=true;
   button.textContent="Creating...";
 
-  try{
 
-    /*
-      Refresh the current auth session before
-      inserting the room. This makes sure the
-      authenticated JWT is available.
-    */
+  try{
 
     const {
       data:{
@@ -1082,21 +1622,25 @@ async function createRoom(){
     } =
     await supabaseClient.auth.getSession();
 
+
     if(sessionError){
 
       throw sessionError;
 
     }
 
+
     if(!session){
 
       throw new Error(
-        "No authenticated session found"
+        "Your login session has expired. Please login again."
       );
 
     }
 
+
     currentUser=session.user;
+
 
     const {
       data,
@@ -1114,17 +1658,13 @@ async function createRoom(){
       )
       .single();
 
+
     if(error){
 
       console.error(
         "ROOM CREATE ERROR:",
         error
       );
-
-      /*
-        Show the actual Supabase message
-        instead of hiding the reason.
-      */
 
       throw new Error(
         error.message ||
@@ -1135,13 +1675,15 @@ async function createRoom(){
 
     }
 
+
     if(!data){
 
       throw new Error(
-        "Room was created but no data was returned"
+        "Room was created but could not be loaded."
       );
 
     }
+
 
     closeCreateRoom();
 
@@ -1149,7 +1691,9 @@ async function createRoom(){
       "Room created successfully 🔥"
     );
 
+
     await loadRooms();
+
 
   }catch(error){
 
@@ -1159,12 +1703,10 @@ async function createRoom(){
     );
 
     showToast(
-      "Room error: " +
-      (
-        error.message ||
-        "Unknown error"
-      )
+      error.message ||
+      "Could not create room"
     );
+
 
   }finally{
 
@@ -1175,6 +1717,9 @@ async function createRoom(){
 
 }
 
+
+/* DELETE */
+
 async function deleteRoom(roomId){
 
   if(!currentUser){
@@ -1183,6 +1728,7 @@ async function deleteRoom(roomId){
     return;
 
   }
+
 
   const {
     error
@@ -1193,6 +1739,7 @@ async function deleteRoom(roomId){
     .eq("id",roomId)
     .eq("owner_id",currentUser.id);
 
+
   if(error){
 
     console.error(
@@ -1201,19 +1748,23 @@ async function deleteRoom(roomId){
     );
 
     showToast(
-      "Delete error: " +
-      error.message
+      error.message ||
+      "Couldn't delete room"
     );
 
     return;
 
   }
 
+
   showToast("Room deleted");
 
   await loadRooms();
 
 }
+
+
+/* OPEN ROOM */
 
 function openRoom(roomId){
 
@@ -1223,11 +1774,17 @@ function openRoom(roomId){
 
 }
 
+
+/* NAVIGATION */
+
 function go(page){
 
   window.location.href=page;
 
 }
+
+
+/* TOAST */
 
 function showToast(message){
 
@@ -1240,14 +1797,16 @@ function showToast(message){
 
   clearTimeout(toastTimer);
 
-  toastTimer =
-    setTimeout(()=>{
+  toastTimer=setTimeout(()=>{
 
-      toast.classList.remove("show");
+    toast.classList.remove("show");
 
-    },3500);
+  },4000);
 
 }
+
+
+/* ESCAPE */
 
 function escapeHTML(value){
 
@@ -1259,6 +1818,9 @@ function escapeHTML(value){
     .replaceAll("'","&#039;");
 
 }
+
+
+/* AUTH */
 
 supabaseClient.auth.onAuthStateChange(
   (event,session)=>{
@@ -1273,6 +1835,7 @@ supabaseClient.auth.onAuthStateChange(
 
   }
 );
+
 
 startApp();
 
