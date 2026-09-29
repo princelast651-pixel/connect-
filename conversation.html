@@ -1,7 +1,13 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"><title>Conversation • Connect</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Conversation • Connect</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
 *{
   box-sizing:border-box;
   margin:0;
@@ -334,7 +340,9 @@ button{
 }
 
 @keyframes spin{
-  to{transform:rotate(360deg);}
+  to{
+    transform:rotate(360deg);
+  }
 }
 
 /* ERROR */
@@ -396,6 +404,7 @@ button{
 }
 
 @media(max-width:380px){
+
   .bubble{
     max-width:84%;
   }
@@ -405,52 +414,75 @@ button{
     min-height:66px;
   }
 }
-</style></head><body><div class="app">  <header class="header"><button id="backBtn" class="backBtn" aria-label="Back">
-  ‹
-</button>
+</style>
+</head>
 
-<img
-  id="headerAvatar"
-  class="headerAvatar"
-  src=""
-  alt="Profile"
->
+<body>
 
-<div class="headerInfo">
+<div class="app">
 
-  <div id="headerName" class="headerName">
-    Loading...
-  </div>
+  <header class="header">
 
-  <div id="headerStatus" class="headerStatus">
-    Connect
+    <button id="backBtn" class="backBtn" aria-label="Back">
+      ‹
+    </button>
+
+    <img
+      id="headerAvatar"
+      class="headerAvatar"
+      src=""
+      alt="Profile"
+    >
+
+    <div class="headerInfo">
+
+      <div id="headerName" class="headerName">
+        Loading...
+      </div>
+
+      <div id="headerStatus" class="headerStatus">
+        Connect
+      </div>
+
+    </div>
+
+  </header>
+
+  <main id="messages" class="messages"></main>
+
+  <div class="composer">
+
+    <div class="inputBox">
+
+      <textarea
+        id="messageInput"
+        class="messageInput"
+        rows="1"
+        maxlength="2000"
+        placeholder="Message..."
+      ></textarea>
+
+    </div>
+
+    <button
+      id="sendBtn"
+      class="sendBtn"
+      aria-label="Send message"
+    >
+      ➤
+    </button>
+
   </div>
 
 </div>
 
-  </header>  <main id="messages" class="messages"></main>  <div class="composer"><div class="inputBox">
-
-  <textarea
-    id="messageInput"
-    class="messageInput"
-    rows="1"
-    maxlength="2000"
-    placeholder="Message..."
-  ></textarea>
-
-</div>
-
-<button
-  id="sendBtn"
-  class="sendBtn"
-  aria-label="Send message"
->
-  ➤
-</button>
-
-  </div></div><div id="loadingScreen" class="loadingScreen">
+<div id="loadingScreen" class="loadingScreen">
   <div class="spinner"></div>
-</div><div id="toast" class="toast"></div><script>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
 
 /* =========================================
    SUPABASE CONFIG
@@ -460,7 +492,7 @@ const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoxNTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -754,8 +786,6 @@ async function getConversation(){
     sorted[1];
 
 
-  /* FIND EXISTING */
-
   let result =
     await supabaseClient
       .from("conversations")
@@ -796,8 +826,6 @@ async function getConversation(){
   }
 
 
-  /* CREATE */
-
   result =
     await supabaseClient
       .from("conversations")
@@ -820,12 +848,11 @@ async function getConversation(){
   }
 
 
-  /* RETRY */
-
   console.error(
     "CONVERSATION CREATE ERROR:",
     result.error
   );
+
 
   const retry =
     await supabaseClient
@@ -1565,5 +1592,7 @@ window.addEventListener(
 
 init();
 
-</script></body>
+</script>
+
+</body>
 </html>
