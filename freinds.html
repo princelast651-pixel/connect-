@@ -2,584 +2,819 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Friends • Connect</title>
-<meta name="theme-color" content="#121212">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:#121212;color:#fff;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
-.app{max-width:650px;margin:auto;min-height:100vh;padding-bottom:90px}
-
-header{
-height:70px;padding:0 16px;display:flex;align-items:center;
-border-bottom:1px solid #29292c;background:rgba(18,18,18,.95);
-backdrop-filter:blur(16px);position:sticky;top:0;z-index:20
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+
+body{
+  background:#111;
+  color:#fff;
+  min-height:100vh;
+  padding-bottom:90px;
+}
+
+.app{
+  max-width:520px;
+  margin:auto;
+  padding:20px 16px;
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:24px;
+}
+
 .back{
-width:42px;height:42px;border-radius:13px;background:#1d1d1f;
-border:1px solid #303033;color:#fff;font-size:22px
-}
-.title{font-size:21px;font-weight:800;margin-left:12px}
-
-.content{padding:18px 16px}
-
-.search{
-width:100%;padding:14px 16px;border-radius:15px;
-background:#1d1d1f;border:1px solid #303033;color:#fff;
-outline:none;font-size:14px;margin-bottom:18px
-}
-.search:focus{border-color:#7659f5}
-.search::placeholder{color:#777}
-
-.my-id{
-background:linear-gradient(135deg,#211c3d,#1c1c20);
-border:1px solid #39315e;border-radius:19px;
-padding:17px;margin-bottom:22px
-}
-.my-id-top{
-display:flex;justify-content:space-between;align-items:center;
-gap:10px
-}
-.my-id-label{font-size:12px;color:#999}
-.my-id-value{
-font-size:16px;font-weight:750;margin-top:5px;
-word-break:break-all
-}
-.copy{
-padding:9px 13px;border-radius:11px;
-background:#7c5cff;color:#fff;font-size:12px;font-weight:700
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid #292929;
+  background:#1b1b1b;
+  color:white;
+  font-size:22px;
 }
 
-.section-title{
-font-size:14px;color:#8e8e93;font-weight:700;
-margin:0 0 10px 3px
+.title{
+  font-size:24px;
+  font-weight:800;
 }
 
-.user{
-display:flex;align-items:center;gap:12px;
-background:#1d1d1f;border:1px solid #29292c;
-border-radius:17px;padding:13px;margin-bottom:8px
+.subtitle{
+  color:#888;
+  font-size:13px;
+  margin-top:3px;
 }
+
+.searchBox{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#1b1b1b;
+  border:1px solid #292929;
+  border-radius:16px;
+  padding:0 14px;
+  height:54px;
+  margin-bottom:18px;
+}
+
+.searchBox span{
+  font-size:20px;
+}
+
+.searchBox input{
+  flex:1;
+  background:none;
+  border:0;
+  outline:0;
+  color:#fff;
+  font-size:15px;
+}
+
+.section{
+  margin-top:24px;
+}
+
+.sectionTitle{
+  font-size:15px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.card{
+  background:#1a1a1a;
+  border:1px solid #292929;
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:10px;
+}
+
+.profileRow{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
 .avatar{
-width:52px;height:52px;border-radius:50%;
-overflow:hidden;background:#29292b;
-border:1px solid #39393d;flex-shrink:0
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#292929;
 }
-.avatar img{width:100%;height:100%;object-fit:cover}
 
-.user-info{min-width:0;flex:1}
+.userInfo{
+  flex:1;
+  min-width:0;
+}
+
 .username{
-font-size:14px;font-weight:700;
-white-space:nowrap;overflow:hidden;text-overflow:ellipsis
-}
-.user-id{
-font-size:10px;color:#777;margin-top:5px;
-white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  font-weight:750;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-.add{
-padding:10px 14px;border-radius:12px;
-background:#7c5cff;color:#fff;font-size:12px;font-weight:700
+.userId{
+  color:#777;
+  font-size:11px;
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-.add.added{
-background:#29292c;color:#aaa;
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.action{
+  padding:9px 13px;
+  border-radius:12px;
+  background:#fff;
+  color:#111;
+  font-weight:750;
+  font-size:12px;
+}
+
+.accept{
+  background:#fff;
+  color:#111;
+}
+
+.reject{
+  margin-left:6px;
+  background:#292929;
+  color:#fff;
+}
+
+.remove{
+  background:#292929;
+  color:#fff;
+}
+
+.myId{
+  background:#191919;
+  border:1px solid #292929;
+  border-radius:18px;
+  padding:16px;
+}
+
+.myIdLabel{
+  color:#888;
+  font-size:12px;
+  margin-bottom:7px;
+}
+
+.idRow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.idText{
+  flex:1;
+  font-size:12px;
+  color:#ddd;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.copy{
+  background:#292929;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:11px;
 }
 
 .empty{
-padding:40px 15px;text-align:center;
-border:1px dashed #343438;border-radius:18px;color:#777
+  text-align:center;
+  color:#777;
+  padding:22px 10px;
+  font-size:13px;
 }
-.empty-icon{font-size:32px;margin-bottom:10px}
-.empty h3{color:#ccc;font-size:15px;margin-bottom:5px}
-.empty p{font-size:12px;line-height:1.5}
 
-.bottom-nav{
-position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-width:100%;max-width:650px;height:74px;background:rgba(22,22,24,.97);
-backdrop-filter:blur(18px);border-top:1px solid #2c2c2f;
-display:grid;grid-template-columns:repeat(4,1fr);z-index:50
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:76px;
+  background:rgba(18,18,18,.96);
+  border-top:1px solid #292929;
+  display:flex;
+  justify-content:center;
+  z-index:20;
 }
+
 .nav{
-color:#777;text-decoration:none;display:flex;flex-direction:column;
-justify-content:center;align-items:center;gap:5px;
-font-size:10px;font-weight:600
+  width:100%;
+  max-width:520px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
 }
-.nav-icon{font-size:21px}
-.nav.active{color:#fff}
-.nav.active .nav-icon{color:#9b7cff}
+
+.navItem{
+  color:#777;
+  text-align:center;
+  font-size:11px;
+  cursor:pointer;
+}
+
+.navIcon{
+  font-size:21px;
+  margin-bottom:3px;
+}
+
+.navItem.active{
+  color:#fff;
+}
 
 .toast{
-position:fixed;left:50%;bottom:90px;
-transform:translateX(-50%) translateY(20px);
-background:#29292c;border:1px solid #3b3b40;color:#fff;
-padding:11px 16px;border-radius:13px;font-size:12px;
-opacity:0;pointer-events:none;transition:.25s;z-index:100;
-white-space:nowrap
-}
-.toast.show{
-opacity:1;transform:translateX(-50%) translateY(0)
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%) translateY(15px);
+  background:#fff;
+  color:#111;
+  padding:11px 17px;
+  border-radius:13px;
+  font-size:13px;
+  font-weight:650;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:50;
 }
 
-.loading{
-position:fixed;inset:0;background:#121212;z-index:200;
-display:flex;align-items:center;justify-content:center;
-color:#999;font-size:13px
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
-.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<div class="loading" id="loading">
-Loading friends...
-</div>
-
 <div class="app">
 
-<header>
-<button class="back" onclick="go('home.html')">‹</button>
-<div class="title">Friends</div>
-</header>
+  <div class="top">
+    <button class="back" onclick="history.back()">‹</button>
+    <div>
+      <div class="title">Friends</div>
+      <div class="subtitle">Connect with your people</div>
+    </div>
+  </div>
 
-<main class="content">
+  <div class="searchBox">
+    <span>⌕</span>
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search username..."
+      autocomplete="off"
+    >
+  </div>
 
-<input
-class="search"
-id="search"
-type="search"
-placeholder="Search username or ID..."
-oninput="searchUsers()"
->
+  <div class="myId">
+    <div class="myIdLabel">MY CONNECT ID</div>
+    <div class="idRow">
+      <div class="idText" id="myId">Loading...</div>
+      <button class="copy" onclick="copyMyId()">Copy</button>
+    </div>
+  </div>
 
-<div class="my-id">
-<div class="my-id-top">
+  <div class="section">
+    <div class="sectionTitle">Search Results</div>
+    <div id="searchResults">
+      <div class="empty">Search for a username</div>
+    </div>
+  </div>
 
-<div>
-<div class="my-id-label">MY CONNECT ID</div>
-<div class="my-id-value" id="myId">Loading...</div>
+  <div class="section">
+    <div class="sectionTitle">Friend Requests</div>
+    <div id="requests">
+      <div class="empty">No pending requests</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle">My Friends</div>
+    <div id="friendsList">
+      <div class="empty">No friends yet</div>
+    </div>
+  </div>
+
 </div>
 
-<button class="copy" onclick="copyMyId()">
-Copy
-</button>
+<div class="bottom">
+  <div class="nav">
 
+    <div class="navItem" onclick="go('home.html')">
+      <div class="navIcon">⌂</div>
+      Home
+    </div>
+
+    <div class="navItem" onclick="go('entertainment.html')">
+      <div class="navIcon">🚀</div>
+      Entertainment
+    </div>
+
+    <div class="navItem" onclick="go('chat.html')">
+      <div class="navIcon">▢</div>
+      Chat
+    </div>
+
+    <div class="navItem active">
+      <div class="navIcon">●</div>
+      Friends
+    </div>
+
+  </div>
 </div>
-</div>
-
-
-<div class="section-title">
-FIND PEOPLE
-</div>
-
-<div id="users">
-
-<div class="empty">
-<div class="empty-icon">👥</div>
-<h3>Search for people</h3>
-<p>Enter a username or Connect ID above.</p>
-</div>
-
-</div>
-
-</main>
-</div>
-
-
-<nav class="bottom-nav">
-
-<a class="nav" href="home.html">
-<span class="nav-icon">⌂</span>
-<span>Home</span>
-</a>
-
-<a class="nav" href="entertainment.html">
-<span class="nav-icon">🚀</span>
-<span>Entertainment</span>
-</a>
-
-<a class="nav" href="chat.html">
-<span class="nav-icon">💬</span>
-<span>Chat</span>
-</a>
-
-<a class="nav active" href="friends.html">
-<span class="nav-icon">👥</span>
-<span>Friends</span>
-</a>
-
-</nav>
-
 
 <div class="toast" id="toast"></div>
 
-
 <script>
-
-const SUPABASE_URL =
-"https://riversitunmzvuprecbt.supabase.co";
+const SUPABASE_URL = "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY,
-{
-auth:{
-persistSession:true,
-autoRefreshToken:true,
-detectSessionInUrl:true
-}
-});
+  supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true
+    }
+  });
 
-let currentUser=null;
-let currentProfile=null;
-
-
-/* START */
+let currentUser = null;
+let searchTimer = null;
 
 async function start(){
 
-const {
-data:{session}
-}=await supabaseClient.auth.getSession();
+  const {data:{session}} =
+    await supabaseClient.auth.getSession();
 
-if(!session){
-window.location.replace("index.html");
-return;
+  if(!session){
+    location.href="index.html";
+    return;
+  }
+
+  currentUser = session.user;
+
+  document.getElementById("myId").textContent =
+    currentUser.id;
+
+  await Promise.all([
+    loadRequests(),
+    loadFriends()
+  ]);
 }
 
-currentUser=session.user;
-
-await loadMyProfile();
-
-document.getElementById("loading")
-.classList.add("hidden");
+function go(page){
+  location.href = page;
 }
 
+function toast(message){
 
-/* MY PROFILE */
+  const el=document.getElementById("toast");
 
-async function loadMyProfile(){
+  el.textContent=message;
+  el.classList.add("show");
 
-const {
-data,
-error
-}=await supabaseClient
-.from("profiles")
-.select("id,username,avatar_url")
-.eq("id",currentUser.id)
-.maybeSingle();
-
-if(error){
-console.error(error);
-return;
+  setTimeout(()=>{
+    el.classList.remove("show");
+  },1800);
 }
 
-currentProfile=data;
+function escapeHtml(value){
 
-const username=
-data?.username ||
-currentUser.email?.split("@")[0] ||
-"User";
-
-/*
- Connect ID = Supabase user ID.
- Later we can add a shorter custom ID without
- changing the page structure.
-*/
-
-document.getElementById("myId")
-.textContent=currentUser.id;
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
-
-
-/* SEARCH USERS */
-
-let searchTimer;
-
-function searchUsers(){
-
-clearTimeout(searchTimer);
-
-const value=
-document.getElementById("search")
-.value.trim();
-
-if(!value){
-
-document.getElementById("users").innerHTML=`
-<div class="empty">
-<div class="empty-icon">👥</div>
-<h3>Search for people</h3>
-<p>Enter a username or Connect ID above.</p>
-</div>
-`;
-
-return;
-}
-
-searchTimer=setTimeout(()=>{
-findUsers(value);
-},350);
-}
-
-
-async function findUsers(value){
-
-const box=document.getElementById("users");
-
-box.innerHTML=`
-<div class="empty">
-<div class="empty-icon">🔎</div>
-Searching...
-</div>
-`;
-
-
-/*
- Username search is case-insensitive.
- ID search works when the entered text
- matches part of the UUID.
-*/
-
-const {
-data,
-error
-}=await supabaseClient
-.from("profiles")
-.select("id,username,avatar_url")
-.or(
-`username.ilike.%${escapeFilter(value)}%,id.ilike.%${escapeFilter(value)}%`
-)
-.neq("id",currentUser.id)
-.limit(20);
-
-
-if(error){
-
-console.error(error);
-
-box.innerHTML=`
-<div class="empty">
-<div class="empty-icon">⚠️</div>
-<h3>Couldn't search</h3>
-<p>Please try again.</p>
-</div>
-`;
-
-return;
-}
-
-
-if(!data || !data.length){
-
-box.innerHTML=`
-<div class="empty">
-<div class="empty-icon">😕</div>
-<h3>No users found</h3>
-<p>Try another username or ID.</p>
-</div>
-`;
-
-return;
-}
-
-
-box.innerHTML=
-data.map(user=>{
-
-const username=
-user.username || "Connect User";
-
-const avatar=
-user.avatar_url ||
-"https://ui-avatars.com/api/?name="+
-encodeURIComponent(username)+
-"&background=29292b&color=fff";
-
-
-return `
-
-<div class="user">
-
-<div class="avatar">
-<img src="${escapeHTML(avatar)}" alt="">
-</div>
-
-<div class="user-info">
-
-<div class="username">
-${escapeHTML(username)}
-</div>
-
-<div class="user-id">
-${escapeHTML(user.id)}
-</div>
-
-</div>
-
-<button
-class="add"
-onclick="addFriend('${user.id}',this)"
->
-Add
-</button>
-
-</div>
-
-`;
-
-}).join("");
-}
-
-
-/* ADD FRIEND */
-
-async function addFriend(userId,button){
-
-/*
- Friend system will use a dedicated table.
- We keep this function ready so the UI does not
- need to be redesigned later.
-*/
-
-button.disabled=true;
-button.textContent="...";
-
-
-/*
- If friends table doesn't exist yet, show the
- next-step message instead of breaking the page.
-*/
-
-const {
-error
-}=await supabaseClient
-.from("friends")
-.insert({
-user_id:currentUser.id,
-friend_id:userId,
-status:"pending"
-});
-
-
-if(error){
-
-console.error(error);
-
-button.disabled=false;
-button.textContent="Add";
-
-showToast(
-"Friend system database is not ready yet"
-);
-
-return;
-}
-
-
-button.textContent="Added";
-button.classList.add("added");
-
-showToast("Friend request sent 🔥");
-}
-
-
-/* COPY ID */
 
 async function copyMyId(){
 
-try{
+  try{
 
-await navigator.clipboard.writeText(
-currentUser.id
-);
+    await navigator.clipboard.writeText(currentUser.id);
 
-showToast("Connect ID copied");
+    toast("Connect ID copied");
 
-}catch(error){
+  }catch(e){
 
-showToast("Couldn't copy ID");
+    toast("Copy failed");
 
-}
+  }
 }
 
+document.getElementById("searchInput")
+.addEventListener("input",function(){
 
-/* TOAST */
+  clearTimeout(searchTimer);
 
-let toastTimer;
+  const value=this.value.trim();
 
-function showToast(message){
+  if(!value){
 
-const toast=
-document.getElementById("toast");
+    document.getElementById("searchResults").innerHTML =
+      '<div class="empty">Search for a username</div>';
 
-toast.textContent=message;
-toast.classList.add("show");
+    return;
+  }
 
-clearTimeout(toastTimer);
-
-toastTimer=setTimeout(()=>{
-toast.classList.remove("show");
-},2200);
-}
-
-
-/* NAV */
-
-function go(page){
-window.location.href=page;
-}
-
-
-/* FILTER ESCAPE */
-
-function escapeFilter(value){
-
-return value
-.replaceAll("\\","\\\\")
-.replaceAll(",","\\,")
-.replaceAll(".","\\.")
-.replaceAll("%","\\%")
-.replaceAll("_","\\_")
-.replaceAll("(","\\(")
-.replaceAll(")","\\)");
-}
-
-
-/* HTML ESCAPE */
-
-function escapeHTML(value){
-
-return String(value)
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
-}
-
-
-/* AUTH */
-
-supabaseClient.auth.onAuthStateChange(
-(event,session)=>{
-
-if(event==="SIGNED_OUT"){
-window.location.replace("index.html");
-}
-
+  searchTimer=setTimeout(()=>{
+    searchUsers(value);
+  },350);
 });
 
+async function searchUsers(value){
+
+  const box=document.getElementById("searchResults");
+
+  box.innerHTML='<div class="empty">Searching...</div>';
+
+  const safe=value.replace(/[%_]/g,"\\$&");
+
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("id,username,avatar_url")
+    .ilike("username",`%${safe}%`)
+    .neq("id",currentUser.id)
+    .limit(20);
+
+  if(error){
+
+    console.error(error);
+
+    box.innerHTML='<div class="empty">Could not search users</div>';
+    return;
+  }
+
+  if(!data || data.length===0){
+
+    box.innerHTML='<div class="empty">No users found</div>';
+    return;
+  }
+
+  box.innerHTML=data.map(user=>`
+
+    <div class="card">
+
+      <div class="profileRow">
+
+        <img
+          class="avatar"
+          src="${escapeHtml(user.avatar_url || '')}"
+          onerror="this.style.display='none'"
+        >
+
+        <div class="userInfo">
+
+          <div class="username">
+            ${escapeHtml(user.username || "Connect User")}
+          </div>
+
+          <div class="userId">
+            ${escapeHtml(user.id)}
+          </div>
+
+        </div>
+
+        <button
+          class="action"
+          onclick="sendRequest('${user.id}')"
+        >
+          Add
+        </button>
+
+      </div>
+
+    </div>
+
+  `).join("");
+}
+
+async function sendRequest(friendId){
+
+  if(friendId===currentUser.id){
+    toast("You can't add yourself");
+    return;
+  }
+
+  const {data:existing,error:checkError}=await supabaseClient
+    .from("friends")
+    .select("id,status,user_id,friend_id")
+    .or(
+      `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
+    )
+    .limit(1);
+
+  if(checkError){
+
+    console.error(checkError);
+    toast("Could not check request");
+    return;
+  }
+
+  if(existing && existing.length){
+
+    const relation=existing[0];
+
+    if(relation.status==="accepted"){
+      toast("Already friends");
+      return;
+    }
+
+    if(relation.status==="pending"){
+      toast("Request already exists");
+      return;
+    }
+  }
+
+  const {error}=await supabaseClient
+    .from("friends")
+    .insert({
+      user_id:currentUser.id,
+      friend_id:friendId,
+      status:"pending"
+    });
+
+  if(error){
+
+    console.error(error);
+    toast("Could not send request");
+    return;
+  }
+
+  toast("Friend request sent");
+}
+
+async function loadRequests(){
+
+  const box=document.getElementById("requests");
+
+  const {data,error}=await supabaseClient
+    .from("friends")
+    .select("id,user_id,friend_id,status,created_at")
+    .eq("friend_id",currentUser.id)
+    .eq("status","pending")
+    .order("created_at",{ascending:false});
+
+  if(error){
+
+    console.error(error);
+    box.innerHTML='<div class="empty">Could not load requests</div>';
+    return;
+  }
+
+  if(!data || data.length===0){
+
+    box.innerHTML='<div class="empty">No pending requests</div>';
+    return;
+  }
+
+  const userIds=data.map(x=>x.user_id);
+
+  const {data:profiles}=await supabaseClient
+    .from("profiles")
+    .select("id,username,avatar_url")
+    .in("id",userIds);
+
+  const profileMap={};
+
+  (profiles||[]).forEach(p=>{
+    profileMap[p.id]=p;
+  });
+
+  box.innerHTML=data.map(request=>{
+
+    const p=profileMap[request.user_id] || {};
+
+    return `
+
+      <div class="card">
+
+        <div class="profileRow">
+
+          <img
+            class="avatar"
+            src="${escapeHtml(p.avatar_url || '')}"
+            onerror="this.style.display='none'"
+          >
+
+          <div class="userInfo">
+
+            <div class="username">
+              ${escapeHtml(p.username || "Connect User")}
+            </div>
+
+            <div class="userId">
+              wants to connect with you
+            </div>
+
+          </div>
+
+          <div>
+            <button
+              class="action accept"
+              onclick="acceptRequest('${request.id}')"
+            >
+              Accept
+            </button>
+
+            <button
+              class="action reject"
+              onclick="rejectRequest('${request.id}')"
+            >
+              ✕
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }).join("");
+}
+
+async function acceptRequest(requestId){
+
+  const {error}=await supabaseClient
+    .from("friends")
+    .update({
+      status:"accepted"
+    })
+    .eq("id",requestId)
+    .eq("friend_id",currentUser.id);
+
+  if(error){
+
+    console.error(error);
+    toast("Could not accept request");
+    return;
+  }
+
+  toast("Friend added");
+
+  await loadRequests();
+  await loadFriends();
+}
+
+async function rejectRequest(requestId){
+
+  const {error}=await supabaseClient
+    .from("friends")
+    .update({
+      status:"rejected"
+    })
+    .eq("id",requestId)
+    .eq("friend_id",currentUser.id);
+
+  if(error){
+
+    console.error(error);
+    toast("Could not reject request");
+    return;
+  }
+
+  toast("Request rejected");
+
+  await loadRequests();
+}
+
+async function loadFriends(){
+
+  const box=document.getElementById("friendsList");
+
+  const {data,error}=await supabaseClient
+    .from("friends")
+    .select("id,user_id,friend_id,status,created_at")
+    .eq("status","accepted")
+    .or(
+      `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
+    )
+    .order("created_at",{ascending:false});
+
+  if(error){
+
+    console.error(error);
+    box.innerHTML='<div class="empty">Could not load friends</div>';
+    return;
+  }
+
+  if(!data || data.length===0){
+
+    box.innerHTML='<div class="empty">No friends yet</div>';
+    return;
+  }
+
+  const friendIds=data.map(row=>
+    row.user_id===currentUser.id
+      ? row.friend_id
+      : row.user_id
+  );
+
+  const {data:profiles}=await supabaseClient
+    .from("profiles")
+    .select("id,username,avatar_url")
+    .in("id",friendIds);
+
+  const profileMap={};
+
+  (profiles||[]).forEach(p=>{
+    profileMap[p.id]=p;
+  });
+
+  box.innerHTML=friendIds.map(friendId=>{
+
+    const p=profileMap[friendId] || {};
+
+    return `
+
+      <div class="card">
+
+        <div class="profileRow">
+
+          <img
+            class="avatar"
+            src="${escapeHtml(p.avatar_url || '')}"
+            onerror="this.style.display='none'"
+          >
+
+          <div class="userInfo">
+
+            <div class="username">
+              ${escapeHtml(p.username || "Connect User")}
+            </div>
+
+            <div class="userId">
+              ${escapeHtml(friendId)}
+            </div>
+
+          </div>
+
+          <button
+            class="action remove"
+            onclick="removeFriend('${friendId}')"
+          >
+            Remove
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }).join("");
+}
+
+async function removeFriend(friendId){
+
+  const {error}=await supabaseClient
+    .from("friends")
+    .delete()
+    .or(
+      `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
+    );
+
+  if(error){
+
+    console.error(error);
+    toast("Could not remove friend");
+    return;
+  }
+
+  toast("Friend removed");
+
+  await loadFriends();
+}
 
 start();
-
 </script>
 
 </body>
