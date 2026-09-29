@@ -4,514 +4,884 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set up your Connect profile</title>
+<title>Complete Profile • Connect</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
 body{
-  min-height:100vh;
-  background:#0f1115;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+    min-height:100vh;
+    background:#0d0d0f;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
-.card{
-  width:100%;
-  max-width:430px;
-  background:#171a20;
-  border:1px solid #292e38;
-  border-radius:20px;
-  padding:30px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
+.container{
+    width:100%;
+    max-width:430px;
 }
 
 .logo{
-  width:58px;
-  height:58px;
-  border-radius:18px;
-  background:#5865f2;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-  font-weight:bold;
-  margin-bottom:20px;
-}
-
-h1{
-  font-size:25px;
-  margin-bottom:8px;
+    text-align:center;
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:1px;
+    margin-bottom:8px;
 }
 
 .subtitle{
-  color:#8d95a3;
-  font-size:13px;
-  line-height:1.5;
-  margin-bottom:25px;
+    text-align:center;
+    color:#8f8f98;
+    font-size:14px;
+    margin-bottom:28px;
 }
+
+.card{
+    background:#17171b;
+    border:1px solid #28282e;
+    border-radius:22px;
+    padding:24px;
+}
+
+h2{
+    font-size:22px;
+    margin-bottom:6px;
+}
+
+.description{
+    color:#92929b;
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:24px;
+}
+
+/* AVATAR */
+
+.avatar-section{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.avatar{
+    width:104px;
+    height:104px;
+    border-radius:50%;
+    background:#292930;
+    border:3px solid #383840;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    margin-bottom:12px;
+    position:relative;
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+.avatar-letter{
+    font-size:38px;
+    font-weight:700;
+    color:#aaaab4;
+}
+
+.avatar-btn{
+    border:none;
+    background:#25252b;
+    color:#fff;
+    padding:9px 16px;
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+}
+
+.avatar-btn:active{
+    transform:scale(.97);
+}
+
+.remove-btn{
+    display:none;
+    margin-top:7px;
+    background:none;
+    border:none;
+    color:#ff6b6b;
+    font-size:12px;
+    cursor:pointer;
+}
+
+input[type="file"]{
+    display:none;
+}
+
+/* INPUTS */
 
 label{
-  display:block;
-  color:#c8cdd5;
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:8px;
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:#cfcfd5;
+    margin-bottom:8px;
 }
 
-input{
-  width:100%;
-  height:48px;
-  border:1px solid #303641;
-  outline:none;
-  border-radius:10px;
-  background:#101319;
-  color:white;
-  padding:0 14px;
-  font-size:14px;
-  margin-bottom:18px;
+.input{
+    width:100%;
+    height:50px;
+    background:#101014;
+    border:1px solid #303038;
+    border-radius:12px;
+    padding:0 14px;
+    color:#fff;
+    outline:none;
+    font-size:14px;
+    margin-bottom:18px;
 }
 
-input:focus{
-  border-color:#5865f2;
+.input:focus{
+    border-color:#7777ff;
 }
 
-.hint{
-  color:#737b89;
-  font-size:11px;
-  margin-top:-10px;
-  margin-bottom:18px;
+.username-wrap{
+    position:relative;
 }
 
-.guideline-box{
-  background:#101319;
-  border:1px solid #2c323d;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:18px;
+.username-status{
+    position:absolute;
+    right:12px;
+    top:16px;
+    font-size:12px;
 }
 
-.guideline-title{
-  font-size:13px;
-  font-weight:bold;
-  margin-bottom:7px;
+.guidelines{
+    background:#101014;
+    border:1px solid #292930;
+    border-radius:14px;
+    padding:14px;
+    margin:2px 0 20px;
 }
 
-.guideline-text{
-  color:#858d9a;
-  font-size:11px;
-  line-height:1.5;
+.guidelines-title{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:7px;
 }
 
-.check{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-top:12px;
-  cursor:pointer;
+.guidelines-text{
+    color:#92929b;
+    font-size:12px;
+    line-height:1.5;
+    margin-bottom:12px;
 }
 
-.check input{
-  width:17px;
-  height:17px;
-  margin:0;
-  accent-color:#5865f2;
+.check-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    font-size:12px;
+    color:#c4c4ca;
+    line-height:1.4;
 }
 
-.check span{
-  color:#c3c8d1;
-  font-size:12px;
-  line-height:1.4;
+.check-row input{
+    width:16px;
+    height:16px;
+    margin-top:1px;
+    accent-color:#ffffff;
 }
 
-button{
-  width:100%;
-  height:48px;
-  border:0;
-  border-radius:10px;
-  background:#5865f2;
-  color:white;
-  font-size:14px;
-  font-weight:bold;
-  cursor:pointer;
+.continue{
+    width:100%;
+    height:52px;
+    border:none;
+    border-radius:14px;
+    background:#fff;
+    color:#111;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
 }
 
-button:hover{
-  background:#4752c4;
+.continue:disabled{
+    opacity:.45;
+    cursor:not-allowed;
 }
 
-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+.message{
+    min-height:20px;
+    text-align:center;
+    margin-top:14px;
+    font-size:13px;
 }
 
 .error{
-  display:none;
-  background:#351d22;
-  border:1px solid #633038;
-  color:#ff929e;
-  padding:11px;
-  border-radius:9px;
-  font-size:12px;
-  margin-bottom:15px;
+    color:#ff7070;
 }
 
 .success{
-  display:none;
-  color:#62d995;
-  font-size:12px;
-  text-align:center;
-  margin-top:12px;
+    color:#66df9a;
+}
+
+.loading{
+    opacity:.6;
+    pointer-events:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="container">
 
-  <div class="logo">C</div>
+    <div class="logo">CONNECT</div>
+    <div class="subtitle">Let's complete your profile</div>
 
-  <h1>Set up your profile</h1>
+    <div class="card">
 
-  <div class="subtitle">
-    Just a few details before you enter Connect.
-  </div>
+        <h2>Your profile</h2>
+        <p class="description">
+            Choose how other people will see you on Connect.
+        </p>
 
-  <div class="error" id="error"></div>
+        <!-- PROFILE PICTURE -->
 
-  <label for="username">
-    USERNAME
-  </label>
+        <div class="avatar-section">
 
-  <input
-    id="username"
-    type="text"
-    placeholder="Choose a unique username"
-    maxlength="30"
-    autocomplete="off"
-  >
+            <div class="avatar">
 
-  <div class="hint">
-    3–30 characters. Letters, numbers and underscore only.
-  </div>
+                <span class="avatar-letter" id="avatarLetter">?</span>
+
+                <img id="avatarPreview" alt="Profile picture">
+
+            </div>
+
+            <label for="avatarInput" class="avatar-btn">
+                📷 Choose profile picture
+            </label>
+
+            <input
+                type="file"
+                id="avatarInput"
+                accept="image/*"
+            >
+
+            <button
+                type="button"
+                id="removeAvatar"
+                class="remove-btn"
+            >
+                Remove picture
+            </button>
+
+        </div>
 
 
-  <label for="dob">
-    DATE OF BIRTH
-  </label>
+        <!-- USERNAME -->
 
-  <input
-    id="dob"
-    type="date"
-  >
+        <label for="username">Username</label>
+
+        <div class="username-wrap">
+
+            <input
+                class="input"
+                id="username"
+                type="text"
+                maxlength="30"
+                placeholder="Choose a username"
+                autocomplete="off"
+            >
+
+            <span
+                id="usernameStatus"
+                class="username-status"
+            ></span>
+
+        </div>
 
 
-  <div class="guideline-box">
+        <!-- DOB -->
 
-    <div class="guideline-title">
-      Connect Guidelines
+        <label for="dob">Date of birth</label>
+
+        <input
+            class="input"
+            id="dob"
+            type="date"
+        >
+
+
+        <!-- GUIDELINES -->
+
+        <div class="guidelines">
+
+            <div class="guidelines-title">
+                Connect Guidelines
+            </div>
+
+            <div class="guidelines-text">
+                Be respectful to other users. Do not harass,
+                spam, impersonate others, or misuse the platform.
+            </div>
+
+            <label class="check-row">
+                <input type="checkbox" id="guidelines">
+                <span>
+                    I have read and agree to the Connect Guidelines.
+                </span>
+            </label>
+
+        </div>
+
+
+        <button
+            id="continueBtn"
+            class="continue"
+            disabled
+        >
+            Complete Profile
+        </button>
+
+        <div id="message" class="message"></div>
+
     </div>
-
-    <div class="guideline-text">
-      Be respectful to other users. Do not use Connect
-      to harass, threaten, scam, or share harmful content.
-    </div>
-
-    <label class="check">
-
-      <input
-        type="checkbox"
-        id="guidelines"
-      >
-
-      <span>
-        I have read and agree to follow the Connect Guidelines.
-      </span>
-
-    </label>
-
-  </div>
-
-
-  <button id="continueBtn">
-    Continue
-  </button>
-
-  <div class="success" id="success">
-    Profile saved. Opening Connect...
-  </div>
 
 </div>
 
 
 <script>
 
-/* ================= SUPABASE ================= */
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsImVtYWlsIjoidGVzdCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzk2MzE2NDE0LCJleHAiOjIxMDYyMDc2NDB9.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
 );
 
 
-/* ================= ELEMENTS ================= */
+/* =========================
+   ELEMENTS
+========================= */
 
-const username =
+const usernameInput =
 document.getElementById("username");
 
-const dob =
+const dobInput =
 document.getElementById("dob");
 
-const guidelines =
+const guidelinesInput =
 document.getElementById("guidelines");
 
 const continueBtn =
 document.getElementById("continueBtn");
 
-const errorBox =
-document.getElementById("error");
+const avatarInput =
+document.getElementById("avatarInput");
 
-const successBox =
-document.getElementById("success");
+const avatarPreview =
+document.getElementById("avatarPreview");
 
+const avatarLetter =
+document.getElementById("avatarLetter");
 
-/* ================= CHECK LOGIN ================= */
+const removeAvatar =
+document.getElementById("removeAvatar");
 
-async function checkSession(){
+const usernameStatus =
+document.getElementById("usernameStatus");
 
-  const {
-    data:{
-      session
-    }
-  } =
-  await supabaseClient.auth.getSession();
-
-  if(!session){
-
-    window.location.href =
-      "index.html";
-
-    return null;
-  }
-
-  return session;
-
-}
+const message =
+document.getElementById("message");
 
 
-/* ================= DATE LIMIT ================= */
+let selectedAvatar = null;
+let usernameAvailable = false;
+
+
+/* =========================
+   DATE LIMIT
+========================= */
 
 const today =
-new Date();
+new Date().toISOString().split("T")[0];
 
-const todayString =
-today.toISOString().split("T")[0];
-
-dob.max =
-todayString;
+dobInput.max = today;
 
 
-/* ================= ERROR ================= */
+/* =========================
+   SESSION
+========================= */
 
-function showError(message){
+let currentUser = null;
 
-  errorBox.textContent =
-    message;
+async function loadUser(){
 
-  errorBox.style.display =
-    "block";
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.getSession();
+
+    if(error || !data.session){
+
+        window.location.href = "index.html";
+        return;
+
+    }
+
+    currentUser =
+        data.session.user;
+
+}
+
+loadUser();
+
+
+/* =========================
+   AVATAR
+========================= */
+
+avatarInput.addEventListener(
+"change",
+function(){
+
+    const file =
+        this.files[0];
+
+    if(!file) return;
+
+    if(!file.type.startsWith("image/")){
+
+        showMessage(
+            "Please select an image.",
+            true
+        );
+
+        return;
+    }
+
+    /* Limit 5 MB */
+
+    if(file.size > 5 * 1024 * 1024){
+
+        showMessage(
+            "Profile picture must be under 5 MB.",
+            true
+        );
+
+        this.value = "";
+        return;
+    }
+
+    selectedAvatar = file;
+
+    const reader =
+        new FileReader();
+
+    reader.onload = function(e){
+
+        avatarPreview.src =
+            e.target.result;
+
+        avatarPreview.style.display =
+            "block";
+
+        avatarLetter.style.display =
+            "none";
+
+        removeAvatar.style.display =
+            "block";
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* REMOVE AVATAR */
+
+removeAvatar.addEventListener(
+"click",
+function(){
+
+    selectedAvatar = null;
+
+    avatarInput.value = "";
+
+    avatarPreview.src = "";
+
+    avatarPreview.style.display =
+        "none";
+
+    avatarLetter.style.display =
+        "block";
+
+    removeAvatar.style.display =
+        "none";
+
+});
+
+
+/* =========================
+   USERNAME
+========================= */
+
+let usernameTimer = null;
+
+usernameInput.addEventListener(
+"input",
+function(){
+
+    const value =
+        usernameInput.value
+        .trim()
+        .toLowerCase();
+
+    usernameAvailable = false;
+
+    usernameStatus.textContent = "";
+
+    clearTimeout(usernameTimer);
+
+    if(value.length < 3) return;
+
+    if(!/^[a-zA-Z0-9_]+$/.test(value)){
+
+        usernameStatus.textContent = "✕";
+        usernameStatus.style.color =
+            "#ff7070";
+
+        return;
+    }
+
+    usernameStatus.textContent = "…";
+    usernameStatus.style.color =
+        "#aaa";
+
+    usernameTimer =
+        setTimeout(
+            checkUsername,
+            500
+        );
+
+});
+
+
+async function checkUsername(){
+
+    const username =
+        usernameInput.value
+        .trim()
+        .toLowerCase();
+
+    if(username.length < 3) return;
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("id")
+        .eq("username", username)
+        .maybeSingle();
+
+    if(error){
+
+        usernameStatus.textContent = "?";
+        usernameStatus.style.color =
+            "#ff7070";
+
+        usernameAvailable = false;
+
+        return;
+    }
+
+    if(data){
+
+        usernameStatus.textContent = "✕";
+        usernameStatus.style.color =
+            "#ff7070";
+
+        usernameAvailable = false;
+
+    }else{
+
+        usernameStatus.textContent = "✓";
+        usernameStatus.style.color =
+            "#66df9a";
+
+        usernameAvailable = true;
+
+    }
 
 }
 
 
-/* ================= CONTINUE ================= */
+/* =========================
+   BUTTON STATE
+========================= */
 
-continueBtn.addEventListener(
-  "click",
-  async()=>{
+function updateButton(){
 
-    errorBox.style.display =
-      "none";
-
-    const session =
-      await checkSession();
-
-    if(!session) return;
-
-
-    const cleanUsername =
-      username.value
-      .trim()
-      .toLowerCase();
-
-
-    const dateOfBirth =
-      dob.value;
-
-
-    /* USERNAME */
-
-    if(!/^[a-z0-9_]{3,30}$/.test(cleanUsername)){
-
-      showError(
-        "Username must be 3–30 characters and use only letters, numbers or underscore."
-      );
-
-      return;
-    }
-
-
-    /* DOB */
-
-    if(!dateOfBirth){
-
-      showError(
-        "Please enter your date of birth."
-      );
-
-      return;
-    }
-
-
-    /* GUIDELINES */
-
-    if(!guidelines.checked){
-
-      showError(
-        "Please accept the Connect Guidelines to continue."
-      );
-
-      return;
-    }
-
+    const valid =
+        usernameAvailable &&
+        dobInput.value &&
+        guidelinesInput.checked;
 
     continueBtn.disabled =
-      true;
+        !valid;
 
-    continueBtn.textContent =
-      "Saving...";
+}
 
-
-    /* CHECK USERNAME */
-
-    const {
-      data:existingProfile,
-      error:checkError
-    } =
-    await supabaseClient
-      .from("profiles")
-      .select("id")
-      .eq("username",cleanUsername)
-      .maybeSingle();
-
-
-    if(checkError){
-
-      showError(
-        "Could not check username. Please try again."
-      );
-
-      continueBtn.disabled =
-        false;
-
-      continueBtn.textContent =
-        "Continue";
-
-      return;
-    }
-
-
-    if(
-      existingProfile &&
-      existingProfile.id !== session.user.id
-    ){
-
-      showError(
-        "That username is already taken. Choose another one."
-      );
-
-      continueBtn.disabled =
-        false;
-
-      continueBtn.textContent =
-        "Continue";
-
-      return;
-    }
-
-
-    /* SAVE PROFILE */
-
-    const {
-      error:saveError
-    } =
-    await supabaseClient
-      .from("profiles")
-      .upsert({
-
-        id:session.user.id,
-
-        username:cleanUsername,
-
-        date_of_birth:dateOfBirth,
-
-        guidelines_accepted:true
-
-      });
-
-
-    if(saveError){
-
-      showError(
-        saveError.message
-      );
-
-      continueBtn.disabled =
-        false;
-
-      continueBtn.textContent =
-        "Continue";
-
-      return;
-    }
-
-
-    /* SUCCESS */
-
-    successBox.style.display =
-      "block";
-
-    continueBtn.textContent =
-      "Done";
-
-
-    setTimeout(()=>{
-
-      window.location.href =
-        "home.html";
-
-    },700);
-
-  }
+usernameInput.addEventListener(
+"input",
+updateButton
 );
+
+dobInput.addEventListener(
+"change",
+updateButton
+);
+
+guidelinesInput.addEventListener(
+"change",
+updateButton
+);
+
+
+/* =========================
+   SUBMIT
+========================= */
+
+continueBtn.addEventListener(
+"click",
+async function(){
+
+    if(!currentUser){
+
+        showMessage(
+            "Session expired. Please login again.",
+            true
+        );
+
+        return;
+    }
+
+    const username =
+        usernameInput.value
+        .trim()
+        .toLowerCase();
+
+    const dob =
+        dobInput.value;
+
+    if(!usernameAvailable){
+
+        showMessage(
+            "Please choose an available username.",
+            true
+        );
+
+        return;
+    }
+
+    if(!dob){
+
+        showMessage(
+            "Please select your date of birth.",
+            true
+        );
+
+        return;
+    }
+
+    if(!guidelinesInput.checked){
+
+        showMessage(
+            "Please accept the Connect Guidelines.",
+            true
+        );
+
+        return;
+    }
+
+
+    continueBtn.disabled = true;
+    continueBtn.textContent =
+        "Creating profile...";
+
+    try{
+
+        let avatarUrl = null;
+
+
+        /* =========================
+           UPLOAD AVATAR
+        ========================= */
+
+        if(selectedAvatar){
+
+            const extension =
+                selectedAvatar.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+            const filePath =
+                currentUser.id +
+                "/avatar." +
+                extension;
+
+
+            const {
+                error: uploadError
+            } =
+                await supabaseClient
+                .storage
+                .from("avatars")
+                .upload(
+                    filePath,
+                    selectedAvatar,
+                    {
+                        upsert:true,
+                        contentType:
+                            selectedAvatar.type
+                    }
+                );
+
+
+            if(uploadError){
+
+                throw uploadError;
+
+            }
+
+
+            const {
+                data:publicData
+            } =
+                supabaseClient
+                .storage
+                .from("avatars")
+                .getPublicUrl(
+                    filePath
+                );
+
+            avatarUrl =
+                publicData.publicUrl;
+
+        }
+
+
+        /* =========================
+           SAVE PROFILE
+        ========================= */
+
+        const {
+            error: profileError
+        } =
+            await supabaseClient
+            .from("profiles")
+            .upsert({
+
+                id: currentUser.id,
+
+                username: username,
+
+                date_of_birth: dob,
+
+                guidelines_accepted: true,
+
+                avatar_url: avatarUrl
+
+            });
+
+
+        if(profileError){
+
+            throw profileError;
+
+        }
+
+
+        showMessage(
+            "Profile created successfully!",
+            false
+        );
+
+
+        setTimeout(
+            function(){
+
+                window.location.href =
+                    "home.html";
+
+            },
+            700
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            error.message ||
+            "Something went wrong.",
+            true
+        );
+
+        continueBtn.disabled = false;
+
+        continueBtn.textContent =
+            "Complete Profile";
+
+    }
+
+});
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+    text,
+    isError
+){
+
+    message.textContent =
+        text;
+
+    message.className =
+        "message " +
+        (isError
+            ? "error"
+            : "success");
+
+}
 
 </script>
 
