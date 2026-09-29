@@ -3,72 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Friends • Connect</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
+  -webkit-tap-highlight-color:transparent;
   font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
+:root{
+  --bg:#08090d;
+  --card:#11131a;
+  --card2:#171923;
+  --border:rgba(255,255,255,.08);
+  --text:#f7f7fa;
+  --muted:#8b90a0;
+  --accent:#7965ff;
+}
+
+html,body{
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+}
+
 body{
-  background:#111;
-  color:#fff;
-  min-height:100vh;
   padding-bottom:90px;
 }
 
-.app{
-  max-width:520px;
-  margin:auto;
-  padding:20px 16px;
+button,
+input{
+  font:inherit;
 }
+
+button{
+  border:0;
+  cursor:pointer;
+  color:inherit;
+}
+
+.app{
+  width:100%;
+  max-width:560px;
+  margin:auto;
+  padding:18px 15px 30px;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
 
 .top{
   display:flex;
   align-items:center;
-  gap:14px;
-  margin-bottom:24px;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.titleArea{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
 .back{
   width:42px;
   height:42px;
   border-radius:14px;
-  border:1px solid #292929;
-  background:#1b1b1b;
-  color:white;
-  font-size:22px;
+  background:#15171e;
+  border:1px solid var(--border);
+  font-size:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.back:active{
+  transform:scale(.93);
 }
 
 .title{
-  font-size:24px;
-  font-weight:800;
+  font-size:25px;
+  font-weight:850;
+  letter-spacing:-.5px;
 }
 
 .subtitle{
-  color:#888;
-  font-size:13px;
+  color:var(--muted);
+  font-size:12px;
   margin-top:3px;
 }
 
-.searchBox{
+
+/* REQUEST BUTTON */
+
+.requestBtn{
+  position:relative;
+  width:45px;
+  height:45px;
+  border-radius:15px;
+  background:#15171e;
+  border:1px solid var(--border);
   display:flex;
   align-items:center;
-  gap:10px;
-  background:#1b1b1b;
-  border:1px solid #292929;
-  border-radius:16px;
-  padding:0 14px;
-  height:54px;
-  margin-bottom:18px;
+  justify-content:center;
+  font-size:20px;
 }
 
-.searchBox span{
+.requestBtn:active{
+  transform:scale(.92);
+}
+
+.requestBadge{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  min-width:19px;
+  height:19px;
+  padding:0 5px;
+  border-radius:20px;
+  background:#7965ff;
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border:2px solid var(--bg);
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.searchBox{
+  height:54px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:0 15px;
+  border-radius:17px;
+  background:#12141b;
+  border:1px solid var(--border);
+  transition:.2s;
+  margin-bottom:25px;
+}
+
+.searchBox:focus-within{
+  border-color:rgba(121,101,255,.5);
+  box-shadow:0 0 0 4px rgba(121,101,255,.07);
+}
+
+.searchIcon{
+  color:#858a99;
   font-size:20px;
 }
 
@@ -78,25 +174,63 @@ body{
   border:0;
   outline:0;
   color:#fff;
-  font-size:15px;
+  font-size:14px;
 }
+
+.searchBox input::placeholder{
+  color:#666b7a;
+}
+
+
+/* =========================
+   SECTION
+========================= */
 
 .section{
-  margin-top:24px;
+  margin-top:25px;
 }
 
-.sectionTitle{
-  font-size:15px;
-  font-weight:800;
+.sectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   margin-bottom:12px;
 }
 
+.sectionTitle{
+  font-size:14px;
+  font-weight:800;
+}
+
+.sectionCount{
+  color:#747989;
+  font-size:11px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
 .card{
-  background:#1a1a1a;
-  border:1px solid #292929;
-  border-radius:18px;
-  padding:14px;
+  position:relative;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.025),
+      rgba(255,255,255,.008)
+    ),
+    var(--card);
+
+  border:1px solid var(--border);
+  border-radius:19px;
+  padding:13px;
   margin-bottom:10px;
+  transition:.2s;
+}
+
+.card:active{
+  transform:scale(.985);
 }
 
 .profileRow{
@@ -106,11 +240,13 @@ body{
 }
 
 .avatar{
-  width:48px;
-  height:48px;
+  width:50px;
+  height:50px;
+  min-width:50px;
   border-radius:50%;
   object-fit:cover;
-  background:#292929;
+  background:#242732;
+  border:2px solid rgba(255,255,255,.07);
 }
 
 .userInfo{
@@ -119,268 +255,640 @@ body{
 }
 
 .username{
-  font-weight:750;
   font-size:15px;
+  font-weight:800;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
 .userId{
-  color:#777;
-  font-size:11px;
-  margin-top:3px;
+  color:#707585;
+  font-size:10px;
+  margin-top:4px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-button{
-  border:0;
-  cursor:pointer;
+.friendOnline{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  color:#777d8d;
+  font-size:10px;
+  margin-top:4px;
 }
+
+.friendDot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#555b69;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
 
 .action{
   padding:9px 13px;
   border-radius:12px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.add{
   background:#fff;
   color:#111;
-  font-weight:750;
-  font-size:12px;
 }
 
 .accept{
-  background:#fff;
-  color:#111;
+  background:#7965ff;
+  color:#fff;
 }
 
-.reject{
-  margin-left:6px;
-  background:#292929;
+.reject,
+.remove{
+  background:#252832;
   color:#fff;
 }
 
 .remove{
-  background:#292929;
-  color:#fff;
+  padding:9px 11px;
 }
 
-.myId{
-  background:#191919;
-  border:1px solid #292929;
-  border-radius:18px;
-  padding:16px;
-}
 
-.myIdLabel{
-  color:#888;
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+  text-align:center;
+  color:#777d8d;
+  padding:28px 15px;
   font-size:12px;
-  margin-bottom:7px;
+  line-height:1.5;
 }
 
-.idRow{
+.emptyIcon{
+  width:52px;
+  height:52px;
+  border-radius:17px;
+  margin:0 auto 10px;
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-content:center;
+  background:#151720;
+  border:1px solid var(--border);
+  font-size:21px;
 }
 
-.idText{
-  flex:1;
-  font-size:12px;
+.emptyTitle{
   color:#ddd;
+  font-size:13px;
+  font-weight:750;
+  margin-bottom:3px;
+}
+
+
+/* =========================
+   REQUEST PANEL
+========================= */
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.62);
+  backdrop-filter:blur(8px);
+  z-index:100;
+  opacity:0;
+  visibility:hidden;
+  transition:.2s;
+}
+
+.overlay.show{
+  opacity:1;
+  visibility:visible;
+}
+
+.requestPanel{
+  position:absolute;
+  top:12px;
+  right:12px;
+  left:12px;
+  max-width:540px;
+  margin:auto;
+  max-height:80vh;
+  overflow-y:auto;
+  background:#12141b;
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:17px;
+  transform:translateY(-15px);
+  transition:.22s;
+}
+
+.overlay.show .requestPanel{
+  transform:translateY(0);
+}
+
+.panelTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+
+.panelTitle{
+  font-size:17px;
+  font-weight:850;
+}
+
+.closeBtn{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  background:#20222b;
+  color:#aaa;
+  font-size:17px;
+}
+
+
+/* =========================
+   REQUEST CARD
+========================= */
+
+.requestCard{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px;
+  border-radius:15px;
+  background:#191b23;
+  border:1px solid rgba(255,255,255,.055);
+  margin-bottom:8px;
+}
+
+.requestAvatar{
+  width:43px;
+  height:43px;
+  min-width:43px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#282b36;
+}
+
+.requestInfo{
+  flex:1;
+  min-width:0;
+}
+
+.requestName{
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.copy{
-  background:#292929;
-  color:#fff;
-  padding:8px 12px;
-  border-radius:10px;
-  font-size:11px;
+.requestText{
+  color:#747989;
+  font-size:10px;
+  margin-top:3px;
 }
 
-.empty{
-  text-align:center;
-  color:#777;
-  padding:22px 10px;
-  font-size:13px;
+.requestActions{
+  display:flex;
+  gap:5px;
 }
+
+
+/* =========================
+   BOTTOM NAV
+========================= */
 
 .bottom{
   position:fixed;
-  bottom:0;
   left:0;
   right:0;
+  bottom:0;
   height:76px;
-  background:rgba(18,18,18,.96);
-  border-top:1px solid #292929;
-  display:flex;
-  justify-content:center;
-  z-index:20;
+  background:rgba(11,12,16,.96);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  z-index:50;
 }
 
 .nav{
   width:100%;
-  max-width:520px;
+  max-width:560px;
+  height:100%;
+  margin:auto;
   display:flex;
   justify-content:space-around;
   align-items:center;
 }
 
 .navItem{
-  color:#777;
+  min-width:70px;
   text-align:center;
-  font-size:11px;
+  color:#686d7c;
+  font-size:10px;
   cursor:pointer;
 }
 
 .navIcon{
-  font-size:21px;
-  margin-bottom:3px;
+  height:27px;
+  font-size:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .navItem.active{
   color:#fff;
 }
 
+.navItem.active .navIcon{
+  color:#8b79ff;
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
 .toast{
   position:fixed;
   left:50%;
-  bottom:92px;
+  bottom:91px;
   transform:translateX(-50%) translateY(15px);
-  background:#fff;
+  max-width:90%;
+  background:#f4f4f5;
   color:#111;
-  padding:11px 17px;
+  padding:10px 15px;
   border-radius:13px;
-  font-size:13px;
-  font-weight:650;
+  font-size:12px;
+  font-weight:700;
   opacity:0;
   pointer-events:none;
   transition:.25s;
-  z-index:50;
+  z-index:200;
+  box-shadow:0 10px 35px rgba(0,0,0,.3);
 }
 
 .toast.show{
   opacity:1;
   transform:translateX(-50%) translateY(0);
 }
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:380px){
+
+  .app{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .title{
+    font-size:23px;
+  }
+
+  .avatar{
+    width:46px;
+    height:46px;
+    min-width:46px;
+  }
+
+  .action{
+    padding:8px 10px;
+  }
+}
+
 </style>
 </head>
 
 <body>
 
+
 <div class="app">
 
+  <!-- TOP -->
+
   <div class="top">
-    <button class="back" onclick="history.back()">‹</button>
-    <div>
-      <div class="title">Friends</div>
-      <div class="subtitle">Connect with your people</div>
+
+    <div class="titleArea">
+
+      <button
+        class="back"
+        onclick="history.back()"
+      >
+        ‹
+      </button>
+
+      <div>
+
+        <div class="title">
+          Friends
+        </div>
+
+        <div class="subtitle">
+          Your Connect network
+        </div>
+
+      </div>
+
     </div>
+
+
+    <!-- REQUEST ICON -->
+
+    <button
+      class="requestBtn"
+      onclick="openRequests()"
+      aria-label="Friend requests"
+    >
+
+      👥
+
+      <span
+        id="requestBadge"
+        class="requestBadge"
+      >
+        0
+      </span>
+
+    </button>
+
   </div>
 
+
+  <!-- SEARCH -->
+
   <div class="searchBox">
-    <span>⌕</span>
+
+    <span class="searchIcon">
+      ⌕
+    </span>
+
     <input
       id="searchInput"
       type="text"
       placeholder="Search username..."
       autocomplete="off"
     >
+
   </div>
 
-  <div class="myId">
-    <div class="myIdLabel">MY CONNECT ID</div>
-    <div class="idRow">
-      <div class="idText" id="myId">Loading...</div>
-      <button class="copy" onclick="copyMyId()">Copy</button>
-    </div>
-  </div>
+
+  <!-- SEARCH RESULTS -->
 
   <div class="section">
-    <div class="sectionTitle">Search Results</div>
+
+    <div class="sectionHead">
+
+      <div class="sectionTitle">
+        Search Results
+      </div>
+
+    </div>
+
     <div id="searchResults">
-      <div class="empty">Search for a username</div>
+
+      <div class="empty">
+
+        <div class="emptyIcon">
+          🔎
+        </div>
+
+        Search for a username to find people
+
+      </div>
+
     </div>
+
   </div>
 
-  <div class="section">
-    <div class="sectionTitle">Friend Requests</div>
-    <div id="requests">
-      <div class="empty">No pending requests</div>
-    </div>
-  </div>
+
+  <!-- FRIENDS -->
 
   <div class="section">
-    <div class="sectionTitle">My Friends</div>
+
+    <div class="sectionHead">
+
+      <div class="sectionTitle">
+        My Friends
+      </div>
+
+      <div
+        id="friendCount"
+        class="sectionCount"
+      >
+        0 friends
+      </div>
+
+    </div>
+
     <div id="friendsList">
-      <div class="empty">No friends yet</div>
+
+      <div class="empty">
+
+        <div class="emptyIcon">
+          👥
+        </div>
+
+        <div class="emptyTitle">
+          No friends yet
+        </div>
+
+        Add people to start connecting
+
+      </div>
+
     </div>
+
   </div>
 
 </div>
+
+
+<!-- REQUEST OVERLAY -->
+
+<div
+  id="requestOverlay"
+  class="overlay"
+  onclick="closeRequests(event)"
+>
+
+  <div class="requestPanel">
+
+    <div class="panelTop">
+
+      <div class="panelTitle">
+        Friend Requests
+      </div>
+
+      <button
+        class="closeBtn"
+        onclick="closeRequests()"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div id="requests">
+
+      <div class="empty">
+        No pending requests
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
 
 <div class="bottom">
+
   <div class="nav">
 
-    <div class="navItem" onclick="go('home.html')">
-      <div class="navIcon">⌂</div>
+    <div
+      class="navItem"
+      onclick="go('home.html')"
+    >
+
+      <div class="navIcon">
+        ⌂
+      </div>
+
       Home
+
     </div>
 
-    <div class="navItem" onclick="go('entertainment.html')">
-      <div class="navIcon">🚀</div>
+
+    <div
+      class="navItem"
+      onclick="go('entertainment.html')"
+    >
+
+      <div class="navIcon">
+        🚀
+      </div>
+
       Entertainment
+
     </div>
 
-    <div class="navItem" onclick="go('chat.html')">
-      <div class="navIcon">▢</div>
+
+    <div
+      class="navItem"
+      onclick="go('chat.html')"
+    >
+
+      <div class="navIcon">
+        ▢
+      </div>
+
       Chat
+
     </div>
 
-    <div class="navItem active">
-      <div class="navIcon">●</div>
+
+    <div
+      class="navItem active"
+    >
+
+      <div class="navIcon">
+        ●
+      </div>
+
       Friends
+
     </div>
 
   </div>
+
 </div>
 
-<div class="toast" id="toast"></div>
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
 
 <script>
-const SUPABASE_URL = "https://riversitunmzvuprecbt.supabase.co";
+
+/* =========================================
+   SUPABASE
+========================================= */
+
+const SUPABASE_URL =
+"https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
-  supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  {
     auth:{
       persistSession:true,
       autoRefreshToken:true,
       detectSessionInUrl:true
     }
-  });
+  }
+);
+
 
 let currentUser = null;
 let searchTimer = null;
 
+
+/* =========================================
+   START
+========================================= */
+
 async function start(){
 
-  const {data:{session}} =
-    await supabaseClient.auth.getSession();
+  const {
+    data:{
+      session
+    },
+    error
+  } =
+  await supabaseClient.auth.getSession();
 
-  if(!session){
-    location.href="index.html";
+  if(error){
+
+    console.error(error);
+    toast("Could not load account");
     return;
   }
 
-  currentUser = session.user;
+  if(!session){
 
-  document.getElementById("myId").textContent =
-    currentUser.id;
+    location.href =
+      "index.html";
+
+    return;
+  }
+
+  currentUser =
+    session.user;
 
   await Promise.all([
     loadRequests(),
@@ -388,21 +896,90 @@ async function start(){
   ]);
 }
 
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
 function go(page){
-  location.href = page;
+
+  location.href =
+    page;
 }
+
+
+/* =========================================
+   TOAST
+========================================= */
 
 function toast(message){
 
-  const el=document.getElementById("toast");
+  const el =
+    document.getElementById("toast");
 
-  el.textContent=message;
+  el.textContent =
+    message;
+
   el.classList.add("show");
 
-  setTimeout(()=>{
-    el.classList.remove("show");
-  },1800);
+  clearTimeout(
+    toast.timer
+  );
+
+  toast.timer =
+    setTimeout(()=>{
+
+      el.classList.remove("show");
+
+    },1800);
 }
+
+
+/* =========================================
+   FALLBACK AVATAR
+========================================= */
+
+function fallbackAvatar(name){
+
+  const letter =
+    String(name || "U")
+      .trim()
+      .charAt(0)
+      .toUpperCase();
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="200"
+           height="200"
+           viewBox="0 0 200 200">
+
+        <rect
+          width="200"
+          height="200"
+          rx="100"
+          fill="#292c37"
+        />
+
+        <text
+          x="100"
+          y="115"
+          text-anchor="middle"
+          font-family="Arial"
+          font-size="86"
+          font-weight="700"
+          fill="#aaa0ff">
+          ${letter}
+        </text>
+
+      </svg>
+    `);
+}
+
+
+/* =========================================
+   ESCAPE
+========================================= */
 
 function escapeHtml(value){
 
@@ -414,407 +991,913 @@ function escapeHtml(value){
     .replace(/'/g,"&#039;");
 }
 
-async function copyMyId(){
 
-  try{
+/* =========================================
+   SEARCH
+========================================= */
 
-    await navigator.clipboard.writeText(currentUser.id);
+document
+.getElementById("searchInput")
+.addEventListener(
+  "input",
+  function(){
 
-    toast("Connect ID copied");
+    clearTimeout(searchTimer);
 
-  }catch(e){
+    const value =
+      this.value.trim();
 
-    toast("Copy failed");
+    if(!value){
 
+      document
+        .getElementById("searchResults")
+        .innerHTML = `
+
+          <div class="empty">
+
+            <div class="emptyIcon">
+              🔎
+            </div>
+
+            Search for a username to find people
+
+          </div>
+
+        `;
+
+      return;
+    }
+
+    searchTimer =
+      setTimeout(
+        ()=>{
+          searchUsers(value);
+        },
+        350
+      );
   }
-}
+);
 
-document.getElementById("searchInput")
-.addEventListener("input",function(){
 
-  clearTimeout(searchTimer);
-
-  const value=this.value.trim();
-
-  if(!value){
-
-    document.getElementById("searchResults").innerHTML =
-      '<div class="empty">Search for a username</div>';
-
-    return;
-  }
-
-  searchTimer=setTimeout(()=>{
-    searchUsers(value);
-  },350);
-});
+/* =========================================
+   SEARCH USERS
+========================================= */
 
 async function searchUsers(value){
 
-  const box=document.getElementById("searchResults");
+  const box =
+    document.getElementById(
+      "searchResults"
+    );
 
-  box.innerHTML='<div class="empty">Searching...</div>';
+  box.innerHTML =
+    '<div class="empty">Searching...</div>';
 
-  const safe=value.replace(/[%_]/g,"\\$&");
 
-  const {data,error}=await supabaseClient
-    .from("profiles")
-    .select("id,username,avatar_url")
-    .ilike("username",`%${safe}%`)
-    .neq("id",currentUser.id)
-    .limit(20);
+  const safe =
+    value.replace(
+      /[%_]/g,
+      "\\$&"
+    );
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id,username,avatar_url"
+      )
+      .ilike(
+        "username",
+        `%${safe}%`
+      )
+      .neq(
+        "id",
+        currentUser.id
+      )
+      .limit(20);
+
 
   if(error){
 
-    console.error(error);
+    console.error(
+      "SEARCH ERROR:",
+      error
+    );
 
-    box.innerHTML='<div class="empty">Could not search users</div>';
+    box.innerHTML =
+      '<div class="empty">Could not search users</div>';
+
     return;
   }
 
-  if(!data || data.length===0){
 
-    box.innerHTML='<div class="empty">No users found</div>';
+  if(
+    !data ||
+    data.length === 0
+  ){
+
+    box.innerHTML =
+      '<div class="empty">No users found</div>';
+
     return;
   }
 
-  box.innerHTML=data.map(user=>`
 
-    <div class="card">
+  box.innerHTML =
+    data.map(
+      user=>{
 
-      <div class="profileRow">
+        const name =
+          user.username ||
+          "Connect User";
 
-        <img
-          class="avatar"
-          src="${escapeHtml(user.avatar_url || '')}"
-          onerror="this.style.display='none'"
-        >
+        const avatar =
+          user.avatar_url ||
+          fallbackAvatar(name);
 
-        <div class="userInfo">
+        return `
 
-          <div class="username">
-            ${escapeHtml(user.username || "Connect User")}
+          <div class="card">
+
+            <div class="profileRow">
+
+              <img
+                class="avatar"
+                src="${escapeHtml(avatar)}"
+                onerror="this.src='${fallbackAvatar(name)}'"
+              >
+
+              <div class="userInfo">
+
+                <div class="username">
+                  ${escapeHtml(name)}
+                </div>
+
+                <div class="userId">
+                  ${escapeHtml(user.id)}
+                </div>
+
+              </div>
+
+              <button
+                class="action add"
+                onclick="sendRequest('${user.id}')"
+              >
+                Add
+              </button>
+
+            </div>
+
           </div>
 
-          <div class="userId">
-            ${escapeHtml(user.id)}
-          </div>
-
-        </div>
-
-        <button
-          class="action"
-          onclick="sendRequest('${user.id}')"
-        >
-          Add
-        </button>
-
-      </div>
-
-    </div>
-
-  `).join("");
+        `;
+      }
+    ).join("");
 }
+
+
+/* =========================================
+   SEND FRIEND REQUEST
+========================================= */
 
 async function sendRequest(friendId){
 
-  if(friendId===currentUser.id){
-    toast("You can't add yourself");
+  if(
+    friendId ===
+    currentUser.id
+  ){
+
+    toast(
+      "You can't add yourself"
+    );
+
     return;
   }
 
-  const {data:existing,error:checkError}=await supabaseClient
-    .from("friends")
-    .select("id,status,user_id,friend_id")
-    .or(
-      `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
-    )
-    .limit(1);
+
+  const {
+    data:existing,
+    error:checkError
+  } =
+    await supabaseClient
+      .from("friends")
+      .select(
+        "id,status,user_id,friend_id"
+      )
+      .or(
+        `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
+      )
+      .limit(1);
+
 
   if(checkError){
 
-    console.error(checkError);
-    toast("Could not check request");
+    console.error(
+      "CHECK FRIEND ERROR:",
+      checkError
+    );
+
+    toast(
+      "Could not check request"
+    );
+
     return;
   }
 
-  if(existing && existing.length){
 
-    const relation=existing[0];
+  if(
+    existing &&
+    existing.length
+  ){
 
-    if(relation.status==="accepted"){
-      toast("Already friends");
+    const relation =
+      existing[0];
+
+
+    if(
+      relation.status ===
+      "accepted"
+    ){
+
+      toast(
+        "Already friends"
+      );
+
       return;
     }
 
-    if(relation.status==="pending"){
-      toast("Request already exists");
+
+    if(
+      relation.status ===
+      "pending"
+    ){
+
+      toast(
+        "Request already exists"
+      );
+
       return;
     }
   }
 
-  const {error}=await supabaseClient
-    .from("friends")
-    .insert({
-      user_id:currentUser.id,
-      friend_id:friendId,
-      status:"pending"
-    });
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("friends")
+      .insert({
+
+        user_id:
+          currentUser.id,
+
+        friend_id:
+          friendId,
+
+        status:
+          "pending"
+
+      });
+
 
   if(error){
 
-    console.error(error);
-    toast("Could not send request");
+    console.error(
+      "SEND REQUEST ERROR:",
+      error
+    );
+
+    toast(
+      "Could not send request"
+    );
+
     return;
   }
 
-  toast("Friend request sent");
+
+  toast(
+    "Friend request sent"
+  );
 }
+
+
+/* =========================================
+   LOAD REQUESTS
+========================================= */
 
 async function loadRequests(){
 
-  const box=document.getElementById("requests");
+  const box =
+    document.getElementById(
+      "requests"
+    );
 
-  const {data,error}=await supabaseClient
-    .from("friends")
-    .select("id,user_id,friend_id,status,created_at")
-    .eq("friend_id",currentUser.id)
-    .eq("status","pending")
-    .order("created_at",{ascending:false});
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("friends")
+      .select(
+        "id,user_id,friend_id,status,created_at"
+      )
+      .eq(
+        "friend_id",
+        currentUser.id
+      )
+      .eq(
+        "status",
+        "pending"
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
 
   if(error){
 
-    console.error(error);
-    box.innerHTML='<div class="empty">Could not load requests</div>';
+    console.error(
+      "REQUEST ERROR:",
+      error
+    );
+
+    box.innerHTML =
+      '<div class="empty">Could not load requests</div>';
+
     return;
   }
 
-  if(!data || data.length===0){
 
-    box.innerHTML='<div class="empty">No pending requests</div>';
-    return;
-  }
+  updateRequestBadge(
+    data?.length || 0
+  );
 
-  const userIds=data.map(x=>x.user_id);
 
-  const {data:profiles}=await supabaseClient
-    .from("profiles")
-    .select("id,username,avatar_url")
-    .in("id",userIds);
+  if(
+    !data ||
+    data.length === 0
+  ){
 
-  const profileMap={};
+    box.innerHTML = `
 
-  (profiles||[]).forEach(p=>{
-    profileMap[p.id]=p;
-  });
+      <div class="empty">
 
-  box.innerHTML=data.map(request=>{
-
-    const p=profileMap[request.user_id] || {};
-
-    return `
-
-      <div class="card">
-
-        <div class="profileRow">
-
-          <img
-            class="avatar"
-            src="${escapeHtml(p.avatar_url || '')}"
-            onerror="this.style.display='none'"
-          >
-
-          <div class="userInfo">
-
-            <div class="username">
-              ${escapeHtml(p.username || "Connect User")}
-            </div>
-
-            <div class="userId">
-              wants to connect with you
-            </div>
-
-          </div>
-
-          <div>
-            <button
-              class="action accept"
-              onclick="acceptRequest('${request.id}')"
-            >
-              Accept
-            </button>
-
-            <button
-              class="action reject"
-              onclick="rejectRequest('${request.id}')"
-            >
-              ✕
-            </button>
-          </div>
-
+        <div class="emptyIcon">
+          ✓
         </div>
+
+        No pending requests
 
       </div>
 
     `;
 
-  }).join("");
+    return;
+  }
+
+
+  const userIds =
+    data.map(
+      x=>x.user_id
+    );
+
+
+  const {
+    data:profiles,
+    error:profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id,username,avatar_url"
+      )
+      .in(
+        "id",
+        userIds
+      );
+
+
+  if(profileError){
+
+    console.error(
+      profileError
+    );
+  }
+
+
+  const profileMap = {};
+
+
+  (profiles || [])
+    .forEach(
+      p=>{
+        profileMap[p.id] =
+          p;
+      }
+    );
+
+
+  box.innerHTML =
+    data.map(
+      request=>{
+
+        const p =
+          profileMap[
+            request.user_id
+          ] || {};
+
+        const name =
+          p.username ||
+          "Connect User";
+
+        const avatar =
+          p.avatar_url ||
+          fallbackAvatar(name);
+
+        return `
+
+          <div class="requestCard">
+
+            <img
+              class="requestAvatar"
+              src="${escapeHtml(avatar)}"
+              onerror="this.src='${fallbackAvatar(name)}'"
+            >
+
+            <div class="requestInfo">
+
+              <div class="requestName">
+                ${escapeHtml(name)}
+              </div>
+
+              <div class="requestText">
+                wants to connect with you
+              </div>
+
+            </div>
+
+            <div class="requestActions">
+
+              <button
+                class="action accept"
+                onclick="acceptRequest('${request.id}')"
+              >
+                ✓
+              </button>
+
+              <button
+                class="action reject"
+                onclick="rejectRequest('${request.id}')"
+              >
+                ✕
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+      }
+    ).join("");
 }
+
+
+/* =========================================
+   REQUEST BADGE
+========================================= */
+
+function updateRequestBadge(count){
+
+  const badge =
+    document.getElementById(
+      "requestBadge"
+    );
+
+  if(count > 0){
+
+    badge.style.display =
+      "flex";
+
+    badge.textContent =
+      count > 99
+        ? "99+"
+        : count;
+
+  }else{
+
+    badge.style.display =
+      "none";
+  }
+}
+
+
+/* =========================================
+   OPEN REQUESTS
+========================================= */
+
+function openRequests(){
+
+  document
+    .getElementById(
+      "requestOverlay"
+    )
+    .classList.add("show");
+}
+
+
+/* =========================================
+   CLOSE REQUESTS
+========================================= */
+
+function closeRequests(event){
+
+  if(
+    event &&
+    event.target !==
+    document.getElementById(
+      "requestOverlay"
+    )
+  ){
+
+    return;
+  }
+
+  document
+    .getElementById(
+      "requestOverlay"
+    )
+    .classList.remove("show");
+}
+
+
+/* =========================================
+   ACCEPT REQUEST
+========================================= */
 
 async function acceptRequest(requestId){
 
-  const {error}=await supabaseClient
-    .from("friends")
-    .update({
-      status:"accepted"
-    })
-    .eq("id",requestId)
-    .eq("friend_id",currentUser.id);
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("friends")
+      .update({
+        status:"accepted"
+      })
+      .eq(
+        "id",
+        requestId
+      )
+      .eq(
+        "friend_id",
+        currentUser.id
+      );
+
 
   if(error){
 
-    console.error(error);
-    toast("Could not accept request");
+    console.error(
+      "ACCEPT ERROR:",
+      error
+    );
+
+    toast(
+      "Could not accept request"
+    );
+
     return;
   }
 
-  toast("Friend added");
+
+  toast(
+    "Friend added"
+  );
+
 
   await loadRequests();
   await loadFriends();
 }
 
+
+/* =========================================
+   REJECT REQUEST
+========================================= */
+
 async function rejectRequest(requestId){
 
-  const {error}=await supabaseClient
-    .from("friends")
-    .update({
-      status:"rejected"
-    })
-    .eq("id",requestId)
-    .eq("friend_id",currentUser.id);
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("friends")
+      .update({
+        status:"rejected"
+      })
+      .eq(
+        "id",
+        requestId
+      )
+      .eq(
+        "friend_id",
+        currentUser.id
+      );
+
 
   if(error){
 
-    console.error(error);
-    toast("Could not reject request");
+    console.error(
+      "REJECT ERROR:",
+      error
+    );
+
+    toast(
+      "Could not reject request"
+    );
+
     return;
   }
 
-  toast("Request rejected");
+
+  toast(
+    "Request rejected"
+  );
+
 
   await loadRequests();
 }
 
+
+/* =========================================
+   LOAD FRIENDS
+========================================= */
+
 async function loadFriends(){
 
-  const box=document.getElementById("friendsList");
+  const box =
+    document.getElementById(
+      "friendsList"
+    );
 
-  const {data,error}=await supabaseClient
-    .from("friends")
-    .select("id,user_id,friend_id,status,created_at")
-    .eq("status","accepted")
-    .or(
-      `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
-    )
-    .order("created_at",{ascending:false});
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("friends")
+      .select(
+        "id,user_id,friend_id,status,created_at"
+      )
+      .eq(
+        "status",
+        "accepted"
+      )
+      .or(
+        `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
 
   if(error){
 
-    console.error(error);
-    box.innerHTML='<div class="empty">Could not load friends</div>';
+    console.error(
+      "FRIENDS ERROR:",
+      error
+    );
+
+    box.innerHTML =
+      '<div class="empty">Could not load friends</div>';
+
     return;
   }
 
-  if(!data || data.length===0){
 
-    box.innerHTML='<div class="empty">No friends yet</div>';
-    return;
-  }
+  const friendIds =
+    (data || []).map(
+      row=>
+        row.user_id ===
+        currentUser.id
+          ? row.friend_id
+          : row.user_id
+    );
 
-  const friendIds=data.map(row=>
-    row.user_id===currentUser.id
-      ? row.friend_id
-      : row.user_id
-  );
 
-  const {data:profiles}=await supabaseClient
-    .from("profiles")
-    .select("id,username,avatar_url")
-    .in("id",friendIds);
+  const uniqueFriendIds =
+    [...new Set(friendIds)];
 
-  const profileMap={};
 
-  (profiles||[]).forEach(p=>{
-    profileMap[p.id]=p;
-  });
+  document.getElementById(
+    "friendCount"
+  ).textContent =
+    uniqueFriendIds.length +
+    (
+      uniqueFriendIds.length === 1
+        ? " friend"
+        : " friends"
+    );
 
-  box.innerHTML=friendIds.map(friendId=>{
 
-    const p=profileMap[friendId] || {};
+  if(
+    uniqueFriendIds.length === 0
+  ){
 
-    return `
+    box.innerHTML = `
 
-      <div class="card">
+      <div class="empty">
 
-        <div class="profileRow">
-
-          <img
-            class="avatar"
-            src="${escapeHtml(p.avatar_url || '')}"
-            onerror="this.style.display='none'"
-          >
-
-          <div class="userInfo">
-
-            <div class="username">
-              ${escapeHtml(p.username || "Connect User")}
-            </div>
-
-            <div class="userId">
-              ${escapeHtml(friendId)}
-            </div>
-
-          </div>
-
-          <button
-            class="action remove"
-            onclick="removeFriend('${friendId}')"
-          >
-            Remove
-          </button>
-
+        <div class="emptyIcon">
+          👥
         </div>
+
+        <div class="emptyTitle">
+          No friends yet
+        </div>
+
+        Search for people above to connect
 
       </div>
 
     `;
 
-  }).join("");
-}
-
-async function removeFriend(friendId){
-
-  const {error}=await supabaseClient
-    .from("friends")
-    .delete()
-    .or(
-      `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
-    );
-
-  if(error){
-
-    console.error(error);
-    toast("Could not remove friend");
     return;
   }
 
-  toast("Friend removed");
+
+  const {
+    data:profiles,
+    error:profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id,username,avatar_url,bio"
+      )
+      .in(
+        "id",
+        uniqueFriendIds
+      );
+
+
+  if(profileError){
+
+    console.error(
+      "PROFILE LOAD ERROR:",
+      profileError
+    );
+  }
+
+
+  const profileMap = {};
+
+
+  (profiles || [])
+    .forEach(
+      p=>{
+        profileMap[p.id] =
+          p;
+      }
+    );
+
+
+  box.innerHTML =
+    uniqueFriendIds.map(
+      friendId=>{
+
+        const p =
+          profileMap[
+            friendId
+          ] || {};
+
+        const name =
+          p.username ||
+          "Connect User";
+
+        const avatar =
+          p.avatar_url ||
+          fallbackAvatar(name);
+
+        return `
+
+          <div
+            class="card"
+            onclick="openConversation('${friendId}')"
+          >
+
+            <div class="profileRow">
+
+              <img
+                class="avatar"
+                src="${escapeHtml(avatar)}"
+                onerror="this.src='${fallbackAvatar(name)}'"
+              >
+
+              <div class="userInfo">
+
+                <div class="username">
+                  ${escapeHtml(name)}
+                </div>
+
+                <div class="friendOnline">
+
+                  <span class="friendDot"></span>
+
+                  Connect friend
+
+                </div>
+
+              </div>
+
+              <button
+                class="action remove"
+                onclick="event.stopPropagation();removeFriend('${friendId}')"
+              >
+                Remove
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+      }
+    ).join("");
+}
+
+
+/* =========================================
+   OPEN CONVERSATION
+========================================= */
+
+function openConversation(friendId){
+
+  location.href =
+    "conversation.html?id=" +
+    encodeURIComponent(
+      friendId
+    );
+}
+
+
+/* =========================================
+   REMOVE FRIEND
+========================================= */
+
+async function removeFriend(friendId){
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("friends")
+      .delete()
+      .or(
+        `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
+      );
+
+
+  if(error){
+
+    console.error(
+      "REMOVE ERROR:",
+      error
+    );
+
+    toast(
+      "Could not remove friend"
+    );
+
+    return;
+  }
+
+
+  toast(
+    "Friend removed"
+  );
+
 
   await loadFriends();
 }
 
+
+/* =========================================
+   START
+========================================= */
+
 start();
+
 </script>
 
 </body>
