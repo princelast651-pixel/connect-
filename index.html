@@ -1,292 +1,235 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Connect</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
 }
 
 body{
-    min-height:100vh;
-    background:#0b0d12;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.container{
-    width:92%;
-    max-width:430px;
-}
-
-.logo{
-    text-align:center;
-    margin-bottom:25px;
-}
-
-.logo-icon{
-    width:65px;
-    height:65px;
-    margin:auto;
-    border-radius:18px;
-    background:#5865f2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:30px;
-    font-weight:bold;
-}
-
-.logo h1{
-    margin-top:12px;
-    font-size:30px;
-}
-
-.logo p{
-    margin-top:6px;
-    color:#8f96a3;
+  min-height:100vh;
+  background:#0f1117;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .card{
-    background:#151821;
-    border:1px solid #242936;
-    border-radius:18px;
-    padding:28px;
-    box-shadow:0 20px 60px rgba(0,0,0,.35);
+  width:92%;
+  max-width:400px;
+  background:#191c24;
+  border:1px solid #292e3a;
+  border-radius:18px;
+  padding:30px;
 }
 
-.card h2{
-    text-align:center;
-    margin-bottom:7px;
+.logo{
+  text-align:center;
+  margin-bottom:25px;
 }
 
-.card .desc{
-    text-align:center;
-    color:#8f96a3;
-    font-size:14px;
-    margin-bottom:24px;
+.logoIcon{
+  width:60px;
+  height:60px;
+  margin:auto;
+  border-radius:17px;
+  background:#5865f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:bold;
+}
+
+h1{
+  margin-top:12px;
+}
+
+.subtitle{
+  color:#9aa1ad;
+  margin-top:6px;
+  font-size:14px;
+}
+
+h2{
+  margin-bottom:8px;
+}
+
+.desc{
+  color:#9aa1ad;
+  font-size:14px;
+  margin-bottom:22px;
+}
+
+button{
+  width:100%;
+  padding:13px;
+  border-radius:9px;
+  border:none;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .google{
-    width:100%;
-    padding:13px;
-    border:1px solid #343945;
-    border-radius:10px;
-    background:#fff;
-    color:#111;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
+  background:white;
+  color:#111;
 }
 
 .divider{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:#6f7683;
-    font-size:12px;
-    margin:20px 0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#727986;
+  font-size:12px;
+  margin:20px 0;
 }
 
-.divider::before,
-.divider::after{
-    content:"";
-    height:1px;
-    background:#303541;
-    flex:1;
+.divider span{
+  height:1px;
+  background:#303541;
+  flex:1;
 }
 
 label{
-    display:block;
-    font-size:13px;
-    margin:13px 0 6px;
-    color:#c8ccd4;
+  display:block;
+  color:#c8ccd4;
+  font-size:13px;
+  margin:12px 0 6px;
 }
 
 input{
-    width:100%;
-    padding:13px;
-    background:#0d0f14;
-    border:1px solid #303541;
-    border-radius:9px;
-    color:white;
-    outline:none;
-    font-size:14px;
+  width:100%;
+  padding:13px;
+  border-radius:9px;
+  border:1px solid #303541;
+  background:#0f1117;
+  color:white;
+  outline:none;
 }
 
-input:focus{
-    border-color:#5865f2;
+.login{
+  background:#5865f2;
+  color:white;
+  margin-top:17px;
 }
 
-.primary{
-    width:100%;
-    padding:13px;
-    margin-top:18px;
-    border:0;
-    border-radius:9px;
-    background:#5865f2;
-    color:#fff;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.secondary{
-    width:100%;
-    padding:12px;
-    margin-top:9px;
-    border:1px solid #303541;
-    border-radius:9px;
-    background:transparent;
-    color:#c8ccd4;
-    cursor:pointer;
-}
-
-button:active{
-    transform:scale(.98);
+.signup{
+  background:#292e3a;
+  color:white;
+  margin-top:9px;
 }
 
 #message{
-    text-align:center;
-    font-size:13px;
-    color:#aeb4c0;
-    margin-top:15px;
-    min-height:18px;
+  min-height:20px;
+  text-align:center;
+  color:#aeb4c0;
+  font-size:13px;
+  margin-top:15px;
 }
 
-/* APP */
-
-#app{
-    display:none;
-    width:100%;
-}
-
-.app-card{
-    background:#151821;
-    border:1px solid #242936;
-    border-radius:18px;
-    padding:30px;
-    text-align:center;
+#home{
+  display:none;
+  text-align:center;
 }
 
 .avatar{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    background:#5865f2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:0 auto 15px;
-    font-size:27px;
-    font-weight:bold;
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:#5865f2;
+  margin:0 auto 15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:bold;
 }
 
-.email{
-    color:#8f96a3;
-    margin-top:7px;
-    word-break:break-word;
+.userEmail{
+  color:#9aa1ad;
+  margin-top:7px;
+  word-break:break-word;
 }
 
 .logout{
-    width:100%;
-    padding:13px;
-    margin-top:25px;
-    border:0;
-    border-radius:9px;
-    background:#ed4245;
-    color:#fff;
-    font-weight:bold;
-    cursor:pointer;
+  margin-top:25px;
+  background:#ed4245;
+  color:white;
 }
-</style></head><body><div class="container"><!-- LOGIN -->
+</style>
+</head>
+
+<body>
+
+<div class="card">
 
 <div id="login">
 
-    <div class="logo">
-        <div class="logo-icon">C</div>
-        <h1>Connect</h1>
-        <p>Chat. Connect. Community.</p>
-    </div>
+<div class="logo">
+<div class="logoIcon">C</div>
+<h1>Connect</h1>
+<p class="subtitle">Chat. Connect. Community.</p>
+</div>
 
-    <div class="card">
+<h2>Welcome back</h2>
+<p class="desc">Sign in to continue</p>
 
-        <h2>Welcome back</h2>
+<button class="google" id="googleButton">
+Continue with Google
+</button>
 
-        <p class="desc">
-            Sign in to continue to Connect
-        </p>
+<div class="divider">
+<span></span>
+OR
+<span></span>
+</div>
 
-        <button class="google" onclick="googleLogin()">
-            Continue with Google
-        </button>
+<label>Email</label>
+<input id="email" type="email" placeholder="Enter your email">
 
-        <div class="divider">
-            OR
-        </div>
+<label>Password</label>
+<input id="password" type="password" placeholder="Enter your password">
 
-        <label>Email</label>
+<button class="login" id="loginButton">
+Login
+</button>
 
-        <input
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-        >
+<button class="signup" id="signupButton">
+Create New Account
+</button>
 
-        <label>Password</label>
-
-        <input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-        >
-
-        <button class="primary" onclick="login()">
-            Login
-        </button>
-
-        <button class="secondary" onclick="signup()">
-            Create New Account
-        </button>
-
-        <div id="message"></div>
-
-    </div>
+<div id="message"></div>
 
 </div>
 
+<div id="home">
 
-<!-- APP AFTER LOGIN -->
+<div class="avatar" id="avatar">C</div>
 
-<div id="app">
+<h2>Welcome to Connect 🎉</h2>
 
-    <div class="app-card">
+<p class="userEmail" id="userEmail"></p>
 
-        <div class="avatar" id="avatar">
-            C
-        </div>
-
-        <h2>You're logged in! 🎉</h2>
-
-        <p class="email" id="userEmail"></p>
-
-        <button class="logout" onclick="logout()">
-            Logout
-        </button>
-
-    </div>
+<button class="logout" id="logoutButton">
+Logout
+</button>
 
 </div>
 
-</div><script>
+</div>
 
-/* ==========================
-   SUPABASE CONFIG
-========================== */
+<script>
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
@@ -294,223 +237,167 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
-const supabaseClient =
+const client =
 window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+SUPABASE_URL,
+SUPABASE_ANON_KEY
 );
 
+const message =
+document.getElementById("message");
 
-/* ==========================
-   GOOGLE LOGIN
-========================== */
 
-async function googleLogin(){
+document.getElementById("googleButton")
+.addEventListener("click", async function(){
 
-    setMessage("Opening Google...");
+message.innerText="Connecting to Google...";
 
-    const { error } =
-    await supabaseClient.auth.signInWithOAuth({
+const {error} =
+await client.auth.signInWithOAuth({
+provider:"google",
+options:{
+redirectTo:"https://princelast651-pixel.github.io/connect-/"
+}
+});
 
-        provider:"google",
+if(error){
+message.innerText=
+"Error: "+error.message;
+}
 
-        options:{
-            redirectTo:window.location.href
-        }
+});
 
-    });
 
-    if(error){
-        setMessage(error.message);
-    }
+document.getElementById("loginButton")
+.addEventListener("click", async function(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+if(!email || !password){
+message.innerText="Enter email and password.";
+return;
+}
+
+message.innerText="Logging in...";
+
+const {error} =
+await client.auth.signInWithPassword({
+email:email,
+password:password
+});
+
+if(error){
+message.innerText=error.message;
+return;
+}
+
+showHome();
+
+});
+
+
+document.getElementById("signupButton")
+.addEventListener("click", async function(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+if(!email || !password){
+message.innerText="Enter email and password.";
+return;
+}
+
+if(password.length<6){
+message.innerText="Password must be at least 6 characters.";
+return;
+}
+
+message.innerText="Creating account...";
+
+const {data,error} =
+await client.auth.signUp({
+email:email,
+password:password
+});
+
+if(error){
+message.innerText=error.message;
+return;
+}
+
+if(data.session){
+showHome();
+}else{
+message.innerText=
+"Account created. Check your email.";
+}
+
+});
+
+
+async function showHome(){
+
+const {data,error} =
+await client.auth.getUser();
+
+if(error || !data.user){
+return;
+}
+
+const user=data.user;
+
+document.getElementById("login")
+.style.display="none";
+
+document.getElementById("home")
+.style.display="block";
+
+document.getElementById("userEmail")
+.innerText=user.email || "User";
+
+document.getElementById("avatar")
+.innerText=
+(user.email || "U").charAt(0).toUpperCase();
+
 }
 
 
-/* ==========================
-   EMAIL LOGIN
-========================== */
+document.getElementById("logoutButton")
+.addEventListener("click", async function(){
 
-async function login(){
+await client.auth.signOut();
 
-    const email =
-    document.getElementById("email").value.trim();
+document.getElementById("home")
+.style.display="none";
 
-    const password =
-    document.getElementById("password").value;
+document.getElementById("login")
+.style.display="block";
 
-    if(!email || !password){
+message.innerText="";
 
-        setMessage(
-            "Please enter email and password."
-        );
+});
 
-        return;
-    }
 
-    setMessage("Logging in...");
+client.auth.onAuthStateChange(
+function(event,session){
 
-    const { error } =
-    await supabaseClient.auth.signInWithPassword({
-
-        email:email,
-        password:password
-
-    });
-
-    if(error){
-
-        setMessage(error.message);
-
-        return;
-    }
-
-    showApp();
+if(session){
+showHome();
 }
 
-
-/* ==========================
-   CREATE ACCOUNT
-========================== */
-
-async function signup(){
-
-    const email =
-    document.getElementById("email").value.trim();
-
-    const password =
-    document.getElementById("password").value;
-
-    if(!email || !password){
-
-        setMessage(
-            "Please enter email and password."
-        );
-
-        return;
-    }
-
-    if(password.length < 6){
-
-        setMessage(
-            "Password must contain at least 6 characters."
-        );
-
-        return;
-    }
-
-    setMessage("Creating account...");
-
-    const { data,error } =
-    await supabaseClient.auth.signUp({
-
-        email:email,
-        password:password
-
-    });
-
-    if(error){
-
-        setMessage(error.message);
-
-        return;
-    }
-
-    if(data.session){
-
-        showApp();
-
-    }else{
-
-        setMessage(
-            "Account created! Check your email to confirm your account."
-        );
-
-    }
-}
+});
 
 
-/* ==========================
-   SHOW APP
-========================== */
+showHome();
 
-async function showApp(){
+</script>
 
-    const { data } =
-    await supabaseClient.auth.getUser();
-
-    const user = data.user;
-
-    if(!user) return;
-
-    document.getElementById("login")
-    .style.display="none";
-
-    document.getElementById("app")
-    .style.display="block";
-
-    const email =
-    user.email || "User";
-
-    document.getElementById("userEmail")
-    .innerText=email;
-
-    document.getElementById("avatar")
-    .innerText=
-    email.charAt(0).toUpperCase();
-}
-
-
-/* ==========================
-   LOGOUT
-========================== */
-
-async function logout(){
-
-    await supabaseClient.auth.signOut();
-
-    document.getElementById("app")
-    .style.display="none";
-
-    document.getElementById("login")
-    .style.display="block";
-
-    setMessage("");
-}
-
-
-/* ==========================
-   MESSAGE
-========================== */
-
-function setMessage(text){
-
-    document.getElementById("message")
-    .innerText=text;
-}
-
-
-/* ==========================
-   AUTH STATE
-========================== */
-
-supabaseClient.auth.onAuthStateChange(
-    (event,session)=>{
-
-        if(session){
-
-            showApp();
-
-        }
-
-    }
-);
-
-
-/* ==========================
-   CHECK EXISTING LOGIN
-========================== */
-
-showApp();
-
-</script></body>
+</body>
 </html>
