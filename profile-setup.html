@@ -13,194 +13,173 @@
   box-sizing:border-box;
   margin:0;
   padding:0;
+  font-family:Inter,Arial,sans-serif;
 }
 
 body{
   min-height:100vh;
-  font-family:Arial,Helvetica,sans-serif;
-  background:
-    radial-gradient(circle at top,#18233d 0%,#0b1020 42%,#05070d 100%);
-  color:#fff;
+  background:linear-gradient(135deg,#eef2ff,#f8fafc);
   display:flex;
   justify-content:center;
   align-items:center;
   padding:20px;
+  color:#111827;
 }
 
 .card{
   width:100%;
   max-width:430px;
-  background:rgba(16,22,38,.92);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:26px;
-  padding:28px 22px;
-  box-shadow:0 25px 70px rgba(0,0,0,.45);
+  background:white;
+  border-radius:24px;
+  padding:30px 24px;
+  box-shadow:0 15px 45px rgba(0,0,0,.12);
 }
 
 .logo{
-  text-align:center;
-  margin-bottom:8px;
-}
-
-.logo-box{
-  display:inline-flex;
-  width:52px;
-  height:52px;
-  border-radius:17px;
+  width:62px;
+  height:62px;
+  border-radius:18px;
+  margin:0 auto 15px;
+  display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg,#5865f2,#8b5cf6);
-  box-shadow:0 10px 30px rgba(108,99,255,.3);
-}
-
-.logo-box svg{
-  width:34px;
-  height:34px;
+  font-size:32px;
+  font-weight:900;
+  color:white;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  box-shadow:0 10px 25px rgba(79,70,229,.3);
 }
 
 h1{
   text-align:center;
   font-size:25px;
-  margin-top:14px;
+  margin-bottom:7px;
 }
 
 .subtitle{
   text-align:center;
-  color:#9299aa;
+  color:#6b7280;
   font-size:14px;
-  line-height:1.5;
-  margin:8px 10px 25px;
+  margin-bottom:25px;
 }
 
-.avatar-section{
+.avatarBox{
   display:flex;
   flex-direction:column;
   align-items:center;
-  margin-bottom:24px;
+  margin-bottom:25px;
 }
 
 .avatar{
   width:105px;
   height:105px;
   border-radius:50%;
-  background:linear-gradient(135deg,#242d45,#151b2c);
-  border:3px solid rgba(255,255,255,.12);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  font-size:38px;
-  color:#8f98ad;
-  margin-bottom:12px;
-}
-
-.avatar img{
-  width:100%;
-  height:100%;
   object-fit:cover;
+  border:4px solid #eef2ff;
+  box-shadow:0 8px 25px rgba(0,0,0,.12);
+  margin-bottom:12px;
+  background:#eef2ff;
 }
 
-.upload-btn{
-  color:#8d83ff;
+.choose{
+  color:#4f46e5;
   font-size:14px;
   font-weight:700;
   cursor:pointer;
 }
 
-#avatarInput{
+input[type="file"]{
   display:none;
 }
 
 label{
   display:block;
-  font-size:13px;
-  color:#b5bccb;
-  margin:15px 0 7px;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:7px;
 }
 
-input{
+.input{
   width:100%;
-  height:49px;
+  border:1px solid #d1d5db;
   border-radius:13px;
-  border:1px solid rgba(255,255,255,.09);
-  background:#0b1020;
-  color:#fff;
-  padding:0 14px;
+  padding:13px 14px;
   outline:none;
   font-size:15px;
+  margin-bottom:17px;
+  transition:.2s;
 }
 
-input:focus{
-  border-color:#746aff;
-  box-shadow:0 0 0 3px rgba(116,106,255,.12);
-}
-
-.username-info{
-  color:#777f91;
-  font-size:11px;
-  margin-top:6px;
+.input:focus{
+  border-color:#6366f1;
+  box-shadow:0 0 0 3px rgba(99,102,241,.1);
 }
 
 .guidelines{
-  margin-top:20px;
-  padding:15px;
-  background:rgba(255,255,255,.035);
-  border-radius:15px;
-  border:1px solid rgba(255,255,255,.06);
-}
-
-.check-row{
   display:flex;
-  gap:10px;
   align-items:flex-start;
+  gap:9px;
+  font-size:13px;
+  color:#4b5563;
+  margin:4px 0 20px;
+  line-height:1.4;
 }
 
-.check-row input{
-  width:18px;
-  height:18px;
-  margin-top:2px;
-  accent-color:#756cff;
-}
-
-.check-text{
-  font-size:12px;
-  color:#aeb5c4;
-  line-height:1.5;
+.guidelines input{
+  margin-top:3px;
+  width:16px;
+  height:16px;
 }
 
 button{
   width:100%;
-  height:51px;
   border:0;
   border-radius:14px;
-  margin-top:22px;
-  background:linear-gradient(135deg,#6c63ff,#887eff);
-  color:#fff;
+  padding:14px;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white;
   font-size:15px;
   font-weight:800;
   cursor:pointer;
-  box-shadow:0 12px 30px rgba(108,99,255,.2);
+  transition:.2s;
+}
+
+button:active{
+  transform:scale(.98);
 }
 
 button:disabled{
-  opacity:.55;
+  opacity:.6;
   cursor:not-allowed;
 }
 
-.status{
-  text-align:center;
+.message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:12px;
   font-size:13px;
-  margin-top:14px;
-  min-height:18px;
-  color:#9299aa;
+  line-height:1.4;
+  word-break:break-word;
 }
 
 .error{
-  color:#ff7777;
+  display:block;
+  background:#fef2f2;
+  color:#b91c1c;
 }
 
 .success{
-  color:#70e0a0;
+  display:block;
+  background:#ecfdf5;
+  color:#047857;
+}
+
+.footer{
+  text-align:center;
+  color:#9ca3af;
+  font-size:11px;
+  margin-top:22px;
 }
 </style>
 </head>
@@ -209,120 +188,79 @@ button:disabled{
 
 <div class="card">
 
-  <div class="logo">
-    <div class="logo-box">
+  <div class="logo">C</div>
 
-      <svg
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+  <h1>Set Up Your Profile</h1>
+  <p class="subtitle">Complete your profile to continue to Connect</p>
 
-        <path
-          d="M72 31C66 24 57 20 47 20C30 20 17 33 17 50C17 67 30 80 47 80C57 80 66 76 72 69"
-          stroke="white"
-          stroke-width="11"
-          stroke-linecap="round"
-        />
+  <div class="avatarBox">
 
-        <path
-          d="M55 50H83"
-          stroke="white"
-          stroke-width="11"
-          stroke-linecap="round"
-        />
+    <img
+      id="avatarPreview"
+      class="avatar"
+      alt="Profile picture"
+    >
 
-        <path
-          d="M76 43L83 50L76 57"
-          stroke="white"
-          stroke-width="8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-
-      </svg>
-
-    </div>
-  </div>
-
-  <h1>Set up your profile</h1>
-
-  <p class="subtitle">
-    Complete your profile before entering Connect.
-  </p>
-
-  <div class="avatar-section">
-
-    <div class="avatar" id="avatarPreview">
-      👤
-    </div>
-
-    <label for="avatarInput" class="upload-btn">
+    <label for="avatarInput" class="choose">
       Choose profile picture
     </label>
 
     <input
-      type="file"
       id="avatarInput"
+      type="file"
       accept="image/*"
     >
 
   </div>
 
   <label for="username">Username</label>
-
   <input
-    type="text"
     id="username"
-    placeholder="Choose a username"
-    maxlength="30"
+    class="input"
+    type="text"
+    placeholder="Enter username"
+    maxlength="20"
     autocomplete="off"
   >
 
-  <div class="username-info">
-    3–30 characters • letters, numbers and underscore only
-  </div>
-
-  <label for="dob">Date of birth</label>
-
+  <label for="dob">Date of Birth</label>
   <input
-    type="date"
     id="dob"
+    class="input"
+    type="date"
   >
 
   <div class="guidelines">
+    <input id="guidelines" type="checkbox">
 
-    <div class="check-row">
-
-      <input
-        type="checkbox"
-        id="guidelines"
-      >
-
-      <div class="check-text">
-        I agree to follow the Connect Guidelines and use Connect respectfully.
-      </div>
-
-    </div>
-
+    <span>
+      I agree to follow Connect's community guidelines and use the platform responsibly.
+    </span>
   </div>
 
-  <button id="continueBtn">
+  <button id="completeBtn">
     Complete Profile
   </button>
 
-  <div class="status" id="status"></div>
+  <div id="message" class="message"></div>
+
+  <div class="footer">
+    Connect • Your space, your people
+  </div>
 
 </div>
 
-
 <script>
+
+/* ================================
+   SUPABASE
+================================ */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 supabase.createClient(
@@ -330,6 +268,10 @@ supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
+
+/* ================================
+   ELEMENTS
+================================ */
 
 const avatarInput =
 document.getElementById("avatarInput");
@@ -346,361 +288,321 @@ document.getElementById("dob");
 const guidelinesInput =
 document.getElementById("guidelines");
 
-const continueBtn =
-document.getElementById("continueBtn");
+const completeBtn =
+document.getElementById("completeBtn");
 
-const statusText =
-document.getElementById("status");
+const messageBox =
+document.getElementById("message");
+
+
+/* ================================
+   DEFAULT AVATAR
+================================ */
+
+const defaultAvatar =
+"data:image/svg+xml;charset=UTF-8," +
+encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="200"
+     height="200"
+     viewBox="0 0 200 200">
+
+  <rect width="200" height="200"
+        rx="100"
+        fill="#eef2ff"/>
+
+  <circle cx="100" cy="78" r="38"
+          fill="#6366f1"/>
+
+  <path d="M35 180
+           C42 133 70 118 100 118
+           C130 118 158 133 165 180"
+        fill="#6366f1"/>
+</svg>
+`);
+
+avatarPreview.src = defaultAvatar;
+
+
+/* ================================
+   STATE
+================================ */
 
 let selectedAvatar = null;
-let currentUser = null;
 
 
-/* TODAY */
+/* ================================
+   MESSAGE
+================================ */
 
-const today =
-new Date().toISOString().split("T")[0];
+function showMessage(text, type="error"){
 
-dobInput.max = today;
+  messageBox.textContent = text;
 
-
-/* STATUS */
-
-function setStatus(message,type=""){
-
-  statusText.textContent = message;
-
-  statusText.className =
-    "status " + type;
-
+  messageBox.className =
+    "message " + type;
 }
 
 
-/* CHECK USER */
-
-async function checkUser(){
-
-  try{
-
-    const {
-      data,
-      error
-    } =
-    await supabaseClient.auth.getSession();
-
-
-    if(error){
-
-      console.error(
-        "Session error:",
-        error
-      );
-
-      window.location.href =
-        "index.html";
-
-      return null;
-    }
-
-
-    if(!data.session){
-
-      window.location.href =
-        "index.html";
-
-      return null;
-    }
-
-
-    return data.session.user;
-
-  }catch(error){
-
-    console.error(error);
-
-    window.location.href =
-      "index.html";
-
-    return null;
-
-  }
-
-}
-
-
-/* AVATAR PREVIEW */
+/* ================================
+   AVATAR SELECT
+================================ */
 
 avatarInput.addEventListener(
   "change",
   function(){
 
-    const file =
-      this.files[0];
+    const file = this.files?.[0];
 
     if(!file) return;
 
-
-    if(file.size > 5 * 1024 * 1024){
-
-      setStatus(
-        "Profile picture must be under 5 MB.",
-        "error"
-      );
-
+    if(!file.type.startsWith("image/")){
+      showMessage("Please select an image file.");
       this.value = "";
-
       return;
     }
 
+    if(file.size > 5 * 1024 * 1024){
+      showMessage("Profile picture must be smaller than 5 MB.");
+      this.value = "";
+      return;
+    }
 
     selectedAvatar = file;
 
+    const reader = new FileReader();
 
-    const reader =
-      new FileReader();
-
-
-    reader.onload =
-      function(e){
-
-        avatarPreview.innerHTML =
-          `<img src="${e.target.result}" alt="Profile picture">`;
-
-      };
-
+    reader.onload = function(e){
+      avatarPreview.src = e.target.result;
+    };
 
     reader.readAsDataURL(file);
+
+    messageBox.className = "message";
 
   }
 );
 
 
-/* COMPLETE PROFILE */
+/* ================================
+   COMPLETE PROFILE
+================================ */
 
-continueBtn.addEventListener(
+completeBtn.addEventListener(
   "click",
   async function(){
 
-    if(!currentUser){
+    completeBtn.disabled = true;
+    completeBtn.textContent = "Saving...";
 
-      setStatus(
-        "Session expired. Please login again.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    const username =
-      usernameInput.value.trim();
-
-    const dob =
-      dobInput.value;
-
-
-    /* USERNAME */
-
-    if(!/^[A-Za-z0-9_]{3,30}$/.test(username)){
-
-      setStatus(
-        "Username must be 3–30 characters using letters, numbers or underscore.",
-        "error"
-      );
-
-      usernameInput.focus();
-
-      return;
-    }
-
-
-    /* DOB */
-
-    if(!dob){
-
-      setStatus(
-        "Please enter your date of birth.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    if(dob > today){
-
-      setStatus(
-        "Please enter a valid date of birth.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    /* GUIDELINES */
-
-    if(!guidelinesInput.checked){
-
-      setStatus(
-        "Please accept the Connect Guidelines.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    continueBtn.disabled = true;
-
-    setStatus(
-      "Checking username..."
-    );
-
+    messageBox.className = "message";
 
     try{
 
-      /*
-        IMPORTANT:
-        Use limit(1) instead of maybeSingle().
-        This prevents an error if duplicate
-        usernames already exist in the table.
-      */
+      /* SESSION */
 
       const {
-        data: existingUsers,
-        error: usernameError
-      } =
-      await supabaseClient
+        data:sessionData,
+        error:sessionError
+      } = await supabaseClient.auth.getSession();
+
+      if(sessionError){
+        throw new Error(
+          "Session error: " + sessionError.message
+        );
+      }
+
+      const session =
+        sessionData?.session;
+
+      if(!session){
+        throw new Error(
+          "You are not logged in. Please login again."
+        );
+      }
+
+      const currentUser =
+        session.user;
+
+
+      /* USERNAME */
+
+      const username =
+        usernameInput.value.trim();
+
+      if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)){
+
+        throw new Error(
+          "Username must be 3-20 characters and contain only letters, numbers or _. "
+        );
+
+      }
+
+
+      /* DOB */
+
+      const dob =
+        dobInput.value;
+
+      if(!dob){
+        throw new Error(
+          "Please select your date of birth."
+        );
+      }
+
+
+      /* GUIDELINES */
+
+      if(!guidelinesInput.checked){
+
+        throw new Error(
+          "Please accept the community guidelines."
+        );
+
+      }
+
+
+      /* ================================
+         CHECK USERNAME
+      ================================= */
+
+      const {
+        data:existingUsers,
+        error:usernameError
+      } = await supabaseClient
         .from("profiles")
         .select("id,username")
-        .ilike("username", username)
-        .neq("id", currentUser.id)
+        .ilike("username",username)
+        .neq("id",currentUser.id)
         .limit(1);
-
 
       if(usernameError){
 
-        console.error(
-          "Username check error:",
-          usernameError
+        throw new Error(
+          "Username check failed: " +
+          usernameError.message
         );
+
+      }
+
+      if(existingUsers?.length){
 
         throw new Error(
-          usernameError.message ||
-          "Could not check username."
+          "This username is already taken."
         );
 
       }
 
 
-      if(
-        existingUsers &&
-        existingUsers.length > 0
-      ){
-
-        setStatus(
-          "That username is already taken.",
-          "error"
-        );
-
-        continueBtn.disabled = false;
-
-        return;
-      }
-
+      /* ================================
+         AVATAR
+      ================================= */
 
       let avatarUrl = null;
 
-
-      /* AVATAR UPLOAD */
-
       if(selectedAvatar){
-
-        setStatus(
-          "Uploading profile picture..."
-        );
-
 
         const extension =
           selectedAvatar.name
             .split(".")
             .pop()
-            .toLowerCase();
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g,"");
 
+        const safeExtension =
+          ["jpg","jpeg","png","webp","gif"]
+            .includes(extension)
+            ? extension
+            : "jpg";
+
+        /*
+          Unique file path avoids CDN/cache problems.
+        */
 
         const filePath =
-          `${currentUser.id}/avatar.${extension}`;
+          `${currentUser.id}/avatar-${Date.now()}.${safeExtension}`;
 
 
         const {
-          error: uploadError
-        } =
-        await supabaseClient
+          error:uploadError
+        } = await supabaseClient
           .storage
           .from("avatars")
           .upload(
             filePath,
             selectedAvatar,
             {
-              upsert:true,
-              contentType:selectedAvatar.type
+              cacheControl:"3600",
+              upsert:false,
+              contentType:
+                selectedAvatar.type || "image/jpeg"
             }
           );
 
 
         if(uploadError){
 
-          console.error(
-            "Avatar upload error:",
-            uploadError
-          );
-
           throw new Error(
-            uploadError.message ||
-            "Profile picture upload failed."
+            "Avatar upload failed: " +
+            uploadError.message
           );
 
         }
 
 
+        /*
+          Get public URL
+        */
+
         const {
           data:publicData
         } =
-        supabaseClient
-          .storage
-          .from("avatars")
-          .getPublicUrl(
-            filePath
-          );
+          supabaseClient
+            .storage
+            .from("avatars")
+            .getPublicUrl(filePath);
 
 
         avatarUrl =
-          publicData.publicUrl;
+          publicData?.publicUrl || null;
+
+
+        if(!avatarUrl){
+
+          throw new Error(
+            "Avatar URL could not be created."
+          );
+
+        }
 
       }
 
 
-      /* SAVE PROFILE */
+      /* ================================
+         SAVE PROFILE
+      ================================= */
 
-      setStatus(
-        "Saving profile..."
-      );
+      const profileData = {
+
+        id:currentUser.id,
+
+        username:username,
+
+        date_of_birth:dob,
+
+        guidelines_accepted:true,
+
+        avatar_url:avatarUrl
+
+      };
 
 
       const {
         error:profileError
-      } =
-      await supabaseClient
+      } = await supabaseClient
         .from("profiles")
         .upsert(
-          {
-            id:currentUser.id,
-            username:username,
-            date_of_birth:dob,
-            guidelines_accepted:true,
-            avatar_url:avatarUrl
-          },
+          profileData,
           {
             onConflict:"id"
           }
@@ -709,35 +611,33 @@ continueBtn.addEventListener(
 
       if(profileError){
 
-        console.error(
-          "Profile save error:",
-          profileError
-        );
-
         throw new Error(
-          profileError.message ||
-          "Could not save profile."
+          "Profile save failed: " +
+          profileError.message
         );
 
       }
 
 
-      setStatus(
-        "Profile completed! Opening Connect...",
+      /* ================================
+         SUCCESS
+      ================================= */
+
+      showMessage(
+        "Profile created successfully! Opening Connect...",
         "success"
       );
 
+      completeBtn.textContent =
+        "Profile Created ✓";
 
-      setTimeout(
-        function(){
 
-          window.location.replace(
-            "home.html"
-          );
+      setTimeout(function(){
 
-        },
-        800
-      );
+        window.location.href =
+          "home.html";
+
+      },700);
 
 
     }catch(error){
@@ -747,28 +647,19 @@ continueBtn.addEventListener(
         error
       );
 
-      setStatus(
-        error.message ||
-        "Something went wrong. Please try again.",
-        "error"
+      showMessage(
+        error?.message ||
+        "Something went wrong. Please try again."
       );
 
-      continueBtn.disabled = false;
+      completeBtn.disabled = false;
+      completeBtn.textContent =
+        "Complete Profile";
 
     }
 
   }
 );
-
-
-/* START */
-
-(async function(){
-
-  currentUser =
-    await checkUser();
-
-})();
 
 </script>
 
