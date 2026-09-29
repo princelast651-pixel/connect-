@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile • Connect</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+body{
+  background:#111;
+  color:#fff;
+  min-height:100vh;
+  padding-bottom:90px;
+}
+
+.app{
+  max-width:520px;
+  margin:auto;
+  padding:20px 16px;
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:24px;
+}
+
+.title{
+  font-size:25px;
+  font-weight:800;
+}
+
+.settings{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid #292929;
+  background:#1b1b1b;
+  color:#fff;
+  font-size:19px;
+}
+
+.profileCard{
+  background:#1a1a1a;
+  border:1px solid #292929;
+  border-radius:24px;
+  padding:24px 18px;
+  text-align:center;
+}
+
+.avatarWrap{
+  position:relative;
+  width:96px;
+  height:96px;
+  margin:0 auto 15px;
+}
+
+.avatar{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#292929;
+  border:3px solid #333;
+}
+
+.online{
+  position:absolute;
+  right:4px;
+  bottom:4px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#5cff8a;
+  border:3px solid #1a1a1a;
+}
+
+.name{
+  font-size:22px;
+  font-weight:800;
+}
+
+.connectId{
+  color:#777;
+  font-size:11px;
+  margin-top:5px;
+  word-break:break-all;
+}
+
+.bio{
+  color:#aaa;
+  font-size:13px;
+  margin:12px auto 0;
+  max-width:360px;
+  line-height:1.5;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:13px;
+  padding:7px 12px;
+  border-radius:20px;
+  background:#242424;
+  color:#ddd;
+  font-size:12px;
+}
+
+.statusDot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#5cff8a;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+
+.primary,
+.secondary{
+  flex:1;
+  height:45px;
+  border-radius:14px;
+  font-weight:750;
+  font-size:13px;
+}
+
+.primary{
+  background:#fff;
+  color:#111;
+  border:0;
+}
+
+.secondary{
+  background:#242424;
+  color:#fff;
+  border:1px solid #333;
+}
+
+.section{
+  margin-top:24px;
+}
+
+.sectionTitle{
+  font-size:15px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.infoCard{
+  background:#1a1a1a;
+  border:1px solid #292929;
+  border-radius:18px;
+  padding:15px;
+}
+
+.infoRow{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:11px 0;
+  border-bottom:1px solid #282828;
+}
+
+.infoRow:last-child{
+  border-bottom:0;
+}
+
+.label{
+  color:#777;
+  font-size:12px;
+}
+
+.value{
+  color:#ddd;
+  font-size:12px;
+  text-align:right;
+  max-width:65%;
+  word-break:break-all;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.stat{
+  background:#1a1a1a;
+  border:1px solid #292929;
+  border-radius:18px;
+  padding:16px 8px;
+  text-align:center;
+}
+
+.statNumber{
+  font-size:20px;
+  font-weight:800;
+}
+
+.statLabel{
+  color:#777;
+  font-size:11px;
+  margin-top:4px;
+}
+
+.editBox{
+  display:none;
+  background:#1a1a1a;
+  border:1px solid #292929;
+  border-radius:20px;
+  padding:16px;
+  margin-top:18px;
+}
+
+.editBox.show{
+  display:block;
+}
+
+.inputGroup{
+  margin-bottom:13px;
+}
+
+.inputGroup label{
+  display:block;
+  color:#888;
+  font-size:11px;
+  margin-bottom:7px;
+}
+
+.inputGroup input,
+.inputGroup textarea{
+  width:100%;
+  background:#111;
+  border:1px solid #303030;
+  color:#fff;
+  outline:none;
+  border-radius:13px;
+  padding:12px;
+  font-size:13px;
+}
+
+.inputGroup textarea{
+  min-height:80px;
+  resize:none;
+}
+
+.saveBtn{
+  width:100%;
+  height:45px;
+  border:0;
+  border-radius:13px;
+  background:#fff;
+  color:#111;
+  font-weight:800;
+}
+
+.logout{
+  width:100%;
+  height:46px;
+  margin-top:25px;
+  border-radius:14px;
+  background:#1a1a1a;
+  border:1px solid #333;
+  color:#fff;
+  font-weight:750;
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:76px;
+  background:rgba(18,18,18,.97);
+  border-top:1px solid #292929;
+  display:flex;
+  justify-content:center;
+  z-index:20;
+}
+
+.nav{
+  width:100%;
+  max-width:520px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+
+.navItem{
+  color:#777;
+  text-align:center;
+  font-size:11px;
+  cursor:pointer;
+}
+
+.navIcon{
+  font-size:21px;
+  margin-bottom:3px;
+}
+
+.navItem.active{
+  color:#fff;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%) translateY(15px);
+  background:#fff;
+  color:#111;
+  padding:11px 17px;
+  border-radius:13px;
+  font-size:13px;
+  font-weight:650;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:50;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="top">
+    <div class="title">Profile</div>
+    <button class="settings" onclick="toggleEdit()">⚙</button>
+  </div>
+
+  <div class="profileCard">
+
+    <div class="avatarWrap">
+      <img id="avatar" class="avatar" src="" alt="">
+      <div class="online"></div>
+    </div>
+
+    <div class="name" id="profileName">Loading...</div>
+
+    <div class="connectId" id="connectId">Loading...</div>
+
+    <div class="bio" id="profileBio">
+      No bio yet.
+    </div>
+
+    <div class="status">
+      <span class="statusDot"></span>
+      <span id="profileStatus">Online</span>
+    </div>
+
+    <div class="actions">
+      <button class="primary" onclick="toggleEdit()">
+        Edit Profile
+      </button>
+
+      <button class="secondary" onclick="copyId()">
+        Copy ID
+      </button>
+    </div>
+
+  </div>
+
+  <div class="editBox" id="editBox">
+
+    <div class="inputGroup">
+      <label>USERNAME</label>
+      <input id="editUsername" maxlength="30">
+    </div>
+
+    <div class="inputGroup">
+      <label>BIO</label>
+      <textarea id="editBio" maxlength="160"
+        placeholder="Tell something about yourself..."></textarea>
+    </div>
+
+    <div class="inputGroup">
+      <label>AVATAR URL</label>
+      <input id="editAvatar"
+        placeholder="https://example.com/avatar.jpg">
+    </div>
+
+    <button class="saveBtn" onclick="saveProfile()">
+      Save Changes
+    </button>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Profile Info</div>
+
+    <div class="infoCard">
+
+      <div class="infoRow">
+        <div class="label">Username</div>
+        <div class="value" id="infoUsername">—</div>
+      </div>
+
+      <div class="infoRow">
+        <div class="label">Connect ID</div>
+        <div class="value" id="infoId">—</div>
+      </div>
+
+      <div class="infoRow">
+        <div class="label">Account</div>
+        <div class="value" id="infoEmail">—</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Connect Stats</div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="statNumber" id="friendCount">0</div>
+        <div class="statLabel">Friends</div>
+      </div>
+
+      <div class="stat">
+        <div class="statNumber" id="roomCount">0</div>
+        <div class="statLabel">Rooms</div>
+      </div>
+
+      <div class="stat">
+        <div class="statNumber">0</div>
+        <div class="statLabel">Games</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <button class="logout" onclick="logout()">
+    Log Out
+  </button>
+
+</div>
+
+<div class="bottom">
+
+  <div class="nav">
+
+    <div class="navItem" onclick="go('home.html')">
+      <div class="navIcon">⌂</div>
+      Home
+    </div>
+
+    <div class="navItem" onclick="go('entertainment.html')">
+      <div class="navIcon">🚀</div>
+      Entertainment
+    </div>
+
+    <div class="navItem" onclick="go('chat.html')">
+      <div class="navIcon">▢</div>
+      Chat
+    </div>
+
+    <div class="navItem active">
+      <div class="navIcon">●</div>
+      Profile
+    </div>
+
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const SUPABASE_URL =
+"https://riversitunmzvuprecbt.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+const supabaseClient =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true
+    }
+  }
+);
+
+let currentUser = null;
+let currentProfile = null;
+
+async function start(){
+
+  const {data:{session}} =
+    await supabaseClient.auth.getSession();
+
+  if(!session){
+    location.href="index.html";
+    return;
+  }
+
+  currentUser=session.user;
+
+  await loadProfile();
+  await loadStats();
+}
+
+async function loadProfile(){
+
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id",currentUser.id)
+    .maybeSingle();
+
+  if(error){
+    console.error(error);
+    toast("Could not load profile");
+    return;
+  }
+
+  currentProfile=data || {};
+
+  const username =
+    currentProfile.username || "Connect User";
+
+  const bio =
+    currentProfile.bio || "No bio yet.";
+
+  const avatar =
+    currentProfile.avatar_url || "";
+
+  document.getElementById("profileName")
+    .textContent=username;
+
+  document.getElementById("profileBio")
+    .textContent=bio;
+
+  document.getElementById("connectId")
+    .textContent=currentUser.id;
+
+  document.getElementById("infoUsername")
+    .textContent=username;
+
+  document.getElementById("infoId")
+    .textContent=currentUser.id;
+
+  document.getElementById("infoEmail")
+    .textContent=currentUser.email || "—";
+
+  document.getElementById("editUsername")
+    .value=currentProfile.username || "";
+
+  document.getElementById("editBio")
+    .value=currentProfile.bio || "";
+
+  document.getElementById("editAvatar")
+    .value=currentProfile.avatar_url || "";
+
+  const img=document.getElementById("avatar");
+
+  if(avatar){
+    img.src=avatar;
+    img.style.display="block";
+  }else{
+    img.style.display="none";
+  }
+}
+
+async function loadStats(){
+
+  const {count:friends,error:friendError} =
+    await supabaseClient
+      .from("friends")
+      .select("*",{count:"exact",head:true})
+      .eq("status","accepted")
+      .or(
+        `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
+      );
+
+  if(!friendError){
+    document.getElementById("friendCount")
+      .textContent=Number(friends || 0);
+  }
+
+  const {count:rooms,error:roomError} =
+    await supabaseClient
+      .from("rooms")
+      .select("*",{count:"exact",head:true})
+      .eq("owner_id",currentUser.id);
+
+  if(!roomError){
+    document.getElementById("roomCount")
+      .textContent=Number(rooms || 0);
+  }
+}
+
+function toggleEdit(){
+
+  const box=document.getElementById("editBox");
+
+  box.classList.toggle("show");
+
+  if(box.classList.contains("show")){
+    box.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+  }
+}
+
+async function saveProfile(){
+
+  const username=
+    document.getElementById("editUsername")
+      .value.trim();
+
+  const bio=
+    document.getElementById("editBio")
+      .value.trim();
+
+  const avatar=
+    document.getElementById("editAvatar")
+      .value.trim();
+
+  if(!username){
+    toast("Username required");
+    return;
+  }
+
+  if(username.length<3){
+    toast("Username too short");
+    return;
+  }
+
+  const {data:existing,error:checkError}=
+    await supabaseClient
+      .from("profiles")
+      .select("id,username")
+      .ilike("username",username)
+      .neq("id",currentUser.id)
+      .limit(1);
+
+  if(checkError){
+
+    console.error(checkError);
+    toast("Could not check username");
+    return;
+  }
+
+  if(existing && existing.length>0){
+
+    toast("Username already taken");
+    return;
+  }
+
+  const {error}=await supabaseClient
+    .from("profiles")
+    .upsert({
+      id:currentUser.id,
+      username:username,
+      bio:bio,
+      avatar_url:avatar,
+      guidelines_accepted:true
+    },{
+      onConflict:"id"
+    });
+
+  if(error){
+
+    console.error(error);
+    toast("Could not save profile");
+    return;
+  }
+
+  toast("Profile updated");
+
+  await loadProfile();
+
+  document.getElementById("editBox")
+    .classList.remove("show");
+}
+
+async function copyId(){
+
+  try{
+
+    await navigator.clipboard
+      .writeText(currentUser.id);
+
+    toast("Connect ID copied");
+
+  }catch(e){
+
+    toast("Copy failed");
+  }
+}
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  location.href="index.html";
+}
+
+function go(page){
+  location.href=page;
+}
+
+function toast(message){
+
+  const el=document.getElementById("toast");
+
+  el.textContent=message;
+  el.classList.add("show");
+
+  setTimeout(()=>{
+    el.classList.remove("show");
+  },1800);
+}
+
+start();
+
+</script>
+
+</body>
+</html>
