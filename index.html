@@ -27,44 +27,34 @@ body{
   overflow:hidden;
 }
 
-
 /* ================= SPLASH ================= */
 
 #splash{
   position:fixed;
   inset:0;
-
   background:#0f1115;
-
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-
   z-index:100;
 }
 
 .logo{
   width:75px;
   height:75px;
-
   border-radius:23px;
-
   background:#5865f2;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   font-size:34px;
   font-weight:bold;
-
   box-shadow:0 12px 40px rgba(88,101,242,.25);
 }
 
 .logo-text{
   margin-top:14px;
-
   font-size:25px;
   font-weight:bold;
   letter-spacing:2px;
@@ -73,18 +63,14 @@ body{
 .loading{
   display:flex;
   gap:5px;
-
   margin-top:22px;
 }
 
 .loading span{
   width:7px;
   height:7px;
-
   background:#737bff;
-
   border-radius:50%;
-
   animation:load 1s infinite;
 }
 
@@ -97,7 +83,6 @@ body{
 }
 
 @keyframes load{
-
   0%,100%{
     opacity:.25;
     transform:translateY(0);
@@ -107,20 +92,15 @@ body{
     opacity:1;
     transform:translateY(-4px);
   }
-
 }
-
 
 /* ================= AUTH ================= */
 
 .auth-container{
   width:100%;
   max-width:430px;
-
   padding:20px;
-
   opacity:0;
-
   transition:.4s;
 }
 
@@ -130,31 +110,22 @@ body{
 
 .auth-card{
   background:#171a20;
-
   border:1px solid #292e38;
-
   border-radius:20px;
-
   padding:30px;
-
   box-shadow:0 20px 60px rgba(0,0,0,.35);
 }
 
 .auth-logo{
   width:52px;
   height:52px;
-
   border-radius:16px;
-
   background:#5865f2;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   font-size:23px;
   font-weight:bold;
-
   margin-bottom:20px;
 }
 
@@ -165,38 +136,26 @@ h1{
 
 .subtitle{
   color:#858d9a;
-
   font-size:13px;
-
   line-height:1.5;
-
   margin-bottom:25px;
 }
-
 
 /* ================= GOOGLE ================= */
 
 .google-btn{
   width:100%;
   height:48px;
-
   border:1px solid #303641;
-
   border-radius:10px;
-
   background:#20242b;
-
   color:white;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   gap:10px;
-
   font-size:14px;
   font-weight:bold;
-
   cursor:pointer;
 }
 
@@ -204,84 +163,62 @@ h1{
   background:#272c34;
 }
 
+.google-btn:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}
+
 .google-icon{
   width:19px;
   height:19px;
-
   background:white;
-
   color:#4285f4;
-
   border-radius:50%;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   font-weight:bold;
 }
-
 
 /* ================= DIVIDER ================= */
 
 .divider{
   display:flex;
   align-items:center;
-
   gap:10px;
-
   margin:20px 0;
-
   color:#68717f;
-
   font-size:11px;
 }
 
 .divider::before,
 .divider::after{
   content:"";
-
   flex:1;
-
   height:1px;
-
   background:#2b3039;
 }
-
 
 /* ================= INPUT ================= */
 
 label{
   display:block;
-
   color:#c7ccd5;
-
   font-size:11px;
-
   font-weight:bold;
-
   margin-bottom:8px;
 }
 
 input{
   width:100%;
-
   height:48px;
-
   background:#101319;
-
   border:1px solid #303641;
-
   border-radius:10px;
-
   outline:none;
-
   color:white;
-
   padding:0 14px;
-
   font-size:14px;
-
   margin-bottom:15px;
 }
 
@@ -289,28 +226,18 @@ input:focus{
   border-color:#5865f2;
 }
 
-
 /* ================= MAIN BUTTON ================= */
 
 .auth-btn{
   width:100%;
-
   height:48px;
-
   border:0;
-
   border-radius:10px;
-
   background:#5865f2;
-
   color:white;
-
   font-size:14px;
-
   font-weight:bold;
-
   cursor:pointer;
-
   margin-top:3px;
 }
 
@@ -320,67 +247,46 @@ input:focus{
 
 .auth-btn:disabled{
   opacity:.6;
-
   cursor:not-allowed;
 }
-
 
 /* ================= SWITCH ================= */
 
 .switch{
   text-align:center;
-
   margin-top:20px;
-
   color:#858d99;
-
   font-size:12px;
 }
 
 .switch span{
   color:#7280ff;
-
   cursor:pointer;
-
   font-weight:bold;
 }
-
 
 /* ================= ERROR ================= */
 
 .error{
   display:none;
-
   background:#351d22;
-
   border:1px solid #633038;
-
   color:#ff929e;
-
   padding:11px;
-
   border-radius:9px;
-
   font-size:12px;
-
   margin-bottom:15px;
 }
-
 
 /* ================= SUCCESS ================= */
 
 .success{
   display:none;
-
   color:#63d995;
-
   text-align:center;
-
   font-size:12px;
-
   margin-top:12px;
 }
-
 
 /* ================= MOBILE ================= */
 
@@ -388,7 +294,6 @@ input:focus{
 
   .auth-card{
     padding:24px;
-
     border-radius:17px;
   }
 
@@ -401,17 +306,13 @@ input:focus{
 </style>
 </head>
 
-
 <body>
-
 
 <!-- ================= SPLASH ================= -->
 
 <div id="splash">
 
-  <div class="logo">
-    C
-  </div>
+  <div class="logo">C</div>
 
   <div class="logo-text">
     CONNECT
@@ -424,7 +325,6 @@ input:focus{
   </div>
 
 </div>
-
 
 
 <!-- ================= AUTH ================= -->
@@ -445,9 +345,7 @@ input:focus{
       Connect with people, communities and friends.
     </div>
 
-
     <div class="error" id="error"></div>
-
 
     <!-- GOOGLE -->
 
@@ -455,26 +353,22 @@ input:focus{
       class="google-btn"
       id="googleBtn"
     >
-
       <div class="google-icon">
         G
       </div>
 
-      Continue with Google
-
+      <span id="googleText">
+        Continue with Google
+      </span>
     </button>
-
 
     <div class="divider">
       OR
     </div>
 
-
     <!-- EMAIL -->
 
-    <label>
-      EMAIL
-    </label>
+    <label>EMAIL</label>
 
     <input
       id="email"
@@ -483,12 +377,9 @@ input:focus{
       autocomplete="email"
     >
 
-
     <!-- PASSWORD -->
 
-    <label>
-      PASSWORD
-    </label>
+    <label>PASSWORD</label>
 
     <input
       id="password"
@@ -497,7 +388,6 @@ input:focus{
       autocomplete="current-password"
     >
 
-
     <button
       class="auth-btn"
       id="authBtn"
@@ -505,14 +395,12 @@ input:focus{
       Login
     </button>
 
-
     <div
       class="success"
       id="success"
     >
       Account created. Setting up your profile...
     </div>
-
 
     <div class="switch">
 
@@ -529,7 +417,6 @@ input:focus{
   </div>
 
 </div>
-
 
 
 <script>
@@ -575,6 +462,9 @@ document.getElementById("authBtn");
 const googleBtn =
 document.getElementById("googleBtn");
 
+const googleText =
+document.getElementById("googleText");
+
 const switchBtn =
 document.getElementById("switchBtn");
 
@@ -589,17 +479,31 @@ document.getElementById("success");
 
 
 let isSignup = false;
+let redirecting = false;
 
 
 /* ================= ERROR ================= */
 
 function showError(message){
 
-  errorBox.textContent =
-    message;
+  errorBox.textContent = message;
 
-  errorBox.style.display =
-    "block";
+  errorBox.style.display = "block";
+
+}
+
+
+/* ================= REDIRECT ================= */
+
+function redirectTo(page){
+
+  if(redirecting){
+    return;
+  }
+
+  redirecting = true;
+
+  window.location.replace(page);
 
 }
 
@@ -608,67 +512,96 @@ function showError(message){
 
 async function checkProfileAndRedirect(session){
 
-  if(!session){
+  if(!session || !session.user){
     return;
   }
 
+  if(redirecting){
+    return;
+  }
 
   const userId =
     session.user.id;
 
 
-  const {
-    data:profile,
-    error
-  } =
-  await supabaseClient
-    .from("profiles")
-    .select("id, username")
-    .eq("id",userId)
-    .maybeSingle();
+  const result =
+    await supabaseClient
+      .from("profiles")
+      .select("id, username")
+      .eq("id", userId)
+      .maybeSingle();
 
 
-  if(error){
+  if(result.error){
 
-    console.log(
+    console.error(
       "Profile check error:",
-      error
+      result.error
     );
+
+    /*
+      If the profile cannot be found because
+      there is no profile row yet, continue
+      to profile setup.
+    */
+
+    redirectTo("profile-setup.html");
 
     return;
   }
 
 
-  if(profile && profile.username){
+  if(result.data && result.data.username){
 
-    window.location.href =
-      "home.html";
+    redirectTo("home.html");
 
   }else{
 
-    window.location.href =
-      "profile-setup.html";
+    redirectTo("profile-setup.html");
 
   }
 
 }
 
 
-/* ================= CHECK EXISTING SESSION ================= */
+/* ================= SESSION CHECK ================= */
 
 async function checkSession(){
 
-  const {
-    data:{
-      session
+  try{
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient.auth.getSession();
+
+
+    if(error){
+
+      console.error(
+        "Session error:",
+        error
+      );
+
+      return;
     }
-  } =
-  await supabaseClient.auth.getSession();
 
 
-  if(session){
+    if(data && data.session){
 
-    await checkProfileAndRedirect(session);
+      await checkProfileAndRedirect(
+        data.session
+      );
+
+    }
+
+  }catch(err){
+
+    console.error(
+      "Session check failed:",
+      err
+    );
 
   }
 
@@ -681,42 +614,59 @@ googleBtn.addEventListener(
   "click",
   async()=>{
 
-    errorBox.style.display =
-      "none";
+    if(redirecting){
+      return;
+    }
 
-    googleBtn.disabled =
-      true;
+    errorBox.style.display = "none";
 
-    googleBtn.textContent =
+    googleBtn.disabled = true;
+
+    googleText.textContent =
       "Connecting...";
 
 
-    const {
-      error
-    } =
-    await supabaseClient.auth.signInWithOAuth({
+    try{
 
-      provider:"google",
+      const {
+        error
+      } =
+      await supabaseClient.auth.signInWithOAuth({
 
-      options:{
-        redirectTo:
-          "https://princelast651-pixel.github.io/connect-/"
+        provider:"google",
+
+        options:{
+          redirectTo:
+            "https://princelast651-pixel.github.io/connect-/"
+        }
+
+      });
+
+
+      if(error){
+
+        showError(
+          error.message
+        );
+
+        googleBtn.disabled = false;
+
+        googleText.textContent =
+          "Continue with Google";
+
       }
 
-    });
-
-
-    if(error){
+    }catch(err){
 
       showError(
-        error.message
+        err.message ||
+        "Google login failed."
       );
 
-      googleBtn.disabled =
-        false;
+      googleBtn.disabled = false;
 
-      googleBtn.innerHTML =
-        '<div class="google-icon">G</div> Continue with Google';
+      googleText.textContent =
+        "Continue with Google";
 
     }
 
@@ -730,7 +680,14 @@ authBtn.addEventListener(
   "click",
   async()=>{
 
+    if(redirecting){
+      return;
+    }
+
     errorBox.style.display =
+      "none";
+
+    successBox.style.display =
       "none";
 
 
@@ -764,21 +721,93 @@ authBtn.addEventListener(
     authBtn.disabled =
       true;
 
+
     authBtn.textContent =
       isSignup
       ? "Creating Account..."
       : "Logging in...";
 
 
-    /* ================= SIGNUP ================= */
+    try{
 
-    if(isSignup){
+      /* ================= SIGNUP ================= */
+
+      if(isSignup){
+
+        const {
+          data,
+          error
+        } =
+        await supabaseClient.auth.signUp({
+
+          email:userEmail,
+
+          password:userPassword
+
+        });
+
+
+        if(error){
+
+          showError(
+            error.message
+          );
+
+          authBtn.disabled =
+            false;
+
+          authBtn.textContent =
+            "Create Account";
+
+          return;
+        }
+
+
+        if(data.session){
+
+          successBox.textContent =
+            "Account created. Setting up your profile...";
+
+          successBox.style.display =
+            "block";
+
+
+          setTimeout(
+            ()=>{
+              redirectTo(
+                "profile-setup.html"
+              );
+            },
+            500
+          );
+
+        }else{
+
+          successBox.textContent =
+            "Account created. Check your email to confirm your account.";
+
+          successBox.style.display =
+            "block";
+
+          authBtn.disabled =
+            false;
+
+          authBtn.textContent =
+            "Create Account";
+
+        }
+
+        return;
+      }
+
+
+      /* ================= LOGIN ================= */
 
       const {
         data,
         error
       } =
-      await supabaseClient.auth.signUp({
+      await supabaseClient.auth.signInWithPassword({
 
         email:userEmail,
 
@@ -797,91 +826,39 @@ authBtn.addEventListener(
           false;
 
         authBtn.textContent =
-          "Create Account";
+          "Login";
 
         return;
       }
 
 
-      /*
-        If email confirmation is disabled,
-        session will exist immediately.
-      */
+      if(data && data.session){
 
-      if(data.session){
-
-        successBox.style.display =
-          "block";
-
-        setTimeout(()=>{
-
-          window.location.href =
-            "profile-setup.html";
-
-        },500);
-
-      }else{
-
-        /*
-          Email confirmation is enabled.
-        User must confirm email first.
-        */
-
-        successBox.textContent =
-          "Account created. Check your email to confirm your account.";
-
-        successBox.style.display =
-          "block";
-
-        authBtn.disabled =
-          false;
-
-        authBtn.textContent =
-          "Create Account";
+        await checkProfileAndRedirect(
+          data.session
+        );
 
       }
 
-      return;
+    }catch(err){
 
-    }
-
-
-    /* ================= LOGIN ================= */
-
-    const {
-      data,
-      error
-    } =
-    await supabaseClient.auth.signInWithPassword({
-
-      email:userEmail,
-
-      password:userPassword
-
-    });
-
-
-    if(error){
+      console.error(
+        "Authentication error:",
+        err
+      );
 
       showError(
-        error.message
+        err.message ||
+        "Something went wrong. Please try again."
       );
 
       authBtn.disabled =
         false;
 
       authBtn.textContent =
-        "Login";
-
-      return;
-    }
-
-
-    if(data.session){
-
-      await checkProfileAndRedirect(
-        data.session
-      );
+        isSignup
+        ? "Create Account"
+        : "Login";
 
     }
 
@@ -955,23 +932,24 @@ switchBtn.addEventListener(
 /* ================= AUTH STATE ================= */
 
 supabaseClient.auth.onAuthStateChange(
-  async(event,session)=>{
+  (event, session)=>{
+
+    /*
+      IMPORTANT:
+      Don't await Supabase requests directly
+      inside this callback.
+    */
 
     if(
       event === "SIGNED_IN" &&
       session
     ){
 
-      /*
-        Small delay prevents redirect
-        conflicts during OAuth callback.
-      */
-
       setTimeout(
         ()=>{
           checkProfileAndRedirect(session);
         },
-        300
+        500
       );
 
     }
@@ -982,21 +960,35 @@ supabaseClient.auth.onAuthStateChange(
 
 /* ================= START ================= */
 
-setTimeout(
-  async()=>{
+async function startApp(){
 
-    splash.style.display =
-      "none";
+  /*
+    Give Supabase a moment to restore the
+    OAuth/session state.
+  */
 
-    authContainer.classList.add(
-      "show"
-    );
+  await new Promise(
+    resolve =>
+      setTimeout(resolve, 500)
+  );
 
-    await checkSession();
 
-  },
-  1800
-);
+  splash.style.display =
+    "none";
+
+  authContainer.classList.add(
+    "show"
+  );
+
+
+  await checkSession();
+
+}
+
+
+/* ================= START APP ================= */
+
+startApp();
 
 </script>
 
