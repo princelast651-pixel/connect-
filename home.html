@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Connect</title>
-<meta name="theme-color" content="#121212">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
+<meta name="theme-color" content="#121212"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
 *{
   box-sizing:border-box;
   margin:0;
@@ -19,13 +14,11 @@
 :root{
   --bg:#121212;
   --card:#1d1d1f;
-  --card2:#242426;
   --border:#303033;
   --text:#fff;
   --muted:#9b9b9f;
   --accent:#7c5cff;
   --accent2:#9b7cff;
-  --danger:#ff5c70;
 }
 
 body{
@@ -35,7 +28,7 @@ body{
   min-height:100vh;
 }
 
-button,input{
+button,input,select{
   font:inherit;
 }
 
@@ -51,8 +44,6 @@ button{
   min-height:100vh;
   padding-bottom:90px;
 }
-
-/* HEADER */
 
 header{
   height:70px;
@@ -90,7 +81,6 @@ header{
 .brand-name{
   font-size:22px;
   font-weight:800;
-  letter-spacing:-.5px;
 }
 
 .header-actions{
@@ -111,8 +101,6 @@ header{
   font-size:18px;
 }
 
-/* CONTENT */
-
 .content{
   padding:18px;
 }
@@ -130,8 +118,6 @@ header{
   color:var(--muted);
   font-size:14px;
 }
-
-/* STORIES */
 
 .stories{
   display:flex;
@@ -175,8 +161,6 @@ header{
   text-overflow:ellipsis;
 }
 
-/* NOTICE */
-
 .notice{
   background:linear-gradient(135deg,#211c3d,#1c1c20);
   border:1px solid #39315e;
@@ -185,7 +169,6 @@ header{
   margin-bottom:22px;
   display:flex;
   gap:12px;
-  align-items:flex-start;
 }
 
 .notice-icon{
@@ -202,8 +185,6 @@ header{
   font-size:12px;
   line-height:1.5;
 }
-
-/* SECTION */
 
 .section{
   margin-top:22px;
@@ -228,15 +209,12 @@ header{
   background:none;
 }
 
-/* ROOM */
-
 .room-card{
   background:var(--card);
   border:1px solid var(--border);
   border-radius:19px;
   padding:16px;
   margin-bottom:11px;
-  transition:.2s;
 }
 
 .room-card:active{
@@ -292,8 +270,6 @@ header{
   color:#ff8796;
 }
 
-/* EMPTY */
-
 .empty{
   border:1px dashed #343438;
   background:#18181a;
@@ -308,8 +284,6 @@ header{
   font-size:28px;
   margin-bottom:9px;
 }
-
-/* CREATE */
 
 .create-card{
   background:linear-gradient(135deg,#211c3b,#1c1c1f);
@@ -341,8 +315,6 @@ header{
   font-weight:700;
   font-size:13px;
 }
-
-/* QUICK */
 
 .quick-grid{
   display:grid;
@@ -376,8 +348,6 @@ header{
   margin-top:4px;
 }
 
-/* MODAL */
-
 .modal-bg{
   position:fixed;
   inset:0;
@@ -404,12 +374,8 @@ header{
 }
 
 @keyframes slideUp{
-  from{
-    transform:translateY(100%);
-  }
-  to{
-    transform:translateY(0);
-  }
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
 }
 
 .modal h2{
@@ -439,11 +405,6 @@ header{
   outline:none;
 }
 
-.field input:focus,
-.field select:focus{
-  border-color:var(--accent);
-}
-
 .modal-actions{
   display:flex;
   gap:10px;
@@ -467,7 +428,9 @@ header{
   color:white;
 }
 
-/* BOTTOM NAV */
+.create-confirm:disabled{
+  opacity:.5;
+}
 
 .bottom-nav{
   position:fixed;
@@ -509,8 +472,6 @@ header{
   color:var(--accent2);
 }
 
-/* TOAST */
-
 .toast{
   position:fixed;
   left:50%;
@@ -526,15 +487,14 @@ header{
   pointer-events:none;
   transition:.25s;
   z-index:200;
-  white-space:nowrap;
+  max-width:92%;
+  text-align:center;
 }
 
 .toast.show{
   opacity:1;
   transform:translateX(-50%) translateY(0);
 }
-
-/* LOADING */
 
 .loading{
   position:fixed;
@@ -578,255 +538,155 @@ header{
 }
 
 @media(max-width:380px){
-  .content{
-    padding:15px;
-  }
-
-  .brand-name{
-    font-size:20px;
-  }
+  .content{padding:15px}
+  .brand-name{font-size:20px}
 }
-</style>
-</head>
-
-<body>
-
-<!-- LOADING -->
-<div class="loading" id="loading">
+</style></head><body><div class="loading" id="loading">
   <div class="loading-logo">C</div>
   <div class="loading-text">Connecting...</div>
-</div>
-
-<div class="app">
-
-<!-- HEADER -->
-<header>
+</div><div class="app"><header>
   <div class="brand">
     <div class="logo">C</div>
     <div class="brand-name">Connect</div>
+  </div>  <div class="header-actions">
+    <button class="icon-btn" onclick="go('friends.html')">＋</button>
+    <button class="icon-btn" onclick="openCreateRoom()">🎙</button>
   </div>
-
-  <div class="header-actions">
-    <button class="icon-btn" onclick="go('friends.html')" aria-label="Friends">＋</button>
-    <button class="icon-btn" onclick="openCreateRoom()" aria-label="Create room">🎙</button>
+</header><main class="content"><div class="welcome">
+  <h1 id="welcomeTitle">Welcome 👋</h1>
+  <p>Connect with people, join lobbies and have fun.</p>
+</div><div class="stories">  <div class="story">
+    <div class="story-avatar">
+      <img id="storyAvatar" src="" alt="">
+    </div>
+    <div class="story-name" id="storyName">You</div>
+  </div>  <div class="story">
+    <div class="story-avatar">
+      <img src="https://ui-avatars.com/api/?name=Friend&background=29292b&color=fff" alt="">
+    </div>
+    <div class="story-name">Friends</div>
+  </div>  <div class="story">
+    <div class="story-avatar">
+      <img src="https://ui-avatars.com/api/?name=Gaming&background=29292b&color=fff" alt="">
+    </div>
+    <div class="story-name">Gaming</div>
+  </div>  <div class="story">
+    <div class="story-avatar">
+      <img src="https://ui-avatars.com/api/?name=Party&background=29292b&color=fff" alt="">
+    </div>
+    <div class="story-name">Party</div>
+  </div></div><div class="notice">
+  <div class="notice-icon">✨</div>
+  <div>
+    <h3>Welcome to Connect</h3>
+    <p>Create a room, invite friends and enjoy voice-based social gaming.</p>
   </div>
-</header>
-
-<main class="content">
-
-  <!-- WELCOME -->
-  <div class="welcome">
-    <h1 id="welcomeTitle">Welcome 👋</h1>
-    <p>Connect with people, join lobbies and have fun.</p>
-  </div>
-
-  <!-- STORIES -->
-  <div class="stories">
-
-    <div class="story">
-      <div class="story-avatar">
-        <img id="storyAvatar" src="" alt="">
-      </div>
-      <div class="story-name" id="storyName">You</div>
+</div><section class="section">  <div class="section-head">
+    <div class="section-title">🎙 Public Lobbies</div>
+    <button class="section-action" onclick="loadRooms()">Refresh</button>
+  </div>  <div id="publicRooms">
+    <div class="empty">
+      <div class="empty-icon">🎙</div>
+      Loading rooms...
     </div>
-
-    <div class="story">
-      <div class="story-avatar">
-        <img src="https://ui-avatars.com/api/?name=Friend&background=29292b&color=fff" alt="">
-      </div>
-      <div class="story-name">Friends</div>
+  </div></section><section class="section">  <div class="section-head">
+    <div class="section-title">🏠 My Rooms</div>
+    <button class="section-action" onclick="openCreateRoom()">Create</button>
+  </div>  <div id="myRooms">
+    <div class="empty">
+      <div class="empty-icon">🏠</div>
+      You haven't created a room yet.
     </div>
-
-    <div class="story">
-      <div class="story-avatar">
-        <img src="https://ui-avatars.com/api/?name=Gaming&background=29292b&color=fff" alt="">
-      </div>
-      <div class="story-name">Gaming</div>
-    </div>
-
-    <div class="story">
-      <div class="story-avatar">
-        <img src="https://ui-avatars.com/api/?name=Party&background=29292b&color=fff" alt="">
-      </div>
-      <div class="story-name">Party</div>
-    </div>
-
-  </div>
-
-  <!-- NOTICE -->
-  <div class="notice">
-    <div class="notice-icon">✨</div>
-    <div>
-      <h3>Welcome to Connect</h3>
-      <p>Create a room, invite friends and enjoy voice-based social gaming.</p>
-    </div>
-  </div>
-
-  <!-- PUBLIC LOBBIES -->
-  <section class="section">
-    <div class="section-head">
-      <div class="section-title">🎙 Public Lobbies</div>
-      <button class="section-action" onclick="loadRooms()">Refresh</button>
-    </div>
-
-    <div id="publicRooms">
-      <div class="empty">
-        <div class="empty-icon">🎙</div>
-        Loading rooms...
-      </div>
-    </div>
-  </section>
-
-  <!-- MY ROOMS -->
-  <section class="section">
-    <div class="section-head">
-      <div class="section-title">🏠 My Rooms</div>
-      <button class="section-action" onclick="openCreateRoom()">Create</button>
-    </div>
-
-    <div id="myRooms">
-      <div class="empty">
-        <div class="empty-icon">🏠</div>
-        You haven't created a room yet.
-      </div>
-    </div>
-  </section>
-
-  <!-- PRIVATE -->
-  <section class="section">
-    <div class="section-head">
-      <div class="section-title">🔒 Private</div>
-    </div>
-
-    <div class="create-card">
-      <div>
-        <h3>Create a private room</h3>
-        <p>Make a room and invite your friends.</p>
-      </div>
-
-      <button class="create-btn" onclick="openCreateRoom()">
-        Create
-      </button>
-    </div>
-  </section>
-
-  <!-- QUICK FEATURES -->
-  <section class="section">
-    <div class="section-head">
-      <div class="section-title">Explore</div>
-    </div>
-
-    <div class="quick-grid">
-
-      <button class="quick-card" onclick="go('entertainment.html')">
-        <div class="quick-icon">🚀</div>
-        <div class="quick-title">Entertainment</div>
-        <div class="quick-sub">Games & activities</div>
-      </button>
-
-      <button class="quick-card" onclick="go('chat.html')">
-        <div class="quick-icon">💬</div>
-        <div class="quick-title">Chat</div>
-        <div class="quick-sub">Talk with friends</div>
-      </button>
-
-      <button class="quick-card" onclick="go('friends.html')">
-        <div class="quick-icon">👥</div>
-        <div class="quick-title">Friends</div>
-        <div class="quick-sub">Find people</div>
-      </button>
-
-      <button class="quick-card" onclick="go('profile.html')">
-        <div class="quick-icon">👤</div>
-        <div class="quick-title">Profile</div>
-        <div class="quick-sub">Your account</div>
-      </button>
-
-    </div>
-  </section>
-
-</main>
+  </div></section><section class="section">  <div class="section-head">
+    <div class="section-title">🔒 Private</div>
+  </div>  <div class="create-card"><div>
+  <h3>Create a private room</h3>
+  <p>Make a room and invite your friends.</p>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
+<button class="create-btn" onclick="openCreateRoom()">
+  Create
+</button>
 
-  <a class="nav-item active" href="home.html">
-    <span class="nav-icon">⌂</span>
-    <span>Home</span>
-  </a>
+  </div></section><section class="section">  <div class="section-head">
+    <div class="section-title">Explore</div>
+  </div>  <div class="quick-grid"><button class="quick-card" onclick="go('entertainment.html')">
+  <div class="quick-icon">🚀</div>
+  <div class="quick-title">Entertainment</div>
+  <div class="quick-sub">Games & activities</div>
+</button>
 
-  <a class="nav-item" href="entertainment.html">
-    <span class="nav-icon">🚀</span>
-    <span>Entertainment</span>
-  </a>
+<button class="quick-card" onclick="go('chat.html')">
+  <div class="quick-icon">💬</div>
+  <div class="quick-title">Chat</div>
+  <div class="quick-sub">Talk with friends</div>
+</button>
 
-  <a class="nav-item" href="chat.html">
-    <span class="nav-icon">💬</span>
-    <span>Chat</span>
-  </a>
+<button class="quick-card" onclick="go('friends.html')">
+  <div class="quick-icon">👥</div>
+  <div class="quick-title">Friends</div>
+  <div class="quick-sub">Find people</div>
+</button>
 
-  <a class="nav-item" href="profile.html">
-    <span class="nav-icon">◉</span>
-    <span>Profile</span>
-  </a>
+<button class="quick-card" onclick="go('profile.html')">
+  <div class="quick-icon">👤</div>
+  <div class="quick-title">Profile</div>
+  <div class="quick-sub">Your account</div>
+</button>
 
-</nav>
+  </div></section></main>
+</div><nav class="bottom-nav"><a class="nav-item active" href="home.html">
+  <span class="nav-icon">⌂</span>
+  <span>Home</span>
+</a><a class="nav-item" href="entertainment.html">
+  <span class="nav-icon">🚀</span>
+  <span>Entertainment</span>
+</a><a class="nav-item" href="chat.html">
+  <span class="nav-icon">💬</span>
+  <span>Chat</span>
+</a><a class="nav-item" href="profile.html">
+  <span class="nav-icon">◉</span>
+  <span>Profile</span>
+</a></nav><div class="modal-bg" id="roomModal" onclick="closeModalOutside(event)"><div class="modal">  <h2>Create Room</h2>  <div class="field"><label>Room name</label>
 
-<!-- CREATE ROOM MODAL -->
-<div class="modal-bg" id="roomModal" onclick="closeModalOutside(event)">
-  <div class="modal">
+<input
+  id="roomName"
+  type="text"
+  maxlength="40"
+  placeholder="e.g. Night Gaming"
+>
 
-    <h2>Create Room</h2>
+  </div>  <div class="field"><label>Visibility</label>
 
-    <div class="field">
-      <label>Room name</label>
-      <input
-        id="roomName"
-        type="text"
-        maxlength="40"
-        placeholder="e.g. Night Gaming"
-      >
-    </div>
+<select id="roomVisibility">
 
-    <div class="field">
-      <label>Visibility</label>
+  <option value="public">Public</option>
+  <option value="private">Private</option>
 
-      <select id="roomVisibility">
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-      </select>
-    </div>
+</select>
 
-    <div class="modal-actions">
-      <button class="cancel" onclick="closeCreateRoom()">
-        Cancel
-      </button>
+  </div>  <div class="modal-actions"><button class="cancel" onclick="closeCreateRoom()">
+  Cancel
+</button>
 
-      <button class="create-confirm" onclick="createRoom()">
-        Create Room
-      </button>
-    </div>
+<button
+  id="createRoomButton"
+  class="create-confirm"
+  onclick="createRoom()"
+>
+  Create Room
+</button>
 
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* ==========================================
-   CONNECT - HOME
-   Future feature pages are intentionally
-   separated from this file.
-   ========================================== */
+  </div></div></div><div class="toast" id="toast"></div><script>
 
 const SUPABASE_URL =
-  "https://riversitunmzvuprecbt.supabase.co";
+"https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
-const supabaseClient = window.supabase.createClient(
+const supabaseClient =
+window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
   {
@@ -838,13 +698,9 @@ const supabaseClient = window.supabase.createClient(
   }
 );
 
-let currentUser = null;
-let currentProfile = null;
-
-
-/* ==========================================
-   START APP
-   ========================================== */
+let currentUser=null;
+let currentProfile=null;
+let toastTimer=null;
 
 async function startApp(){
 
@@ -854,65 +710,78 @@ async function startApp(){
       data:{
         session
       }
-    } = await supabaseClient.auth.getSession();
+    } =
+    await supabaseClient.auth.getSession();
 
     if(!session){
+
       window.location.replace("index.html");
       return;
+
     }
 
-    currentUser = session.user;
+    currentUser=session.user;
 
     await loadProfile();
+
     await loadRooms();
 
-    document.getElementById("loading").classList.add("hidden");
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
 
   }catch(error){
 
     console.error(error);
 
-    showToast("Something went wrong");
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
 
-    setTimeout(()=>{
-      document.getElementById("loading").classList.add("hidden");
-    },800);
+    showToast(
+      "App error: " +
+      (error.message || "Unknown error")
+    );
+
   }
+
 }
-
-
-/* ==========================================
-   PROFILE
-   ========================================== */
 
 async function loadProfile(){
 
   const {
     data,
     error
-  } = await supabaseClient
+  } =
+  await supabaseClient
     .from("profiles")
     .select("id,username,avatar_url")
     .eq("id",currentUser.id)
     .maybeSingle();
 
   if(error){
+
     console.error("Profile error:",error);
     return;
+
   }
 
-  currentProfile = data;
+  currentProfile=data;
 
   const username =
     data?.username ||
     currentUser.email?.split("@")[0] ||
     "User";
 
-  document.getElementById("welcomeTitle").textContent =
-    "Welcome, " + username + " 👋";
+  document
+    .getElementById("welcomeTitle")
+    .textContent =
+      "Welcome, " + username + " 👋";
 
-  document.getElementById("storyName").textContent =
-    username;
+  document
+    .getElementById("storyName")
+    .textContent =
+      username;
 
   const avatar =
     data?.avatar_url ||
@@ -920,17 +789,15 @@ async function loadProfile(){
     encodeURIComponent(username) +
     "&background=29292b&color=fff";
 
-  document.getElementById("storyAvatar").src = avatar;
+  document
+    .getElementById("storyAvatar")
+    .src=avatar;
+
 }
-
-
-/* ==========================================
-   ROOM SYSTEM
-   ========================================== */
 
 async function loadRooms(){
 
-  if(!currentUser) return;
+  if(!currentUser)return;
 
   const publicBox =
     document.getElementById("publicRooms");
@@ -938,42 +805,46 @@ async function loadRooms(){
   const myBox =
     document.getElementById("myRooms");
 
-  publicBox.innerHTML = `
+  publicBox.innerHTML=`
     <div class="empty">
       <div class="empty-icon">⏳</div>
       Loading rooms...
     </div>
   `;
 
-  myBox.innerHTML = `
+  myBox.innerHTML=`
     <div class="empty">
       <div class="empty-icon">⏳</div>
       Loading...
     </div>
   `;
 
-
   const {
     data,
     error
-  } = await supabaseClient
+  } =
+  await supabaseClient
     .from("rooms")
-    .select("id,owner_id,name,visibility,created_at")
-    .order("created_at",{ascending:false});
-
+    .select(
+      "id,owner_id,name,visibility,created_at"
+    )
+    .order(
+      "created_at",
+      {ascending:false}
+    );
 
   if(error){
 
-    console.error("Rooms error:",error);
+    console.error("ROOM LOAD ERROR:",error);
 
-    publicBox.innerHTML = `
+    publicBox.innerHTML=`
       <div class="empty">
         <div class="empty-icon">⚠️</div>
         Couldn't load rooms.
       </div>
     `;
 
-    myBox.innerHTML = `
+    myBox.innerHTML=`
       <div class="empty">
         <div class="empty-icon">⚠️</div>
         Couldn't load your rooms.
@@ -981,30 +852,24 @@ async function loadRooms(){
     `;
 
     return;
+
   }
 
+  const rooms=data || [];
 
-  const rooms = data || [];
+  renderPublicRooms(
+    rooms.filter(
+      room=>room.visibility==="public"
+    )
+  );
 
-  const publicRooms =
-    rooms.filter(room =>
-      room.visibility === "public"
-    );
+  renderMyRooms(
+    rooms.filter(
+      room=>room.owner_id===currentUser.id
+    )
+  );
 
-  const myRooms =
-    rooms.filter(room =>
-      room.owner_id === currentUser.id
-    );
-
-
-  renderPublicRooms(publicRooms);
-  renderMyRooms(myRooms);
 }
-
-
-/* ==========================================
-   PUBLIC ROOMS
-   ========================================== */
 
 function renderPublicRooms(rooms){
 
@@ -1013,7 +878,7 @@ function renderPublicRooms(rooms){
 
   if(!rooms.length){
 
-    box.innerHTML = `
+    box.innerHTML=`
       <div class="empty">
         <div class="empty-icon">🎙</div>
         No public rooms available right now.
@@ -1021,11 +886,11 @@ function renderPublicRooms(rooms){
     `;
 
     return;
+
   }
 
-
   box.innerHTML =
-    rooms.map(room => `
+    rooms.map(room=>`
 
       <div class="room-card">
 
@@ -1059,12 +924,8 @@ function renderPublicRooms(rooms){
       </div>
 
     `).join("");
+
 }
-
-
-/* ==========================================
-   MY ROOMS
-   ========================================== */
 
 function renderMyRooms(rooms){
 
@@ -1073,7 +934,7 @@ function renderMyRooms(rooms){
 
   if(!rooms.length){
 
-    box.innerHTML = `
+    box.innerHTML=`
       <div class="empty">
         <div class="empty-icon">🏠</div>
         You haven't created a room yet.
@@ -1081,11 +942,11 @@ function renderMyRooms(rooms){
     `;
 
     return;
+
   }
 
-
   box.innerHTML =
-    rooms.map(room => `
+    rooms.map(room=>`
 
       <div class="room-card">
 
@@ -1098,9 +959,11 @@ function renderMyRooms(rooms){
             </div>
 
             <div class="room-meta">
-              ${room.visibility === "private"
+              ${
+                room.visibility==="private"
                 ? "🔒 Private room"
-                : "🌐 Public room"}
+                : "🌐 Public room"
+              }
             </div>
 
           </div>
@@ -1128,12 +991,8 @@ function renderMyRooms(rooms){
       </div>
 
     `).join("");
+
 }
-
-
-/* ==========================================
-   CREATE ROOM
-   ========================================== */
 
 function openCreateRoom(){
 
@@ -1142,10 +1001,14 @@ function openCreateRoom(){
     .classList.add("show");
 
   setTimeout(()=>{
-    document.getElementById("roomName").focus();
-  },150);
-}
 
+    document
+      .getElementById("roomName")
+      .focus();
+
+  },150);
+
+}
 
 function closeCreateRoom(){
 
@@ -1153,144 +1016,225 @@ function closeCreateRoom(){
     .getElementById("roomModal")
     .classList.remove("show");
 
-  document.getElementById("roomName").value = "";
-}
+  document
+    .getElementById("roomName")
+    .value="";
 
+}
 
 function closeModalOutside(event){
 
-  if(event.target.id === "roomModal"){
-    closeCreateRoom();
-  }
-}
+  if(event.target.id==="roomModal"){
 
+    closeCreateRoom();
+
+  }
+
+}
 
 async function createRoom(){
 
   const name =
-    document.getElementById("roomName")
-    .value
-    .trim();
+    document
+      .getElementById("roomName")
+      .value
+      .trim();
 
   const visibility =
-    document.getElementById("roomVisibility")
-    .value;
+    document
+      .getElementById("roomVisibility")
+      .value;
 
+  const button =
+    document
+      .getElementById("createRoomButton");
 
   if(!name){
 
     showToast("Enter a room name");
     return;
-  }
 
+  }
 
   if(!currentUser){
 
-    showToast("Please login again");
+    showToast("Session not ready. Login again.");
     return;
+
   }
 
+  button.disabled=true;
+  button.textContent="Creating...";
 
-  const {
-    error
-  } = await supabaseClient
-    .from("rooms")
-    .insert({
-      owner_id:currentUser.id,
-      name:name,
-      visibility:visibility
-    });
+  try{
 
+    /*
+      Refresh the current auth session before
+      inserting the room. This makes sure the
+      authenticated JWT is available.
+    */
 
-  if(error){
+    const {
+      data:{
+        session
+      },
+      error:sessionError
+    } =
+    await supabaseClient.auth.getSession();
 
-    console.error(error);
-    showToast("Couldn't create room");
-    return;
+    if(sessionError){
+
+      throw sessionError;
+
+    }
+
+    if(!session){
+
+      throw new Error(
+        "No authenticated session found"
+      );
+
+    }
+
+    currentUser=session.user;
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("rooms")
+      .insert({
+        owner_id:currentUser.id,
+        name:name,
+        visibility:visibility
+      })
+      .select(
+        "id,owner_id,name,visibility,created_at"
+      )
+      .single();
+
+    if(error){
+
+      console.error(
+        "ROOM CREATE ERROR:",
+        error
+      );
+
+      /*
+        Show the actual Supabase message
+        instead of hiding the reason.
+      */
+
+      throw new Error(
+        error.message ||
+        error.details ||
+        error.hint ||
+        "Room creation failed"
+      );
+
+    }
+
+    if(!data){
+
+      throw new Error(
+        "Room was created but no data was returned"
+      );
+
+    }
+
+    closeCreateRoom();
+
+    showToast(
+      "Room created successfully 🔥"
+    );
+
+    await loadRooms();
+
+  }catch(error){
+
+    console.error(
+      "CREATE ROOM FAILED:",
+      error
+    );
+
+    showToast(
+      "Room error: " +
+      (
+        error.message ||
+        "Unknown error"
+      )
+    );
+
+  }finally{
+
+    button.disabled=false;
+    button.textContent="Create Room";
+
   }
 
-
-  closeCreateRoom();
-
-  showToast("Room created successfully 🔥");
-
-  await loadRooms();
 }
-
-
-/* ==========================================
-   DELETE ROOM
-   ========================================== */
 
 async function deleteRoom(roomId){
 
+  if(!currentUser){
+
+    showToast("Session not ready");
+    return;
+
+  }
+
   const {
     error
-  } = await supabaseClient
+  } =
+  await supabaseClient
     .from("rooms")
     .delete()
     .eq("id",roomId)
     .eq("owner_id",currentUser.id);
 
-
   if(error){
 
-    console.error(error);
-    showToast("Couldn't delete room");
-    return;
-  }
+    console.error(
+      "DELETE ROOM ERROR:",
+      error
+    );
 
+    showToast(
+      "Delete error: " +
+      error.message
+    );
+
+    return;
+
+  }
 
   showToast("Room deleted");
 
   await loadRooms();
+
 }
 
-
-/* ==========================================
-   ROOM OPEN
-   ========================================== */
-
 function openRoom(roomId){
-
-  /*
-    IMPORTANT:
-    This is intentionally a fixed route.
-
-    Later we create:
-        room.html?id=ROOM_ID
-
-    home.html won't need to change.
-  */
 
   window.location.href =
     "room.html?id=" +
     encodeURIComponent(roomId);
+
 }
-
-
-/* ==========================================
-   NAVIGATION
-   ========================================== */
 
 function go(page){
 
-  window.location.href = page;
+  window.location.href=page;
+
 }
-
-
-/* ==========================================
-   TOAST
-   ========================================== */
-
-let toastTimer;
 
 function showToast(message){
 
   const toast =
     document.getElementById("toast");
 
-  toast.textContent = message;
+  toast.textContent=message;
 
   toast.classList.add("show");
 
@@ -1298,50 +1242,39 @@ function showToast(message){
 
   toastTimer =
     setTimeout(()=>{
+
       toast.classList.remove("show");
-    },2200);
+
+    },3500);
+
 }
-
-
-/* ==========================================
-   SECURITY / DISPLAY
-   ========================================== */
 
 function escapeHTML(value){
 
-  return String(value)
+  return String(value ?? "")
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+
 }
-
-
-/* ==========================================
-   AUTH STATE
-   ========================================== */
 
 supabaseClient.auth.onAuthStateChange(
   (event,session)=>{
 
-    if(event === "SIGNED_OUT"){
+    if(event==="SIGNED_OUT"){
 
-      window.location.replace("index.html");
+      window.location.replace(
+        "index.html"
+      );
 
     }
 
   }
 );
 
-
-/* ==========================================
-   START
-   ========================================== */
-
 startApp();
 
-</script>
-
-</body>
+</script></body>
 </html>
