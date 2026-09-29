@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connect - Chat Diagnostic</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Connect Chat</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -11,327 +11,511 @@
 *{
   box-sizing:border-box;
 }
+
 body{
   margin:0;
-  background:#0b0f19;
-  color:#fff;
   font-family:Arial,sans-serif;
-  padding:20px;
+  background:#080b12;
+  color:white;
+  height:100vh;
+  overflow:hidden;
 }
-.card{
-  max-width:600px;
-  margin:30px auto;
-  background:#121827;
-  border:1px solid #263044;
+
+.app{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* HEADER */
+
+.header{
+  height:68px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 14px;
+  background:#101522;
+  border-bottom:1px solid #20283a;
+  flex-shrink:0;
+}
+
+.back{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:#1b2333;
+  color:white;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#273149;
+  flex-shrink:0;
+}
+
+.userInfo{
+  min-width:0;
+  flex:1;
+}
+
+.username{
+  font-size:16px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.status{
+  margin-top:3px;
+  font-size:12px;
+  color:#7f8ba3;
+}
+
+/* MESSAGES */
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:18px 14px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.empty{
+  margin:auto;
+  text-align:center;
+  color:#78839a;
+  font-size:14px;
+}
+
+.message{
+  max-width:78%;
+  padding:10px 13px;
+  border-radius:17px;
+  font-size:15px;
+  line-height:1.4;
+  word-wrap:break-word;
+  white-space:pre-wrap;
+}
+
+.sent{
+  align-self:flex-end;
+  background:#2563eb;
+  border-bottom-right-radius:5px;
+}
+
+.received{
+  align-self:flex-start;
+  background:#1b2333;
+  border-bottom-left-radius:5px;
+}
+
+.time{
+  font-size:10px;
+  opacity:.65;
+  margin-top:4px;
+  text-align:right;
+}
+
+/* INPUT */
+
+.inputArea{
+  padding:10px;
+  background:#101522;
+  border-top:1px solid #20283a;
+  display:flex;
+  gap:8px;
+  flex-shrink:0;
+}
+
+.input{
+  flex:1;
+  min-width:0;
+  border:0;
+  outline:none;
+  background:#1a2232;
+  color:white;
+  border-radius:22px;
+  padding:12px 16px;
+  font-size:15px;
+}
+
+.input::placeholder{
+  color:#727d92;
+}
+
+.send{
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:50%;
+  background:#2563eb;
+  color:white;
+  font-size:19px;
+  cursor:pointer;
+}
+
+.send:disabled{
+  opacity:.5;
+}
+
+/* LOADING */
+
+.loading{
+  position:fixed;
+  inset:0;
+  background:#080b12;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  font-size:15px;
+  color:#aeb8ca;
+}
+
+.error{
+  position:fixed;
+  inset:0;
+  background:#080b12;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+  text-align:center;
+  z-index:20;
+}
+
+.errorBox{
+  max-width:400px;
+  background:#141b29;
+  border:1px solid #2b3549;
   border-radius:18px;
-  padding:20px;
+  padding:25px;
 }
-h2{
-  margin-top:0;
+
+.errorTitle{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
-.step{
-  padding:14px;
-  margin:10px 0;
-  border-radius:12px;
-  background:#1a2233;
+
+.errorText{
+  color:#aeb8ca;
+  font-size:13px;
+  line-height:1.5;
   word-break:break-word;
 }
-.ok{
-  border-left:4px solid #22c55e;
-}
-.bad{
-  border-left:4px solid #ef4444;
-}
-.wait{
-  border-left:4px solid #f59e0b;
-}
-.small{
-  color:#9ca8bd;
-  font-size:13px;
-  margin-top:6px;
+
+.retry{
+  margin-top:18px;
+  padding:11px 20px;
+  border:0;
+  border-radius:10px;
+  background:#2563eb;
+  color:white;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="app">
 
-<h2>🔧 Connect Chat Diagnostic</h2>
+  <div class="header">
 
-<div id="steps">
+    <button class="back" onclick="goBack()">‹</button>
 
-<div id="s1" class="step wait">
-⏳ Step 1: Loading Supabase...
+    <img id="avatar" class="avatar" src="" alt="">
+
+    <div class="userInfo">
+      <div id="username" class="username">Loading...</div>
+      <div id="status" class="status">Connecting...</div>
+    </div>
+
+  </div>
+
+  <div id="messages" class="messages">
+    <div class="empty">Loading messages...</div>
+  </div>
+
+  <div class="inputArea">
+
+    <input
+      id="messageInput"
+      class="input"
+      type="text"
+      placeholder="Message..."
+      autocomplete="off"
+      disabled
+    >
+
+    <button
+      id="sendBtn"
+      class="send"
+      onclick="sendMessage()"
+      disabled
+    >➤</button>
+
+  </div>
+
 </div>
 
-<div id="s2" class="step wait">
-⏳ Step 2: Checking login...
+
+<div id="loading" class="loading">
+  Opening chat...
 </div>
 
-<div id="s3" class="step wait">
-⏳ Step 3: Reading friend ID...
+
+<div id="error" class="error">
+
+  <div class="errorBox">
+
+    <div class="errorTitle">
+      ⚠️ Couldn't open chat
+    </div>
+
+    <div id="errorText" class="errorText"></div>
+
+    <button class="retry" onclick="location.reload()">
+      Try Again
+    </button>
+
+  </div>
+
 </div>
 
-<div id="s4" class="step wait">
-⏳ Step 4: Loading profile...
-</div>
-
-<div id="s5" class="step wait">
-⏳ Step 5: Checking conversation...
-</div>
-
-</div>
-
-</div>
 
 <script>
+
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+const supabaseClient =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY,
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true
+    }
+  }
+);
 
 
-function setStep(id,type,text,detail=""){
+/* =========================
+   VARIABLES
+========================= */
 
-  const el=document.getElementById(id);
+let currentUser = null;
+let friendId = null;
+let conversationId = null;
+let profile = null;
+let realtimeChannel = null;
 
-  el.className="step "+type;
 
-  el.innerHTML=text+
-  (detail ? `<div class="small">${detail}</div>` : "");
+/* =========================
+   ELEMENTS
+========================= */
+
+const loading =
+document.getElementById("loading");
+
+const errorBox =
+document.getElementById("error");
+
+const errorText =
+document.getElementById("errorText");
+
+const usernameEl =
+document.getElementById("username");
+
+const statusEl =
+document.getElementById("status");
+
+const avatarEl =
+document.getElementById("avatar");
+
+const messagesEl =
+document.getElementById("messages");
+
+const inputEl =
+document.getElementById("messageInput");
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+
+/* =========================
+   START
+========================= */
+
+async function init(){
+
+  try{
+
+    const sessionResult =
+      await supabaseClient.auth.getSession();
+
+    if(sessionResult.error){
+      throw new Error(
+        "Session error: "+
+        sessionResult.error.message
+      );
+    }
+
+    const session =
+      sessionResult.data.session;
+
+    if(!session || !session.user){
+
+      location.href="index.html";
+      return;
+
+    }
+
+    currentUser =
+      session.user;
+
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    friendId =
+      params.get("id");
+
+
+    if(!friendId){
+      throw new Error(
+        "Friend ID missing from URL."
+      );
+    }
+
+
+    if(friendId === currentUser.id){
+      throw new Error(
+        "You cannot open a chat with yourself."
+      );
+    }
+
+
+    await loadProfile();
+
+    await findOrCreateConversation();
+
+    await loadMessages();
+
+    subscribeToMessages();
+
+
+    inputEl.disabled=false;
+    sendBtn.disabled=false;
+
+    statusEl.textContent="Active";
+
+    loading.style.display="none";
+
+
+  }catch(error){
+
+    console.error(error);
+
+    loading.style.display="none";
+
+    errorText.textContent =
+      error.message ||
+      "Unknown error";
+
+    errorBox.style.display="flex";
+
+  }
 
 }
 
 
-async function runDiagnostic(){
+/* =========================
+   PROFILE
+========================= */
 
-  /* STEP 1 */
+async function loadProfile(){
 
-  try{
-
-    if(!window.supabase){
-
-      setStep(
-        "s1",
-        "bad",
-        "❌ Step 1 FAILED",
-        "Supabase JavaScript library was not loaded."
-      );
-
-      return;
-    }
-
-    setStep(
-      "s1",
-      "ok",
-      "✅ Step 1 OK",
-      "Supabase library loaded successfully."
-    );
-
-  }catch(e){
-
-    setStep(
-      "s1",
-      "bad",
-      "❌ Step 1 FAILED",
-      e.message
-    );
-
-    return;
-  }
+  const result =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id,username,avatar_url,bio"
+      )
+      .eq("id",friendId)
+      .maybeSingle();
 
 
-  /* EXACT SAME INITIALIZATION AS WORKING chat.html */
+  if(result.error){
 
-  let supabaseClient;
-
-  try{
-
-    supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY,
-        {
-          auth:{
-            persistSession:true,
-            autoRefreshToken:true,
-            detectSessionInUrl:true
-          }
-        }
-      );
-
-  }catch(e){
-
-    setStep(
-      "s1",
-      "bad",
-      "❌ Supabase client creation failed",
-      e.message
-    );
-
-    return;
-  }
-
-
-  /* STEP 2 */
-
-  let sessionResult;
-
-  try{
-
-    sessionResult =
-      await supabaseClient.auth.getSession();
-
-  }catch(e){
-
-    setStep(
-      "s2",
-      "bad",
-      "❌ Step 2 FAILED",
-      e.message
-    );
-
-    return;
-  }
-
-  if(sessionResult.error){
-
-    setStep(
-      "s2",
-      "bad",
-      "❌ Step 2 FAILED",
-      sessionResult.error.message
-    );
-
-    return;
-  }
-
-  const session =
-    sessionResult.data.session;
-
-  if(!session || !session.user){
-
-    setStep(
-      "s2",
-      "bad",
-      "❌ Step 2 FAILED",
-      "No logged-in session found."
-    );
-
-    return;
-  }
-
-  const currentUser =
-    session.user;
-
-  setStep(
-    "s2",
-    "ok",
-    "✅ Step 2 OK",
-    "Logged in user: "+currentUser.id
-  );
-
-
-  /* STEP 3 */
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  const friendId =
-    params.get("id");
-
-  if(!friendId){
-
-    setStep(
-      "s3",
-      "bad",
-      "❌ Step 3 FAILED",
-      "No friend ID found in URL."
-    );
-
-    return;
-  }
-
-  setStep(
-    "s3",
-    "ok",
-    "✅ Step 3 OK",
-    "Friend ID: "+friendId
-  );
-
-
-  /* STEP 4 */
-
-  let profileResult;
-
-  try{
-
-    profileResult =
-      await supabaseClient
-        .from("profiles")
-        .select(
-          "id,username,avatar_url,bio"
-        )
-        .eq("id",friendId)
-        .maybeSingle();
-
-  }catch(e){
-
-    setStep(
-      "s4",
-      "bad",
-      "❌ Step 4 FAILED",
-      e.message
-    );
-
-    return;
-  }
-
-  if(profileResult.error){
-
-    setStep(
-      "s4",
-      "bad",
-      "❌ Step 4 FAILED",
+    throw new Error(
       "Profile error: "+
-      profileResult.error.message
+      result.error.message
     );
 
-    return;
   }
 
-  if(!profileResult.data){
 
-    setStep(
-      "s4",
-      "bad",
-      "❌ Step 4 FAILED",
-      "Profile query worked, but no profile was found for this friend ID."
+  if(!result.data){
+
+    throw new Error(
+      "Profile not found."
     );
 
-    return;
   }
 
-  const profile =
-    profileResult.data;
 
-  setStep(
-    "s4",
-    "ok",
-    "✅ Step 4 OK",
-    "Username: "+
-    (profile.username || "No username")+
-    "<br>ID: "+
-    profile.id
-  );
+  profile =
+    result.data;
 
 
-  /* STEP 5 */
+  usernameEl.textContent =
+    profile.username ||
+    "Connect User";
+
+
+  if(profile.avatar_url){
+
+    avatarEl.src =
+      profile.avatar_url;
+
+  }else{
+
+    avatarEl.removeAttribute("src");
+
+  }
+
+}
+
+
+/* =========================
+   CONVERSATION
+========================= */
+
+async function findOrCreateConversation(){
 
   const userOne =
     currentUser.id < friendId
@@ -344,70 +528,408 @@ async function runDiagnostic(){
       : currentUser.id;
 
 
-  let conversationResult;
+  /* Find existing */
 
-  try{
+  const existing =
+    await supabaseClient
+      .from("conversations")
+      .select(
+        "id,user_one,user_two"
+      )
+      .eq("user_one",userOne)
+      .eq("user_two",userTwo)
+      .maybeSingle();
 
-    conversationResult =
-      await supabaseClient
-        .from("conversations")
-        .select("id,user_one,user_two")
-        .eq("user_one",userOne)
-        .eq("user_two",userTwo)
-        .maybeSingle();
 
-  }catch(e){
+  if(existing.error){
 
-    setStep(
-      "s5",
-      "bad",
-      "❌ Step 5 FAILED",
-      e.message
+    throw new Error(
+      "Conversation lookup error: "+
+      existing.error.message
     );
 
+  }
+
+
+  if(existing.data){
+
+    conversationId =
+      existing.data.id;
+
+    return;
+
+  }
+
+
+  /* Create new conversation */
+
+  const created =
+    await supabaseClient
+      .from("conversations")
+      .insert({
+        user_one:userOne,
+        user_two:userTwo
+      })
+      .select(
+        "id,user_one,user_two"
+      )
+      .single();
+
+
+  if(created.error){
+
+    throw new Error(
+      "Conversation creation error: "+
+      created.error.message
+    );
+
+  }
+
+
+  conversationId =
+    created.data.id;
+
+}
+
+
+/* =========================
+   LOAD MESSAGES
+========================= */
+
+async function loadMessages(){
+
+  const result =
+    await supabaseClient
+      .from("messages")
+      .select(
+        "id,conversation_id,sender_id,message,created_at"
+      )
+      .eq(
+        "conversation_id",
+        conversationId
+      )
+      .order(
+        "created_at",
+        {
+          ascending:true
+        }
+      );
+
+
+  if(result.error){
+
+    throw new Error(
+      "Messages error: "+
+      result.error.message
+    );
+
+  }
+
+
+  messagesEl.innerHTML="";
+
+
+  if(!result.data ||
+     result.data.length===0){
+
+    showEmpty();
+
+    return;
+
+  }
+
+
+  result.data.forEach(
+    message=>{
+      renderMessage(message);
+    }
+  );
+
+
+  scrollBottom();
+
+}
+
+
+/* =========================
+   RENDER MESSAGE
+========================= */
+
+function renderMessage(message){
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "message "+
+    (
+      message.sender_id === currentUser.id
+        ? "sent"
+        : "received"
+    );
+
+
+  const text =
+    document.createElement("div");
+
+  text.textContent =
+    message.message;
+
+
+  const time =
+    document.createElement("div");
+
+  time.className="time";
+
+  time.textContent =
+    formatTime(
+      message.created_at
+    );
+
+
+  wrapper.appendChild(text);
+  wrapper.appendChild(time);
+
+  messagesEl.appendChild(wrapper);
+
+}
+
+
+/* =========================
+   EMPTY
+========================= */
+
+function showEmpty(){
+
+  messagesEl.innerHTML=`
+    <div class="empty">
+      No messages yet.<br>
+      Say hello 👋
+    </div>
+  `;
+
+}
+
+
+/* =========================
+   SEND
+========================= */
+
+async function sendMessage(){
+
+  const message =
+    inputEl.value.trim();
+
+
+  if(!message){
     return;
   }
 
 
-  if(conversationResult.error){
+  if(!conversationId){
 
-    setStep(
-      "s5",
-      "bad",
-      "❌ Step 5 FAILED",
-      "Conversation error: "+
-      conversationResult.error.message
+    alert(
+      "Chat is still loading..."
     );
 
+    return;
+
+  }
+
+
+  sendBtn.disabled=true;
+
+
+  const result =
+    await supabaseClient
+      .from("messages")
+      .insert({
+        conversation_id:
+          conversationId,
+
+        sender_id:
+          currentUser.id,
+
+        message:
+          message
+      });
+
+
+  if(result.error){
+
+    console.error(
+      result.error
+    );
+
+    alert(
+      "Message failed: "+
+      result.error.message
+    );
+
+    sendBtn.disabled=false;
+
+    return;
+
+  }
+
+
+  inputEl.value="";
+
+  sendBtn.disabled=false;
+
+}
+
+
+/* =========================
+   REALTIME
+========================= */
+
+function subscribeToMessages(){
+
+  if(!conversationId){
     return;
   }
 
 
-  if(!conversationResult.data){
+  realtimeChannel =
+    supabaseClient
+      .channel(
+        "chat-"+conversationId
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"INSERT",
+          schema:"public",
+          table:"messages",
+          filter:
+            "conversation_id=eq."+conversationId
+        },
+        payload=>{
 
-    setStep(
-      "s5",
-      "ok",
-      "✅ Step 5 QUERY WORKED",
-      "No existing conversation found. This is okay; the real page can create one."
+          const message =
+            payload.new;
+
+
+          /* Prevent duplicate messages */
+
+          const existing =
+            Array.from(
+              messagesEl.children
+            ).some(
+              el=>{
+                return false;
+              }
+            );
+
+
+          if(
+            messagesEl.querySelector(".empty")
+          ){
+
+            messagesEl.innerHTML="";
+
+          }
+
+
+          renderMessage(message);
+
+          scrollBottom();
+
+        }
+      )
+      .subscribe();
+
+}
+
+
+/* =========================
+   TIME
+========================= */
+
+function formatTime(date){
+
+  return new Date(date)
+    .toLocaleTimeString(
+      [],
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
     );
 
-    return;
-  }
+}
 
 
-  setStep(
-    "s5",
-    "ok",
-    "✅ Step 5 OK",
-    "Conversation ID: "+
-    conversationResult.data.id
+/* =========================
+   SCROLL
+========================= */
+
+function scrollBottom(){
+
+  setTimeout(
+    ()=>{
+      messagesEl.scrollTop =
+        messagesEl.scrollHeight;
+    },
+    50
   );
 
 }
 
 
-runDiagnostic();
+/* =========================
+   ENTER TO SEND
+========================= */
+
+inputEl.addEventListener(
+  "keydown",
+  event=>{
+
+    if(
+      event.key==="Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   BACK
+========================= */
+
+function goBack(){
+
+  if(
+    document.referrer &&
+    document.referrer.includes(
+      "/connect-/"
+    )
+  ){
+
+    history.back();
+
+  }else{
+
+    location.href="chat.html";
+
+  }
+
+}
+
+
+/* =========================
+   START APP
+========================= */
+
+init();
 
 </script>
 
