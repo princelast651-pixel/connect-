@@ -17,7 +17,10 @@ public class MainActivity extends Activity {
 
     private WebView webView;
 
-    private static final int AUDIO_PERMISSION_REQUEST = 100;
+    private static final int AUDIO_PERMISSION_REQUEST = 1001;
+
+    // WebView ka pending microphone request
+    private PermissionRequest pendingPermissionRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,9 @@ public class MainActivity extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+
+        // WebRTC ke liye
+        settings.setMediaPlaybackRequiresUserGesture(false);
 
         webView.setWebViewClient(new WebViewClient());
 
@@ -50,17 +56,38 @@ public class MainActivity extends Activity {
 
                 runOnUiThread(() -> {
 
+                    boolean audioRequested = false;
+
+                    for (String resource : request.getResources()) {
+                        if (PermissionRequest.RESOURCE_AUDIO_CAPTURE
+                                .equals(resource)) {
+                            audioRequested = true;
+                            break;
+                        }
+                    }
+
+                    if (!audioRequested) {
+                        request.deny();
+                        return;
+                    }
+
+                    /*
+                     * Android microphone permission already granted
+                     */
                     if (checkSelfPermission(
                             Manifest.permission.RECORD_AUDIO)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        request.grant(new String[]{
-                                PermissionRequest.RESOURCE_AUDIO_CAPTURE
-                        });
-
-                        startVoiceService();
+                        grantAudioPermission(request);
 
                     } else {
+
+                        /*
+                         * Permission request save karo.
+                         * Permission allow hone ke baad isi request
+                         * ko grant kiya jayega.
+                         */
+                        pendingPermissionRequest = request;
 
                         requestPermissions(
                                 new String[]{
@@ -79,7 +106,31 @@ public class MainActivity extends Activity {
     }
 
     /*
-     * Starts the Android foreground service.
+     * WebView ko microphone permission actually grant karta hai
+     */
+    private void grantAudioPermission(
+            PermissionRequest request) {
+
+        if (request == null) {
+            return;
+        }
+
+        try {
+
+            request.grant(new String[]{
+                    PermissionRequest.RESOURCE_AUDIO_CAPTURE
+            });
+
+            startVoiceService();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * Foreground voice service
      */
     private void startVoiceService() {
 
@@ -93,35 +144,41 @@ public class MainActivity extends Activity {
         Intent intent =
                 new Intent(this, VoiceService.class);
 
-        if (Build.VERSION.SDK_INT >=
-                Build.VERSION_CODES.O) {
+        try {
 
-            startForegroundService(intent);
+            if (Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.O) {
 
-        } else {
+                startForegroundService(intent);
 
-            startService(intent);
+            } else {
+
+                startService(intent);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private void stopVoiceService() {
+
+        try {
+
+            Intent intent =
+                    new Intent(this, VoiceService.class);
+
+            stopService(intent);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
         }
     }
 
     /*
-     * Stops the Android foreground service.
-     */
-    private void stopVoiceService() {
-
-        Intent intent =
-                new Intent(this, VoiceService.class);
-
-        stopService(intent);
-    }
-
-    /*
-     * JavaScript bridge.
-     *
-     * room.html calls:
-     *
-     * AndroidVoice.voiceStarted()
-     * AndroidVoice.voiceStopped()
+     * JavaScript bridge
      */
     private class AndroidVoiceBridge {
 
@@ -130,8 +187,12 @@ public class MainActivity extends Activity {
 
             runOnUiThread(() -> {
 
-                startVoiceService();
+                if (checkSelfPermission(
+                        Manifest.permission.RECORD_AUDIO)
+                        == PackageManager.PERMISSION_GRANTED) {
 
+                    startVoiceService();
+                }
             });
         }
 
@@ -141,11 +202,13 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> {
 
                 stopVoiceService();
-
             });
         }
     }
 
+    /*
+     * Android permission result
+     */
     @Override
     public void onRequestPermissionsResult(
             int requestCode,
@@ -158,18 +221,41 @@ public class MainActivity extends Activity {
                 grantResults
         );
 
-        if (requestCode ==
-                AUDIO_PERMISSION_REQUEST) {
+        if (requestCode != AUDIO_PERMISSION_REQUEST) {
+            return;
+        }
 
-            if (grantResults.length > 0 &&
-                    grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 &&
+                grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
+
+            /*
+             * IMPORTANT:
+             * Ab wahi pending WebView request grant hoga.
+             */
+            if (pendingPermissionRequest != null) {
+
+                grantAudioPermission(
+                        pendingPermissionRequest
+                );
+
+                pendingPermissionRequest = null;
+
+            } else {
 
                 startVoiceService();
+            }
 
-                if (webView != null) {
-                    webView.reload();
+        } else {
+
+            if (pendingPermissionRequest != null) {
+
+                try {
+                    pendingPermissionRequest.deny();
+                } catch (Exception ignored) {
                 }
+
+                pendingPermissionRequest = null;
             }
         }
     }
