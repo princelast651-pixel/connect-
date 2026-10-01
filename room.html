@@ -43,8 +43,6 @@ button{
     #080a0f;
 }
 
-/* TOP */
-
 .topbar{
   height:68px;
   min-height:68px;
@@ -111,8 +109,6 @@ button{
   color:#090a0d;
 }
 
-/* MAIN */
-
 .main{
   flex:1;
   min-height:0;
@@ -130,8 +126,6 @@ button{
   justify-content:center;
   padding:20px 8px;
 }
-
-/* PARTICIPANTS */
 
 .participants{
   width:100%;
@@ -229,8 +223,6 @@ button{
   font-size:13px;
 }
 
-/* BOTTOM */
-
 .bottom{
   padding:
     12px
@@ -298,8 +290,6 @@ button{
   color:#fff;
 }
 
-/* OVERLAYS */
-
 .overlay{
   position:absolute;
   inset:0;
@@ -338,8 +328,6 @@ button{
   font-weight:750;
   margin-bottom:14px;
 }
-
-/* FRIENDS */
 
 .friend{
   display:flex;
@@ -394,8 +382,6 @@ button{
   color:#aab0bd;
 }
 
-/* MENU */
-
 .menu-item{
   width:100%;
   text-align:left;
@@ -404,8 +390,6 @@ button{
   border-bottom:1px solid rgba(255,255,255,.06);
   font-size:14px;
 }
-
-/* CHAT */
 
 .chat-list{
   min-height:100px;
@@ -451,8 +435,6 @@ button{
   background:#fff;
   color:#000;
 }
-
-/* TOAST */
 
 .toast{
   position:fixed;
@@ -615,8 +597,6 @@ button{
 
 </footer>
 
-<!-- INVITE -->
-
 <div class="overlay" id="inviteOverlay">
 
   <div class="sheet">
@@ -634,8 +614,6 @@ button{
   </div>
 
 </div>
-
-<!-- CHAT -->
 
 <div class="overlay" id="chatOverlay">
 
@@ -666,8 +644,6 @@ button{
   </div>
 
 </div>
-
-<!-- MENU -->
 
 <div class="overlay" id="menuOverlay">
 
@@ -747,6 +723,56 @@ let realtimeChannel = null;
 const peers = new Map();
 const remoteAudios = new Map();
 const participants = new Map();
+
+
+/* =========================================================
+   ANDROID BACKGROUND VOICE BRIDGE
+========================================================= */
+
+function notifyAndroidVoiceStarted(){
+
+  try{
+
+    if(
+      window.AndroidVoice &&
+      typeof window.AndroidVoice.voiceStarted ===
+        "function"
+    ){
+
+      window.AndroidVoice.voiceStarted();
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Android voice bridge error:",
+      error
+    );
+  }
+}
+
+
+function notifyAndroidVoiceStopped(){
+
+  try{
+
+    if(
+      window.AndroidVoice &&
+      typeof window.AndroidVoice.voiceStopped ===
+        "function"
+    ){
+
+      window.AndroidVoice.voiceStopped();
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Android voice bridge error:",
+      error
+    );
+  }
+}
 
 
 /* =========================================================
@@ -967,8 +993,7 @@ async function joinParticipant(){
       {
         room_id:roomId,
         user_id:currentUser.id,
-        joined_at:
-          new Date().toISOString()
+        joined_at:new Date().toISOString()
       },
       {
         onConflict:
@@ -993,10 +1018,7 @@ async function leaveParticipant(){
     .from("room_participants")
     .delete()
     .eq("room_id",roomId)
-    .eq(
-      "user_id",
-      currentUser.id
-    );
+    .eq("user_id",currentUser.id);
 }
 
 
@@ -1197,8 +1219,7 @@ function renderParticipants(){
 
       `;
 
-      participantsEl
-        .appendChild(item);
+      participantsEl.appendChild(item);
     }
   );
 }
@@ -1256,18 +1277,12 @@ async function setupRealtime(){
 
           if(
             p.user_id &&
-            p.user_id !==
-              currentUser.id
+            p.user_id !== currentUser.id
           ){
 
-            /*
-              Only one side creates the offer.
-              This prevents duplicate WebRTC offers.
-            */
             await createPeerConnection(
               p.user_id,
-              currentUser.id <
-                p.user_id
+              currentUser.id < p.user_id
             );
           }
         }
@@ -1300,8 +1315,6 @@ async function setupRealtime(){
       }
     )
 
-    /* WEBRTC SIGNALING */
-
     .on(
       "broadcast",
       {
@@ -1325,8 +1338,6 @@ async function setupRealtime(){
         );
       }
     )
-
-    /* CHAT */
 
     .on(
       "broadcast",
@@ -1367,7 +1378,6 @@ async function setupRealtime(){
             "User"
         });
       }
-
     }
   );
 }
@@ -1406,9 +1416,7 @@ async function createPeerConnection(
   }
 
   if(
-    peers.has(
-      remoteUserId
-    )
+    peers.has(remoteUserId)
   ){
 
     return peers.get(
@@ -1492,8 +1500,7 @@ async function createPeerConnection(
         remoteUserId,
         {
           type:"ice",
-          candidate:
-            event.candidate
+          candidate:event.candidate
         }
       );
     };
@@ -1502,12 +1509,9 @@ async function createPeerConnection(
     ()=>{
 
       if(
-        pc.connectionState ===
-          "failed" ||
-        pc.connectionState ===
-          "closed" ||
-        pc.connectionState ===
-          "disconnected"
+        pc.connectionState === "failed" ||
+        pc.connectionState === "closed" ||
+        pc.connectionState === "disconnected"
       ){
 
         removePeer(
@@ -1557,14 +1561,10 @@ async function sendSignal(
     event:"webrtc",
 
     payload:{
-      from:
-        currentUser.id,
-
+      from:currentUser.id,
       to,
-
       ...signal
     }
-
   });
 }
 
@@ -1592,8 +1592,7 @@ async function handleSignal(
   }
 
   if(
-    payload.type ===
-    "offer"
+    payload.type === "offer"
   ){
 
     await pc.setRemoteDescription(
@@ -1619,8 +1618,7 @@ async function handleSignal(
   }
 
   else if(
-    payload.type ===
-    "answer"
+    payload.type === "answer"
   ){
 
     await pc.setRemoteDescription(
@@ -1631,8 +1629,7 @@ async function handleSignal(
   }
 
   else if(
-    payload.type ===
-    "ice"
+    payload.type === "ice"
   ){
 
     try{
@@ -1673,9 +1670,7 @@ function removePeer(
   }
 
   const audio =
-    remoteAudios.get(
-      userId
-    );
+    remoteAudios.get(userId);
 
   if(audio){
 
@@ -1700,29 +1695,31 @@ async function startMicrophone(){
   try{
 
     localStream =
-      await navigator
-        .mediaDevices
-        .getUserMedia({
+      await navigator.mediaDevices.getUserMedia({
 
-          audio:{
+        audio:{
+          echoCancellation:
+            noiseCancellation,
 
-            echoCancellation:
-              noiseCancellation,
+          noiseSuppression:
+            noiseCancellation,
 
-            noiseSuppression:
-              noiseCancellation,
+          autoGainControl:true
+        },
 
-            autoGainControl:
-              true
-          },
-
-          video:false
-        });
+        video:false
+      });
 
     micOn =
       true;
 
     updateMicUI();
+
+    /*
+      Tell Android that actual WebRTC microphone
+      capture has started.
+    */
+    notifyAndroidVoiceStarted();
 
   }catch(error){
 
@@ -1849,24 +1846,20 @@ async function toggleNoiseCancellation(){
   try{
 
     localStream =
-      await navigator
-        .mediaDevices
-        .getUserMedia({
+      await navigator.mediaDevices.getUserMedia({
 
-          audio:{
+        audio:{
+          echoCancellation:
+            noiseCancellation,
 
-            echoCancellation:
-              noiseCancellation,
+          noiseSuppression:
+            noiseCancellation,
 
-            noiseSuppression:
-              noiseCancellation,
+          autoGainControl:true
+        },
 
-            autoGainControl:
-              true
-          },
-
-          video:false
-        });
+        video:false
+      });
 
     micOn =
       wasMicOn;
@@ -1890,8 +1883,7 @@ async function toggleNoiseCancellation(){
           .find(
             s =>
               s.track &&
-              s.track.kind ===
-                "audio"
+              s.track.kind === "audio"
           );
 
       const track =
@@ -1912,6 +1904,8 @@ async function toggleNoiseCancellation(){
     updateMicUI();
 
     updateOwnParticipant();
+
+    notifyAndroidVoiceStarted();
 
     toast(
       noiseCancellation
@@ -1963,7 +1957,7 @@ function toggleSpeaker(){
 
 
 /* =========================================================
-   FRIENDS + REAL INVITES
+   FRIENDS
 ========================================================= */
 
 async function loadFriends(){
@@ -2009,8 +2003,7 @@ async function loadFriends(){
       ...new Set(
         (data || [])
           .map(f =>
-            f.user_id ===
-              currentUser.id
+            f.user_id === currentUser.id
               ? f.friend_id
               : f.user_id
           )
@@ -2046,10 +2039,6 @@ async function loadFriends(){
     return;
   }
 
-  /*
-    Check which friends already have a pending
-    invitation for this room.
-  */
   const {
     data:pendingInvites
   } =
@@ -2077,11 +2066,6 @@ async function loadFriends(){
         .map(x=>x.receiver_id)
     );
 
-
-  /*
-    Check permanent members so we don't invite
-    somebody who has already joined this room.
-  */
   const {
     data:members
   } =
@@ -2100,7 +2084,6 @@ async function loadFriends(){
       (members || [])
         .map(x=>x.user_id)
     );
-
 
   list.innerHTML =
     "";
@@ -2158,15 +2141,12 @@ async function loadFriends(){
           p.avatar_url
           ?
           `<img
-             src="${escapeHTML(
-               p.avatar_url
-             )}"
+             src="${escapeHTML(p.avatar_url)}"
              alt=""
            >`
           :
           escapeHTML(
-            (p.username ||
-             "U")
+            (p.username || "U")
               .charAt(0)
               .toUpperCase()
           )
@@ -2178,8 +2158,7 @@ async function loadFriends(){
 
         <div class="friend-name">
           ${escapeHTML(
-            p.username ||
-            "User"
+            p.username || "User"
           )}
         </div>
 
@@ -2204,12 +2183,8 @@ async function loadFriends(){
       </button>
     `;
 
-
     const inviteButton =
-      row.querySelector(
-        ".invite"
-      );
-
+      row.querySelector(".invite");
 
     if(!disabled){
 
@@ -2224,16 +2199,13 @@ async function loadFriends(){
         };
     }
 
-
-    list.appendChild(
-      row
-    );
+    list.appendChild(row);
   }
 }
 
 
 /* =========================================================
-   SEND ROOM INVITE
+   SEND INVITE
 ========================================================= */
 
 async function sendRoomInvite(
@@ -2255,9 +2227,6 @@ async function sendRoomInvite(
 
   try{
 
-    /*
-      Double-check for an existing pending invite.
-    */
     const {
       data:existing,
       error:checkError
@@ -2290,7 +2259,6 @@ async function sendRoomInvite(
       return;
     }
 
-
     const {
       error
     } =
@@ -2298,23 +2266,15 @@ async function sendRoomInvite(
       .from("room_invites")
       .insert({
 
-        room_id:
-          roomId,
-
-        sender_id:
-          currentUser.id,
-
-        receiver_id:
-          receiverId,
-
-        status:
-          "pending"
+        room_id:roomId,
+        sender_id:currentUser.id,
+        receiver_id:receiverId,
+        status:"pending"
 
       });
 
     if(error)
       throw error;
-
 
     button.textContent =
       "Pending";
@@ -2380,9 +2340,7 @@ function addChatMessage(
 
   `;
 
-  list.appendChild(
-    item
-  );
+  list.appendChild(item);
 
   list.scrollTop =
     list.scrollHeight;
@@ -2404,8 +2362,7 @@ async function sendChatMessage(){
     "";
 
   addChatMessage(
-    myProfile?.username ||
-      "You",
+    myProfile?.username || "You",
     text
   );
 
@@ -2418,14 +2375,10 @@ async function sendChatMessage(){
       event:"chat",
 
       payload:{
-
         username:
-          myProfile?.username ||
-          "You",
-
+          myProfile?.username || "You",
         text
       }
-
     });
   }
 }
@@ -2438,14 +2391,10 @@ async function sendChatMessage(){
 function closeAllSheets(){
 
   document
-    .querySelectorAll(
-      ".overlay"
-    )
+    .querySelectorAll(".overlay")
     .forEach(
       el=>{
-        el.classList.remove(
-          "show"
-        );
+        el.classList.remove("show");
       }
     );
 }
@@ -2457,9 +2406,7 @@ $("inviteBtn").onclick =
     closeAllSheets();
 
     $("inviteOverlay")
-      .classList.add(
-        "show"
-      );
+      .classList.add("show");
 
     await loadFriends();
   };
@@ -2471,9 +2418,7 @@ $("chatBtn").onclick =
     closeAllSheets();
 
     $("chatOverlay")
-      .classList.add(
-        "show"
-      );
+      .classList.add("show");
   };
 
 
@@ -2483,16 +2428,12 @@ $("menuBtn").onclick =
     closeAllSheets();
 
     $("menuOverlay")
-      .classList.add(
-        "show"
-      );
+      .classList.add("show");
   };
 
 
 document
-  .querySelectorAll(
-    ".overlay"
-  )
+  .querySelectorAll(".overlay")
   .forEach(
     overlay=>{
 
@@ -2507,7 +2448,6 @@ document
 
             closeAllSheets();
           }
-
         }
       );
 
@@ -2521,22 +2461,18 @@ document
 
 $("backBtn").onclick =
   ()=>{
-    location.href =
-      "home.html";
+    leaveRoom();
   };
 
 
 micBtn.onclick =
   toggleMic;
 
-
 speakerBtn.onclick =
   toggleSpeaker;
 
-
 noiseBtn.onclick =
   toggleNoiseCancellation;
-
 
 $("sendChat").onclick =
   sendChatMessage;
@@ -2548,13 +2484,11 @@ $("chatInput")
     event=>{
 
       if(
-        event.key ===
-        "Enter"
+        event.key === "Enter"
       ){
 
         sendChatMessage();
       }
-
     }
   );
 
@@ -2564,11 +2498,9 @@ $("copyRoom").onclick =
 
     try{
 
-      await navigator
-        .clipboard
-        .writeText(
-          location.href
-        );
+      await navigator.clipboard.writeText(
+        location.href
+      );
 
       toast(
         "Room link copied"
@@ -2587,8 +2519,7 @@ $("roomInfo").onclick =
   ()=>{
 
     toast(
-      (roomData?.name ||
-       "Room") +
+      (roomData?.name || "Room") +
       " • Private room"
     );
   };
@@ -2597,9 +2528,43 @@ $("roomInfo").onclick =
 $("leaveBtn").onclick =
   leaveRoom;
 
-
 $("menuLeave").onclick =
   leaveRoom;
+
+
+/* =========================================================
+   PAGE VISIBILITY
+========================================================= */
+
+document.addEventListener(
+  "visibilitychange",
+  ()=>{
+
+    /*
+      IMPORTANT:
+      Do NOT stop localStream when the app goes
+      into the background.
+
+      The Android foreground service keeps running
+      while the WebView remains alive.
+    */
+
+    if(
+      document.visibilityState === "visible"
+    ){
+
+      remoteAudios.forEach(
+        audio=>{
+
+          audio.play()
+            .catch(()=>{});
+
+        }
+      );
+
+    }
+  }
+);
 
 
 /* =========================================================
@@ -2610,13 +2575,10 @@ async function leaveRoom(){
 
   closeAllSheets();
 
+  notifyAndroidVoiceStopped();
+
   try{
 
-    /*
-      IMPORTANT:
-      We only remove live presence.
-      room_members stays permanently.
-    */
     await leaveParticipant();
 
   }catch(e){
@@ -2649,7 +2611,21 @@ async function leaveRoom(){
           track.stop();
         }
       );
+
+    localStream =
+      null;
   }
+
+  remoteAudios.forEach(
+    audio=>{
+      audio.srcObject =
+        null;
+
+      audio.remove();
+    }
+  );
+
+  remoteAudios.clear();
 
   peers.forEach(
     pc=>{
@@ -2658,6 +2634,8 @@ async function leaveRoom(){
       }catch(e){}
     }
   );
+
+  peers.clear();
 
   location.href =
     "home.html";
@@ -2682,15 +2660,8 @@ async function init(){
 
     await loadMyProfile();
 
-    /*
-      Permanent membership is created immediately
-      whenever this room successfully opens.
-    */
     await joinPermanentRoom();
 
-    /*
-      Live participation is temporary.
-    */
     await joinParticipant();
 
     await loadParticipants();
@@ -2699,7 +2670,6 @@ async function init(){
 
     await setupRealtime();
 
-
     setTimeout(
       async ()=>{
 
@@ -2707,8 +2677,7 @@ async function init(){
 
           const state =
             realtimeChannel
-              ?.presenceState() ||
-            {};
+              ?.presenceState() || {};
 
           for(
             const key
@@ -2716,14 +2685,12 @@ async function init(){
           ){
 
             if(
-              key !==
-              currentUser.id
+              key !== currentUser.id
             ){
 
               await createPeerConnection(
                 key,
-                currentUser.id <
-                  key
+                currentUser.id < key
               );
             }
           }
@@ -2739,7 +2706,6 @@ async function init(){
       },
       1200
     );
-
 
     loading.classList.add(
       "hidden"
@@ -2760,6 +2726,14 @@ async function init(){
     );
   }
 }
+
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+    notifyAndroidVoiceStopped();
+  }
+);
 
 
 init();
