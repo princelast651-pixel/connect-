@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
@@ -14,6 +15,8 @@ import android.webkit.WebViewClient;
 public class MainActivity extends Activity {
 
     private WebView webView;
+
+    private static final int AUDIO_PERMISSION_REQUEST = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class MainActivity extends Activity {
                                 new String[]{
                                         Manifest.permission.RECORD_AUDIO
                                 },
-                                100
+                                AUDIO_PERMISSION_REQUEST
                         );
                     }
                 });
@@ -68,18 +71,32 @@ public class MainActivity extends Activity {
 
     private void startVoiceService() {
 
-        Intent serviceIntent =
+        if (checkSelfPermission(
+                Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+        Intent intent =
                 new Intent(this, VoiceService.class);
 
-        if (android.os.Build.VERSION.SDK_INT >=
-                android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            startForegroundService(serviceIntent);
+            startForegroundService(intent);
 
         } else {
 
-            startService(serviceIntent);
+            startService(intent);
         }
+    }
+
+    private void stopVoiceService() {
+
+        Intent intent =
+                new Intent(this, VoiceService.class);
+
+        stopService(intent);
     }
 
     @Override
@@ -94,21 +111,41 @@ public class MainActivity extends Activity {
                 grantResults
         );
 
-        if (requestCode == 100 &&
-                grantResults.length > 0 &&
-                grantResults[0] ==
-                        PackageManager.PERMISSION_GRANTED) {
+        if (requestCode ==
+                AUDIO_PERMISSION_REQUEST) {
 
-            startVoiceService();
+            if (grantResults.length > 0 &&
+                    grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED) {
 
-            webView.reload();
+                startVoiceService();
+
+                if (webView != null) {
+                    webView.reload();
+                }
+            }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        stopVoiceService();
+
+        if (webView != null) {
+
+            webView.destroy();
+            webView = null;
+        }
+
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
 
-        if (webView.canGoBack()) {
+        if (webView != null &&
+                webView.canGoBack()) {
 
             webView.goBack();
 
