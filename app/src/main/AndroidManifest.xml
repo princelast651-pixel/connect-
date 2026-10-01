@@ -1,11 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Microphone -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:label="Connect"
-        android:icon="@android:drawable/sym_def_app_icon">
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:usesCleartextTraffic="false">
 
         <activity
             android:name=".MainActivity"
