@@ -2,6 +2,7 @@ package com.connect.app;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.webkit.PermissionRequest;
@@ -32,19 +33,27 @@ public class MainActivity extends Activity {
         webView.setWebChromeClient(new WebChromeClient() {
 
             @Override
-            public void onPermissionRequest(final PermissionRequest request) {
+            public void onPermissionRequest(
+                    final PermissionRequest request) {
+
                 runOnUiThread(() -> {
 
-                    if (checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                    if (checkSelfPermission(
+                            Manifest.permission.RECORD_AUDIO)
                             == PackageManager.PERMISSION_GRANTED) {
 
                         request.grant(new String[]{
                                 PermissionRequest.RESOURCE_AUDIO_CAPTURE
                         });
 
+                        startVoiceService();
+
                     } else {
+
                         requestPermissions(
-                                new String[]{Manifest.permission.RECORD_AUDIO},
+                                new String[]{
+                                        Manifest.permission.RECORD_AUDIO
+                                },
                                 100
                         );
                     }
@@ -55,6 +64,22 @@ public class MainActivity extends Activity {
         webView.loadUrl(
                 "https://princelast651-pixel.github.io/connect-/"
         );
+    }
+
+    private void startVoiceService() {
+
+        Intent serviceIntent =
+                new Intent(this, VoiceService.class);
+
+        if (android.os.Build.VERSION.SDK_INT >=
+                android.os.Build.VERSION_CODES.O) {
+
+            startForegroundService(serviceIntent);
+
+        } else {
+
+            startService(serviceIntent);
+        }
     }
 
     @Override
@@ -71,7 +96,10 @@ public class MainActivity extends Activity {
 
         if (requestCode == 100 &&
                 grantResults.length > 0 &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                grantResults[0] ==
+                        PackageManager.PERMISSION_GRANTED) {
+
+            startVoiceService();
 
             webView.reload();
         }
@@ -79,9 +107,13 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+
         if (webView.canGoBack()) {
+
             webView.goBack();
+
         } else {
+
             super.onBackPressed();
         }
     }
