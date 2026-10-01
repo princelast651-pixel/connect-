@@ -1,1189 +1,1040 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Connect</title>  
+<link rel="manifest" href="./manifest.json">  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <style>  
+*{  
+  margin:0;  
+  padding:0;  
+  box-sizing:border-box;  
+  font-family:Arial,Helvetica,sans-serif;  
+}  
+  
+body{  
+  min-height:100vh;  
+  background:#0f1117;  
+  color:#fff;  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+}  
+  
+#splash{  
+  position:fixed;  
+  inset:0;  
+  background:#0f1117;  
+  display:flex;  
+  flex-direction:column;  
+  align-items:center;  
+  justify-content:center;  
+  z-index:100;  
+}  
+  
+.logo{  
+  width:82px;  
+  height:82px;  
+  border-radius:25px;  
+  background:linear-gradient(135deg,#5865f2,#8b5cf6);  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  box-shadow:0 18px 50px rgba(88,101,242,.35);  
+}  
+  
+.logo svg{  
+  width:52px;  
+  height:52px;  
+}  
+  
+.logo-text{  
+  margin-top:15px;  
+  font-size:25px;  
+  font-weight:800;  
+  letter-spacing:4px;  
+}  
+  
+.loading{  
+  display:flex;  
+  gap:6px;  
+  margin-top:22px;  
+}  
+  
+.loading span{  
+  width:7px;  
+  height:7px;  
+  border-radius:50%;  
+  background:#7c83ff;  
+  animation:loading 1s infinite;  
+}  
+  
+.loading span:nth-child(2){  
+  animation-delay:.15s;  
+}  
+  
+.loading span:nth-child(3){  
+  animation-delay:.3s;  
+}  
+  
+@keyframes loading{  
+  0%,100%{  
+    opacity:.25;  
+    transform:translateY(0);  
+  }  
+  50%{  
+    opacity:1;  
+    transform:translateY(-5px);  
+  }  
+}  
+  
+.auth-container{  
+  width:100%;  
+  max-width:430px;  
+  padding:20px;  
+  opacity:0;  
+  transition:.4s;  
+}  
+  
+.auth-container.show{  
+  opacity:1;  
+}  
+  
+.auth-card{  
+  background:#171a21;  
+  border:1px solid #292e39;  
+  border-radius:22px;  
+  padding:30px;  
+  box-shadow:0 25px 70px rgba(0,0,0,.4);  
+}  
+  
+.auth-logo{  
+  width:58px;  
+  height:58px;  
+  border-radius:18px;  
+  background:linear-gradient(135deg,#5865f2,#8b5cf6);  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  margin-bottom:20px;  
+}  
+  
+.auth-logo svg{  
+  width:37px;  
+  height:37px;  
+}  
+  
+h1{  
+  font-size:25px;  
+  margin-bottom:8px;  
+}  
+  
+.subtitle{  
+  color:#858d9b;  
+  font-size:13px;  
+  line-height:1.5;  
+  margin-bottom:25px;  
+}  
+  
+.google-btn{  
+  width:100%;  
+  height:48px;  
+  border:1px solid #303641;  
+  border-radius:11px;  
+  background:#20242c;  
+  color:#fff;  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  gap:10px;  
+  font-size:14px;  
+  font-weight:700;  
+  cursor:pointer;  
+}  
+  
+.google-btn:disabled{  
+  opacity:.6;  
+  cursor:not-allowed;  
+}  
+  
+.google-icon{  
+  width:21px;  
+  height:21px;  
+  border-radius:50%;  
+  background:#fff;  
+  color:#4285f4;  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  font-weight:800;  
+  font-size:14px;  
+}  
+  
+.divider{  
+  display:flex;  
+  align-items:center;  
+  gap:10px;  
+  margin:20px 0;  
+  color:#69717e;  
+  font-size:11px;  
+}  
+  
+.divider::before,  
+.divider::after{  
+  content:"";  
+  height:1px;  
+  flex:1;  
+  background:#2b3039;  
+}  
+  
+label{  
+  display:block;  
+  color:#c7ccd5;  
+  font-size:11px;  
+  font-weight:700;  
+  margin-bottom:8px;  
+}  
+  
+input{  
+  width:100%;  
+  height:48px;  
+  background:#101319;  
+  border:1px solid #303641;  
+  border-radius:10px;  
+  outline:none;  
+  color:#fff;  
+  padding:0 14px;  
+  font-size:14px;  
+  margin-bottom:15px;  
+}  
+  
+input:focus{  
+  border-color:#5865f2;  
+  box-shadow:0 0 0 3px rgba(88,101,242,.1);  
+}  
+  
+.auth-btn{  
+  width:100%;  
+  height:48px;  
+  border:0;  
+  border-radius:10px;  
+  background:linear-gradient(135deg,#5865f2,#765cf6);  
+  color:#fff;  
+  font-size:14px;  
+  font-weight:700;  
+  cursor:pointer;  
+  margin-top:3px;  
+}  
+  
+.auth-btn:disabled{  
+  opacity:.6;  
+  cursor:not-allowed;  
+}  
+  
+.switch{  
+  text-align:center;  
+  margin-top:20px;  
+  color:#858d99;  
+  font-size:12px;  
+}  
+  
+.switch span:last-child{  
+  color:#7c83ff;  
+  cursor:pointer;  
+  font-weight:700;  
+}  
+  
+.error{  
+  display:none;  
+  background:#351d22;  
+  border:1px solid #633038;  
+  color:#ff929e;  
+  padding:11px;  
+  border-radius:9px;  
+  font-size:12px;  
+  margin-bottom:15px;  
+}  
+  
+.success{  
+  display:none;  
+  color:#63d995;  
+  text-align:center;  
+  font-size:12px;  
+  margin-top:12px;  
+}  
+  
+@media(max-width:480px){  
+  .auth-card{  
+    padding:24px;  
+    border-radius:18px;  
+  }  
+  
+  h1{  
+    font-size:23px;  
+  }  
+}  
+</style>  </head>  <body>  <!-- SPLASH -->  <div id="splash">    <div class="logo">  <svg viewBox="0 0 100 100" fill="none"  
+     xmlns="http://www.w3.org/2000/svg">  
 
-<title>Connect</title>
+  <path  
+    d="M72 31C66 24 57 20 47 20C30 20 17 33 17 50C17 67 30 80 47 80C57 80 66 76 72 69"  
+    stroke="white"  
+    stroke-width="11"  
+    stroke-linecap="round"  
+  />  
 
-<link rel="manifest" href="./manifest.json">
+  <path  
+    d="M55 50H83"  
+    stroke="white"  
+    stroke-width="11"  
+    stroke-linecap="round"  
+  />  
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <path  
+    d="M76 43L83 50L76 57"  
+    stroke="white"  
+    stroke-width="8"  
+    stroke-linecap="round"  
+    stroke-linejoin="round"  
+  />  
 
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,Helvetica,sans-serif;
-}
+</svg>
 
-body{
-  min-height:100vh;
-  background:#0f1117;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+  </div>    <div class="logo-text">CONNECT</div>    <div class="loading">  
+    <span></span>  
+    <span></span>  
+    <span></span>  
+  </div>  </div>  <!-- AUTH -->  <div class="auth-container" id="authContainer">    <div class="auth-card">  <div class="auth-logo">  
 
-#splash{
-  position:fixed;
-  inset:0;
-  background:#0f1117;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:100;
-}
+  <svg viewBox="0 0 100 100" fill="none"  
+       xmlns="http://www.w3.org/2000/svg">  
 
-.logo{
-  width:82px;
-  height:82px;
-  border-radius:25px;
-  background:linear-gradient(135deg,#5865f2,#8b5cf6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 18px 50px rgba(88,101,242,.35);
-}
+    <path  
+      d="M72 31C66 24 57 20 47 20C30 20 17 33 17 50C17 67 30 80 47 80C57 80 66 76 72 69"  
+      stroke="white"  
+      stroke-width="11"  
+      stroke-linecap="round"  
+    />  
 
-.logo svg{
-  width:52px;
-  height:52px;
-}
+    <path  
+      d="M55 50H83"  
+      stroke="white"  
+      stroke-width="11"  
+      stroke-linecap="round"  
+    />  
 
-.logo-text{
-  margin-top:15px;
-  font-size:25px;
-  font-weight:800;
-  letter-spacing:4px;
-}
+    <path  
+      d="M76 43L83 50L76 57"  
+      stroke="white"  
+      stroke-width="8"  
+      stroke-linecap="round"  
+      stroke-linejoin="round"  
+    />  
 
-.loading{
-  display:flex;
-  gap:6px;
-  margin-top:22px;
-}
+  </svg>  
 
-.loading span{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#7c83ff;
-  animation:loading 1s infinite;
-}
+</div>  
 
-.loading span:nth-child(2){
-  animation-delay:.15s;
-}
+<h1 id="title">Welcome to Connect</h1>  
 
-.loading span:nth-child(3){
-  animation-delay:.3s;
-}
+<div class="subtitle" id="subtitle">  
+  Connect with people, communities and friends.  
+</div>  
 
-@keyframes loading{
-  0%,100%{
-    opacity:.25;
-    transform:translateY(0);
-  }
+<div class="error" id="error"></div>  
 
-  50%{
-    opacity:1;
-    transform:translateY(-5px);
-  }
-}
+<!-- GOOGLE LOGIN -->  
+<button class="google-btn" id="googleBtn">  
 
-.auth-container{
-  width:100%;
-  max-width:430px;
-  padding:20px;
-  opacity:0;
-  transition:.4s;
-}
+  <div class="google-icon">G</div>  
 
-.auth-container.show{
-  opacity:1;
-}
+  <span id="googleText">  
+    Continue with Google  
+  </span>  
 
-.auth-card{
-  background:#171a21;
-  border:1px solid #292e39;
-  border-radius:22px;
-  padding:30px;
-  box-shadow:0 25px 70px rgba(0,0,0,.4);
-}
+</button>  
 
-.auth-logo{
-  width:58px;
-  height:58px;
-  border-radius:18px;
-  background:linear-gradient(135deg,#5865f2,#8b5cf6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:20px;
-}
+<div class="divider">OR</div>  
 
-.auth-logo svg{
-  width:37px;
-  height:37px;
-}
+<label>EMAIL</label>  
 
-h1{
-  font-size:25px;
-  margin-bottom:8px;
-}
+<input  
+  id="email"  
+  type="email"  
+  placeholder="Enter your email"  
+  autocomplete="email"  
+>  
 
-.subtitle{
-  color:#858d9b;
-  font-size:13px;
-  line-height:1.5;
-  margin-bottom:25px;
-}
+<label>PASSWORD</label>  
 
-.google-btn{
-  width:100%;
-  height:48px;
-  border:1px solid #303641;
-  border-radius:11px;
-  background:#20242c;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
-}
+<input  
+  id="password"  
+  type="password"  
+  placeholder="Enter your password"  
+  autocomplete="current-password"  
+>  
 
-.google-btn:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
+<button class="auth-btn" id="authBtn">  
+  Login  
+</button>  
 
-.google-icon{
-  width:21px;
-  height:21px;
-  border-radius:50%;
-  background:#fff;
-  color:#4285f4;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  font-size:14px;
-}
+<div class="success" id="success"></div>  
 
-.divider{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:20px 0;
-  color:#69717e;
-  font-size:11px;
-}
+<div class="switch">  
 
-.divider::before,
-.divider::after{
-  content:"";
-  height:1px;
-  flex:1;
-  background:#2b3039;
-}
+  <span id="switchText">  
+    Don't have an account?  
+  </span>  
 
-label{
-  display:block;
-  color:#c7ccd5;
-  font-size:11px;
-  font-weight:700;
-  margin-bottom:8px;
-}
-
-input{
-  width:100%;
-  height:48px;
-  background:#101319;
-  border:1px solid #303641;
-  border-radius:10px;
-  outline:none;
-  color:#fff;
-  padding:0 14px;
-  font-size:14px;
-  margin-bottom:15px;
-}
-
-input:focus{
-  border-color:#5865f2;
-  box-shadow:0 0 0 3px rgba(88,101,242,.1);
-}
-
-.auth-btn{
-  width:100%;
-  height:48px;
-  border:0;
-  border-radius:10px;
-  background:linear-gradient(135deg,#5865f2,#765cf6);
-  color:#fff;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
-  margin-top:3px;
-}
-
-.auth-btn:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
-
-.switch{
-  text-align:center;
-  margin-top:20px;
-  color:#858d99;
-  font-size:12px;
-}
-
-.switch span:last-child{
-  color:#7c83ff;
-  cursor:pointer;
-  font-weight:700;
-}
-
-.error{
-  display:none;
-  background:#351d22;
-  border:1px solid #633038;
-  color:#ff929e;
-  padding:11px;
-  border-radius:9px;
-  font-size:12px;
-  margin-bottom:15px;
-}
-
-.success{
-  display:none;
-  color:#63d995;
-  text-align:center;
-  font-size:12px;
-  margin-top:12px;
-}
-
-@media(max-width:480px){
-
-  .auth-card{
-    padding:24px;
-    border-radius:18px;
-  }
-
-  h1{
-    font-size:23px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<!-- =========================
-     SPLASH
-========================= -->
-
-<div id="splash">
-
-  <div class="logo">
-
-    <svg viewBox="0 0 100 100" fill="none"
-         xmlns="http://www.w3.org/2000/svg">
-
-      <path
-        d="M72 31C66 24 57 20 47 20C30 20 17 33 17 50C17 67 30 80 47 80C57 80 66 76 72 69"
-        stroke="white"
-        stroke-width="11"
-        stroke-linecap="round"
-      />
-
-      <path
-        d="M55 50H83"
-        stroke="white"
-        stroke-width="11"
-        stroke-linecap="round"
-      />
-
-      <path
-        d="M76 43L83 50L76 57"
-        stroke="white"
-        stroke-width="8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-
-    </svg>
-
-  </div>
-
-  <div class="logo-text">
-    CONNECT
-  </div>
-
-  <div class="loading">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+  <span id="switchBtn">  
+    Create Account  
+  </span>  
 
 </div>
 
-
-<!-- =========================
-     AUTH
-========================= -->
-
-<div class="auth-container" id="authContainer">
-
-  <div class="auth-card">
-
-    <div class="auth-logo">
-
-      <svg viewBox="0 0 100 100" fill="none"
-           xmlns="http://www.w3.org/2000/svg">
-
-        <path
-          d="M72 31C66 24 57 20 47 20C30 20 17 33 17 50C17 67 30 80 47 80C57 80 66 76 72 69"
-          stroke="white"
-          stroke-width="11"
-          stroke-linecap="round"
-        />
-
-        <path
-          d="M55 50H83"
-          stroke="white"
-          stroke-width="11"
-          stroke-linecap="round"
-        />
-
-        <path
-          d="M76 43L83 50L76 57"
-          stroke="white"
-          stroke-width="8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-
-      </svg>
-
-    </div>
-
-    <h1 id="title">
-      Welcome to Connect
-    </h1>
-
-    <div class="subtitle" id="subtitle">
-      Connect with people, communities and friends.
-    </div>
-
-    <div class="error" id="error"></div>
-
-
-    <!-- GOOGLE -->
-
-    <button
-      class="google-btn"
-      id="googleBtn"
-      type="button">
-
-      <div class="google-icon">
-        G
-      </div>
-
-      <span id="googleText">
-        Continue with Google
-      </span>
-
-    </button>
-
-
-    <div class="divider">
-      OR
-    </div>
-
-
-    <label>
-      EMAIL
-    </label>
-
-    <input
-      id="email"
-      type="email"
-      placeholder="Enter your email"
-      autocomplete="email"
-    >
-
-
-    <label>
-      PASSWORD
-    </label>
-
-    <input
-      id="password"
-      type="password"
-      placeholder="Enter your password"
-      autocomplete="current-password"
-    >
-
-
-    <button
-      class="auth-btn"
-      id="authBtn"
-      type="button">
-
-      Login
-
-    </button>
-
-
-    <div
-      class="success"
-      id="success">
-    </div>
-
-
-    <div class="switch">
-
-      <span id="switchText">
-        Don't have an account?
-      </span>
-
-      <span id="switchBtn">
-        Create Account
-      </span>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<script>
-
-/* =====================================================
-   SUPABASE
-===================================================== */
-
-const SUPABASE_URL =
-"https://riversitunmzvuprecbt.supabase.co";
-
-const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cml2ZXJzaXR1bm16dnVwcmVjYnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoxMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
-
-
-const supabaseClient =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true,
-      flowType:"pkce"
-    }
-  }
-);
-
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const splash =
-document.getElementById("splash");
-
-const authContainer =
-document.getElementById("authContainer");
-
-const title =
-document.getElementById("title");
-
-const subtitle =
-document.getElementById("subtitle");
-
-const email =
-document.getElementById("email");
-
-const password =
-document.getElementById("password");
-
-const authBtn =
-document.getElementById("authBtn");
-
-const googleBtn =
-document.getElementById("googleBtn");
-
-const googleText =
-document.getElementById("googleText");
-
-const switchBtn =
-document.getElementById("switchBtn");
-
-const switchText =
-document.getElementById("switchText");
-
-const errorBox =
-document.getElementById("error");
-
-const successBox =
-document.getElementById("success");
-
-
-let isSignup = false;
-let redirecting = false;
-
-
-/* =====================================================
-   ERROR
-===================================================== */
-
-function showError(message){
-
-  errorBox.textContent =
-    message || "Something went wrong.";
-
-  errorBox.style.display =
-    "block";
-}
-
-
-/* =====================================================
-   REDIRECT
-===================================================== */
-
-function redirectTo(page){
-
-  if(redirecting){
-    return;
-  }
-
-  redirecting = true;
-
-  window.location.replace(page);
-}
-
-
-/* =====================================================
-   CHECK PROFILE
-===================================================== */
-
-async function checkProfileAndRedirect(session){
-
-  if(
-    !session ||
-    !session.user ||
-    redirecting
-  ){
-    return;
-  }
-
-  console.log(
-    "Logged in:",
-    session.user.email
-  );
-
-  try{
-
-    const {
-      data: profile,
-      error
-    } =
-    await supabaseClient
-      .from("profiles")
-      .select("id,username")
-      .eq("id",session.user.id)
-      .maybeSingle();
-
-
-    if(error){
-
-      console.error(
-        "Profile error:",
-        error
-      );
-
-      redirectTo(
-        "profile-setup.html"
-      );
-
-      return;
-    }
-
-
-    if(
-      profile &&
-      profile.username &&
-      profile.username.trim() !== ""
-    ){
-
-      redirectTo(
-        "home.html"
-      );
-
-    }else{
-
-      redirectTo(
-        "profile-setup.html"
-      );
-    }
-
-
-  }catch(error){
-
-    console.error(
-      "Profile check error:",
-      error
-    );
-
-    redirectTo(
-      "profile-setup.html"
-    );
-  }
-}
-
-
-/* =====================================================
-   OAUTH CALLBACK
-===================================================== */
-
-async function handleOAuthCallback(){
-
-  try{
-
-    const {
-      data,
-      error
-    } =
-    await supabaseClient.auth.getSession();
-
-
-    if(error){
-
-      console.error(
-        "OAuth session error:",
-        error
-      );
-
-      return false;
-    }
-
-
-    if(
-      data &&
-      data.session
-    ){
-
-      console.log(
-        "Google session detected."
-      );
-
-
-      /*
-       * Remove OAuth parameters from
-       * visible URL after session is ready.
-       */
-
-      try{
-
-        window.history.replaceState(
-          {},
-          document.title,
-          window.location.pathname
-        );
-
-      }catch(error){
-
-        console.log(
-          "URL cleanup skipped."
-        );
-      }
-
-
-      await checkProfileAndRedirect(
-        data.session
-      );
-
-      return true;
-    }
-
-
-  }catch(error){
-
-    console.error(
-      "OAuth callback error:",
-      error
-    );
-  }
-
-
-  return false;
-}
-
-
-/* =====================================================
-   GOOGLE LOGIN
-===================================================== */
-
-googleBtn.addEventListener(
-  "click",
-  async()=>{
-
-    if(redirecting){
-      return;
-    }
-
-
-    errorBox.style.display =
-      "none";
-
-    successBox.style.display =
-      "none";
-
-
-    googleBtn.disabled =
-      true;
-
-    googleText.textContent =
-      "Opening Google...";
-
-
-    try{
-
-      const {
-        data,
-        error
-      } =
-      await supabaseClient.auth.signInWithOAuth({
-
-        provider:"google",
-
-        options:{
-
-          /*
-           * VERY IMPORTANT
-           * This forces Google to show
-           * the account chooser.
-           */
-
-          queryParams:{
-            prompt:"select_account"
-          },
-
-
-          /*
-           * OAuth comes back to this page.
-           */
-
-          redirectTo:
-            "https://princelast651-pixel.github.io/connect-/"
-        }
-
-      });
-
-
-      if(error){
-
-        console.error(
-          "Google OAuth error:",
-          error
-        );
-
-        showError(
-          error.message
-        );
-
-        googleBtn.disabled =
-          false;
-
-        googleText.textContent =
-          "Continue with Google";
-
-        return;
-      }
-
-
-      /*
-       * Supabase normally redirects
-       * automatically from here.
-       */
-
-      console.log(
-        "Google OAuth started.",
-        data
-      );
-
-
-    }catch(error){
-
-      console.error(error);
-
-      showError(
-        error.message ||
-        "Google login failed."
-      );
-
-      googleBtn.disabled =
-        false;
-
-      googleText.textContent =
-        "Continue with Google";
-    }
-
-  }
-);
-
-
-/* =====================================================
-   EMAIL LOGIN / SIGNUP
-===================================================== */
-
-authBtn.addEventListener(
-  "click",
-  async()=>{
-
-    if(redirecting){
-      return;
-    }
-
-
-    errorBox.style.display =
-      "none";
-
-    successBox.style.display =
-      "none";
-
-
-    const userEmail =
-      email.value.trim();
-
-    const userPassword =
-      password.value;
-
-
-    if(!userEmail){
-
-      showError(
-        "Please enter your email."
-      );
-
-      return;
-    }
-
-
-    if(!userPassword){
-
-      showError(
-        "Please enter your password."
-      );
-
-      return;
-    }
-
-
-    authBtn.disabled =
-      true;
-
-
-    authBtn.textContent =
-      isSignup
-      ? "Creating Account..."
-      : "Logging in...";
-
-
-    try{
-
-
-      /* =========================
-         SIGN UP
-      ========================= */
-
-      if(isSignup){
-
-        const {
-          data,
-          error
-        } =
-        await supabaseClient.auth.signUp({
-
-          email:userEmail,
-          password:userPassword
-
-        });
-
-
-        if(error){
-
-          showError(
-            error.message
-          );
-
-          authBtn.disabled =
-            false;
-
-          authBtn.textContent =
-            "Create Account";
-
-          return;
-        }
-
-
-        if(data.session){
-
-          successBox.textContent =
-            "Account created. Setting up profile...";
-
-          successBox.style.display =
-            "block";
-
-          redirectTo(
-            "profile-setup.html"
-          );
-
-        }else{
-
-          successBox.textContent =
-            "Account created. Check your email to confirm your account.";
-
-          successBox.style.display =
-            "block";
-
-          authBtn.disabled =
-            false;
-
-          authBtn.textContent =
-            "Create Account";
-        }
-
-
-        return;
-      }
-
-
-      /* =========================
-         LOGIN
-      ========================= */
-
-      const {
-        data,
-        error
-      } =
-      await supabaseClient.auth.signInWithPassword({
-
-        email:userEmail,
-        password:userPassword
-
-      });
-
-
-      if(error){
-
-        showError(
-          error.message
-        );
-
-        authBtn.disabled =
-          false;
-
-        authBtn.textContent =
-          "Login";
-
-        return;
-      }
-
-
-      if(
-        data &&
-        data.session
-      ){
-
-        await checkProfileAndRedirect(
-          data.session
-        );
-      }
-
-
-    }catch(error){
-
-      console.error(error);
-
-      showError(
-        error.message ||
-        "Something went wrong."
-      );
-
-      authBtn.disabled =
-        false;
-
-      authBtn.textContent =
-        isSignup
-        ? "Create Account"
-        : "Login";
-    }
-
-  }
-);
-
-
-/* =====================================================
-   LOGIN / SIGNUP SWITCH
-===================================================== */
-
-switchBtn.addEventListener(
-  "click",
-  ()=>{
-
-    isSignup =
-      !isSignup;
-
-
-    errorBox.style.display =
-      "none";
-
-    successBox.style.display =
-      "none";
-
-
-    if(isSignup){
-
-      title.textContent =
-        "Create your account";
-
-      subtitle.textContent =
-        "Join Connect and create your own profile.";
-
-      authBtn.textContent =
-        "Create Account";
-
-      switchText.textContent =
-        "Already have an account?";
-
-      switchBtn.textContent =
-        "Login";
-
-      password.autocomplete =
-        "new-password";
-
-
-    }else{
-
-      title.textContent =
-        "Welcome back";
-
-      subtitle.textContent =
-        "Login to continue to Connect.";
-
-      authBtn.textContent =
-        "Login";
-
-      switchText.textContent =
-        "Don't have an account?";
-
-      switchBtn.textContent =
-        "Create Account";
-
-      password.autocomplete =
-        "current-password";
-    }
-
-  }
-);
-
-
-/* =====================================================
-   AUTH STATE
-===================================================== */
-
-supabaseClient.auth.onAuthStateChange(
-  (event,session)=>{
-
-    console.log(
-      "Auth event:",
-      event
-    );
-
-
-    if(
-      event === "SIGNED_IN" &&
-      session &&
-      !redirecting
-    ){
-
-      setTimeout(
-        ()=>{
-          checkProfileAndRedirect(
-            session
-          );
-        },
-        300
-      );
-    }
-
-  }
-);
-
-
-/* =====================================================
-   START APP
-===================================================== */
-
-async function startApp(){
-
-  /*
-   * Give Supabase time to restore
-   * an existing session.
-   */
-
-  await new Promise(
-    resolve =>
-      setTimeout(resolve,700)
-  );
-
-
-  const handled =
-    await handleOAuthCallback();
-
-
-  if(redirecting){
-    return;
-  }
-
-
-  splash.style.display =
-    "none";
-
-  authContainer.classList.add(
-    "show"
-  );
-
-
-  /*
-   * Reset Google button.
-   */
-
-  googleBtn.disabled =
-    false;
-
-  googleText.textContent =
-    "Continue with Google";
-}
-
-
-/* =====================================================
-   START
-===================================================== */
-
-startApp();
-
-</script>
-
-</body>
+  </div>  </div>  <script>  
+  
+/* =========================  
+   SUPABASE  
+========================= */  
+  
+const SUPABASE_URL =  
+"https://riversitunmzvuprecbt.supabase.co";  
+  
+const SUPABASE_ANON_KEY =  
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdmVyc2l0dW5tenZ1cHJlY2J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";  
+  
+const supabaseClient =  
+supabase.createClient(  
+  SUPABASE_URL,  
+  SUPABASE_ANON_KEY,  
+  {  
+    auth:{  
+      persistSession:true,  
+      autoRefreshToken:true,  
+      detectSessionInUrl:true  
+    }  
+  }  
+);  
+  
+  
+/* =========================  
+   ELEMENTS  
+========================= */  
+  
+const splash =  
+document.getElementById("splash");  
+  
+const authContainer =  
+document.getElementById("authContainer");  
+  
+const title =  
+document.getElementById("title");  
+  
+const subtitle =  
+document.getElementById("subtitle");  
+  
+const email =  
+document.getElementById("email");  
+  
+const password =  
+document.getElementById("password");  
+  
+const authBtn =  
+document.getElementById("authBtn");  
+  
+const googleBtn =  
+document.getElementById("googleBtn");  
+  
+const googleText =  
+document.getElementById("googleText");  
+  
+const switchBtn =  
+document.getElementById("switchBtn");  
+  
+const switchText =  
+document.getElementById("switchText");  
+  
+const errorBox =  
+document.getElementById("error");  
+  
+const successBox =  
+document.getElementById("success");  
+  
+  
+let isSignup = false;  
+let redirecting = false;  
+  
+  
+/* =========================  
+   ERROR  
+========================= */  
+  
+function showError(message){  
+  
+  errorBox.textContent = message;  
+  errorBox.style.display = "block";  
+  
+}  
+  
+  
+/* =========================  
+   REDIRECT  
+========================= */  
+  
+function redirectTo(page){  
+  
+  if(redirecting) return;  
+  
+  redirecting = true;  
+  
+  window.location.replace(page);  
+  
+}  
+  
+  
+/* =========================  
+   CHECK PROFILE  
+========================= */  
+  
+async function checkProfileAndRedirect(session){  
+  
+  if(!session || !session.user){  
+    return;  
+  }  
+  
+  if(redirecting){  
+    return;  
+  }  
+  
+  console.log(  
+    "Logged in user:",  
+    session.user.email  
+  );  
+  
+  try{  
+  
+    const {  
+      data: profile,  
+      error  
+    } = await supabaseClient  
+      .from("profiles")  
+      .select("id, username")  
+      .eq("id", session.user.id)  
+      .maybeSingle();  
+  
+  
+    if(error){  
+  
+      console.error(  
+        "Profile error:",  
+        error  
+      );  
+  
+      /*  
+        If profile table cannot be read,  
+        send user to setup so the issue  
+        can be identified there.  
+      */  
+  
+      redirectTo(  
+        "profile-setup.html"  
+      );  
+  
+      return;  
+    }  
+  
+  
+    if(  
+      profile &&  
+      profile.username &&  
+      profile.username.trim() !== ""  
+    ){  
+  
+      redirectTo(  
+        "home.html"  
+      );  
+  
+    }else{  
+  
+      redirectTo(  
+        "profile-setup.html"  
+      );  
+  
+    }  
+  
+  }catch(err){  
+  
+    console.error(err);  
+  
+    redirectTo(  
+      "profile-setup.html"  
+    );  
+  
+  }  
+  
+}  
+  
+  
+/* =========================  
+   OAUTH CALLBACK  
+========================= */  
+  
+async function handleOAuthCallback(){  
+  
+  try{  
+  
+    /*  
+      First ask Supabase for the current  
+      session. Supabase automatically  
+      processes the OAuth URL hash.  
+    */  
+  
+    const {  
+      data,  
+      error  
+    } = await supabaseClient.auth.getSession();  
+  
+  
+    if(error){  
+  
+      console.error(  
+        "Session error:",  
+        error  
+      );  
+  
+      return false;  
+    }  
+  
+  
+    if(  
+      data &&  
+      data.session  
+    ){  
+  
+      console.log(  
+        "OAuth/session detected"  
+      );  
+  
+      /*  
+        Remove OAuth tokens from the  
+        visible browser URL after the  
+        session has been restored.  
+      */  
+  
+      if(window.location.hash){  
+  
+        history.replaceState(  
+          null,  
+          document.title,  
+          window.location.pathname +  
+          window.location.search  
+        );  
+  
+      }  
+  
+  
+      await checkProfileAndRedirect(  
+        data.session  
+      );  
+  
+      return true;  
+    }  
+  
+  }catch(err){  
+  
+    console.error(  
+      "OAuth callback error:",  
+      err  
+    );  
+  
+  }  
+  
+  return false;  
+  
+}  
+  
+  
+/* =========================  
+   GOOGLE LOGIN  
+========================= */  
+  
+googleBtn.addEventListener(  
+  "click",  
+  async()=>{  
+  
+    if(redirecting){  
+      return;  
+    }  
+  
+    errorBox.style.display = "none";  
+  
+    googleBtn.disabled = true;  
+  
+    googleText.textContent =  
+      "Connecting...";  
+  
+  
+    try{  
+  
+      const {  
+        error  
+      } =  
+      await supabaseClient.auth.signInWithOAuth({  
+  
+        provider:"google",  
+  
+        options:{  
+          redirectTo:  
+            "https://princelast651-pixel.github.io/connect-/"  
+        }  
+  
+      });  
+  
+  
+      if(error){  
+  
+        showError(error.message);  
+  
+        googleBtn.disabled = false;  
+  
+        googleText.textContent =  
+          "Continue with Google";  
+  
+      }  
+  
+    }catch(err){  
+  
+      showError(  
+        err.message ||  
+        "Google login failed."  
+      );  
+  
+      googleBtn.disabled = false;  
+  
+      googleText.textContent =  
+        "Continue with Google";  
+  
+    }  
+  
+  }  
+);  
+  
+  
+/* =========================  
+   EMAIL LOGIN / SIGNUP  
+========================= */  
+  
+authBtn.addEventListener(  
+  "click",  
+  async()=>{  
+  
+    if(redirecting){  
+      return;  
+    }  
+  
+    errorBox.style.display = "none";  
+    successBox.style.display = "none";  
+  
+  
+    const userEmail =  
+      email.value.trim();  
+  
+    const userPassword =  
+      password.value;  
+  
+  
+    if(!userEmail){  
+  
+      showError(  
+        "Please enter your email."  
+      );  
+  
+      return;  
+    }  
+  
+  
+    if(!userPassword){  
+  
+      showError(  
+        "Please enter your password."  
+      );  
+  
+      return;  
+    }  
+  
+  
+    authBtn.disabled = true;  
+  
+    authBtn.textContent =  
+      isSignup  
+      ? "Creating Account..."  
+      : "Logging in...";  
+  
+  
+    try{  
+  
+      /* SIGN UP */  
+  
+      if(isSignup){  
+  
+        const {  
+          data,  
+          error  
+        } =  
+        await supabaseClient.auth.signUp({  
+  
+          email:userEmail,  
+          password:userPassword  
+  
+        });  
+  
+  
+        if(error){  
+  
+          showError(  
+            error.message  
+          );  
+  
+          authBtn.disabled = false;  
+  
+          authBtn.textContent =  
+            "Create Account";  
+  
+          return;  
+        }  
+  
+  
+        if(data.session){  
+  
+          successBox.textContent =  
+            "Account created. Setting up profile...";  
+  
+          successBox.style.display =  
+            "block";  
+  
+          redirectTo(  
+            "profile-setup.html"  
+          );  
+  
+        }else{  
+  
+          successBox.textContent =  
+            "Account created. Check your email to confirm your account.";  
+  
+          successBox.style.display =  
+            "block";  
+  
+          authBtn.disabled = false;  
+  
+          authBtn.textContent =  
+            "Create Account";  
+  
+        }  
+  
+        return;  
+      }  
+  
+  
+      /* LOGIN */  
+  
+      const {  
+        data,  
+        error  
+      } =  
+      await supabaseClient.auth.signInWithPassword({  
+  
+        email:userEmail,  
+        password:userPassword  
+  
+      });  
+  
+  
+      if(error){  
+  
+        showError(  
+          error.message  
+        );  
+  
+        authBtn.disabled = false;  
+  
+        authBtn.textContent =  
+          "Login";  
+  
+        return;  
+      }  
+  
+  
+      if(  
+        data &&  
+        data.session  
+      ){  
+  
+        await checkProfileAndRedirect(  
+          data.session  
+        );  
+  
+      }  
+  
+    }catch(err){  
+  
+      console.error(err);  
+  
+      showError(  
+        err.message ||  
+        "Something went wrong."  
+      );  
+  
+      authBtn.disabled = false;  
+  
+      authBtn.textContent =  
+        isSignup  
+        ? "Create Account"  
+        : "Login";  
+  
+    }  
+  
+  }  
+);  
+  
+  
+/* =========================  
+   SWITCH LOGIN / SIGNUP  
+========================= */  
+  
+switchBtn.addEventListener(  
+  "click",  
+  ()=>{  
+  
+    isSignup =  
+      !isSignup;  
+  
+    errorBox.style.display = "none";  
+    successBox.style.display = "none";  
+  
+  
+    if(isSignup){  
+  
+      title.textContent =  
+        "Create your account";  
+  
+      subtitle.textContent =  
+        "Join Connect and create your own profile.";  
+  
+      authBtn.textContent =  
+        "Create Account";  
+  
+      switchText.textContent =  
+        "Already have an account?";  
+  
+      switchBtn.textContent =  
+        "Login";  
+  
+      password.autocomplete =  
+        "new-password";  
+  
+    }else{  
+  
+      title.textContent =  
+        "Welcome back";  
+  
+      subtitle.textContent =  
+        "Login to continue to Connect.";  
+  
+      authBtn.textContent =  
+        "Login";  
+  
+      switchText.textContent =  
+        "Don't have an account?";  
+  
+      switchBtn.textContent =  
+        "Create Account";  
+  
+      password.autocomplete =  
+        "current-password";  
+  
+    }  
+  
+  }  
+);  
+  
+  
+/* =========================  
+   AUTH STATE  
+========================= */  
+  
+supabaseClient.auth.onAuthStateChange(  
+  (event,session)=>{  
+  
+    console.log(  
+      "Auth event:",  
+      event  
+    );  
+  
+    if(  
+      event === "SIGNED_IN" &&  
+      session &&  
+      !redirecting  
+    ){  
+  
+      setTimeout(  
+        ()=>{  
+          checkProfileAndRedirect(  
+            session  
+          );  
+        },  
+        300  
+      );  
+  
+    }  
+  
+  }  
+);  
+  
+  
+/* =========================  
+   START APP  
+========================= */  
+  
+async function startApp(){  
+  
+  /*  
+    Wait for Supabase to restore/process  
+    the OAuth session.  
+  */  
+  
+  await new Promise(  
+    resolve =>  
+      setTimeout(resolve,700)  
+  );  
+  
+  
+  const handled =  
+    await handleOAuthCallback();  
+  
+  
+  if(redirecting){  
+    return;  
+  }  
+  
+  
+  splash.style.display =  
+    "none";  
+  
+  authContainer.classList.add(  
+    "show"  
+  );  
+  
+  
+  /*  
+    If there is no session,  
+    simply show login page.  
+  */  
+  
+}  
+  
+  
+/* START */  
+  
+startApp();  
+  
+</script>  </body>  
 </html>
