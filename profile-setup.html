@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Set Up Profile • Connect</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Set Up Profile • Connect</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
 *{
   box-sizing:border-box;
   margin:0;
@@ -181,161 +174,143 @@ button:disabled{
   font-size:11px;
   margin-top:22px;
 }
-</style>
-</head>
+</style></head><body><div class="card">  <div class="logo">C</div>  <h1>Set Up Your Profile</h1>
+  <p class="subtitle">Complete your profile to continue to Connect</p>  <div class="avatarBox"><img id="avatarPreview" class="avatar" alt="Profile picture">
 
-<body>
+<label for="avatarInput" class="choose">
+  Choose profile picture
+</label>
 
-<div class="card">
+<input id="avatarInput" type="file" accept="image/*">
 
-  <div class="logo">C</div>
+  </div><label for="username">Username</label>
 
-  <h1>Set Up Your Profile</h1>
-  <p class="subtitle">Complete your profile to continue to Connect</p>
+<input
+id="username"
+class="input"
+type="text"
+placeholder="Enter username"
+maxlength="20"
+autocomplete="off"
 
-  <div class="avatarBox">
+«»
 
-    <img
-      id="avatarPreview"
-      class="avatar"
-      alt="Profile picture"
-    >
+<label for="dob">Date of Birth</label>
 
-    <label for="avatarInput" class="choose">
-      Choose profile picture
-    </label>
+<input
+id="dob"
+class="input"
+type="date"
 
-    <input
-      id="avatarInput"
-      type="file"
-      accept="image/*"
-    >
+«»
 
-  </div>
+  <div class="guidelines"><input id="guidelines" type="checkbox">
 
-  <label for="username">Username</label>
-  <input
-    id="username"
-    class="input"
-    type="text"
-    placeholder="Enter username"
-    maxlength="20"
-    autocomplete="off"
-  >
+<span>
+  I agree to follow Connect's community guidelines and use the platform responsibly.
+</span>
 
-  <label for="dob">Date of Birth</label>
-  <input
-    id="dob"
-    class="input"
-    type="date"
-  >
-
-  <div class="guidelines">
-    <input id="guidelines" type="checkbox">
-
-    <span>
-      I agree to follow Connect's community guidelines and use the platform responsibly.
-    </span>
-  </div>
-
-  <button id="completeBtn">
+  </div>  <button id="completeBtn">
     Complete Profile
-  </button>
-
-  <div id="message" class="message"></div>
-
-  <div class="footer">
+  </button>  <div id="message" class="message"></div>  <div class="footer">
     Connect • Your space, your people
-  </div>
+  </div></div><script>
 
-</div>
-
-<script>
-
-/* ================================
-   SUPABASE
-================================ */
+/* =========================================
+   SUPABASE CONFIG
+========================================= */
 
 const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJyaXZlcnNpdHVubXp2dXByZWNicHQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5MDYzMTY0MCwiZXhwIjoyMTA2MjA3NjQwfQ.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
+
+
+/* =========================================
+   CREATE SUPABASE CLIENT
+========================================= */
 
 const supabaseClient =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-/* ================================
+/* =========================================
    ELEMENTS
-================================ */
+========================================= */
 
 const avatarInput =
-document.getElementById("avatarInput");
+  document.getElementById("avatarInput");
 
 const avatarPreview =
-document.getElementById("avatarPreview");
+  document.getElementById("avatarPreview");
 
 const usernameInput =
-document.getElementById("username");
+  document.getElementById("username");
 
 const dobInput =
-document.getElementById("dob");
+  document.getElementById("dob");
 
 const guidelinesInput =
-document.getElementById("guidelines");
+  document.getElementById("guidelines");
 
 const completeBtn =
-document.getElementById("completeBtn");
+  document.getElementById("completeBtn");
 
 const messageBox =
-document.getElementById("message");
+  document.getElementById("message");
 
 
-/* ================================
+/* =========================================
    DEFAULT AVATAR
-================================ */
+========================================= */
 
 const defaultAvatar =
 "data:image/svg+xml;charset=UTF-8," +
 encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="200"
-     height="200"
-     viewBox="0 0 200 200">
+width="200"
+height="200"
+viewBox="0 0 200 200">
 
-  <rect width="200" height="200"
-        rx="100"
-        fill="#eef2ff"/>
+<rect width="200"
+height="200"
+rx="100"
+fill="#eef2ff"/>
 
-  <circle cx="100" cy="78" r="38"
-          fill="#6366f1"/>
+<circle
+cx="100"
+cy="78"
+r="38"
+fill="#6366f1"/>
 
-  <path d="M35 180
-           C42 133 70 118 100 118
-           C130 118 158 133 165 180"
-        fill="#6366f1"/>
+<path
+d="M35 180
+C42 133 70 118 100 118
+C130 118 158 133 165 180"
+fill="#6366f1"/>
+
 </svg>
 `);
 
 avatarPreview.src = defaultAvatar;
 
 
-/* ================================
+/* =========================================
    STATE
-================================ */
+========================================= */
 
 let selectedAvatar = null;
 
 
-/* ================================
+/* =========================================
    MESSAGE
-================================ */
+========================================= */
 
-function showMessage(text, type="error"){
+function showMessage(text,type="error"){
 
   messageBox.textContent = text;
 
@@ -344,114 +319,159 @@ function showMessage(text, type="error"){
 }
 
 
-/* ================================
+/* =========================================
    AVATAR SELECT
-================================ */
+========================================= */
 
 avatarInput.addEventListener(
   "change",
   function(){
 
-    const file = this.files?.[0];
+    const file =
+      this.files?.[0];
 
     if(!file) return;
 
     if(!file.type.startsWith("image/")){
-      showMessage("Please select an image file.");
+
+      showMessage(
+        "Please select an image file."
+      );
+
       this.value = "";
+
       return;
     }
 
     if(file.size > 5 * 1024 * 1024){
-      showMessage("Profile picture must be smaller than 5 MB.");
+
+      showMessage(
+        "Profile picture must be smaller than 5 MB."
+      );
+
       this.value = "";
+
       return;
     }
 
     selectedAvatar = file;
 
-    const reader = new FileReader();
+    const reader =
+      new FileReader();
 
-    reader.onload = function(e){
-      avatarPreview.src = e.target.result;
-    };
+    reader.onload =
+      function(e){
+
+        avatarPreview.src =
+          e.target.result;
+
+      };
 
     reader.readAsDataURL(file);
 
-    messageBox.className = "message";
+    messageBox.className =
+      "message";
 
   }
 );
 
 
-/* ================================
+/* =========================================
    COMPLETE PROFILE
-================================ */
+========================================= */
 
 completeBtn.addEventListener(
   "click",
   async function(){
 
     completeBtn.disabled = true;
-    completeBtn.textContent = "Saving...";
 
-    messageBox.className = "message";
+    completeBtn.textContent =
+      "Saving...";
+
+    messageBox.className =
+      "message";
+
 
     try{
 
-      /* SESSION */
+      /* -------------------------------------
+         CHECK SESSION
+      ------------------------------------- */
 
       const {
         data:sessionData,
         error:sessionError
-      } = await supabaseClient.auth.getSession();
+      } =
+        await supabaseClient.auth.getSession();
+
 
       if(sessionError){
+
         throw new Error(
-          "Session error: " + sessionError.message
+          "Session error: " +
+          sessionError.message
         );
+
       }
+
 
       const session =
         sessionData?.session;
 
+
       if(!session){
+
         throw new Error(
           "You are not logged in. Please login again."
         );
+
       }
+
 
       const currentUser =
         session.user;
 
 
-      /* USERNAME */
+      /* -------------------------------------
+         USERNAME
+      ------------------------------------- */
 
       const username =
         usernameInput.value.trim();
 
-      if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)){
+
+      if(
+        !/^[a-zA-Z0-9_]{3,20}$/.test(username)
+      ){
 
         throw new Error(
-          "Username must be 3-20 characters and contain only letters, numbers or _. "
+          "Username must be 3-20 characters and contain only letters, numbers or _."
         );
 
       }
 
 
-      /* DOB */
+      /* -------------------------------------
+         DATE OF BIRTH
+      ------------------------------------- */
 
       const dob =
         dobInput.value;
 
+
       if(!dob){
+
         throw new Error(
           "Please select your date of birth."
         );
+
       }
 
 
-      /* GUIDELINES */
+      /* -------------------------------------
+         GUIDELINES
+      ------------------------------------- */
 
       if(!guidelinesInput.checked){
 
@@ -462,19 +482,27 @@ completeBtn.addEventListener(
       }
 
 
-      /* ================================
+      /* -------------------------------------
          CHECK USERNAME
-      ================================= */
+      ------------------------------------- */
 
       const {
         data:existingUsers,
         error:usernameError
-      } = await supabaseClient
-        .from("profiles")
-        .select("id,username")
-        .ilike("username",username)
-        .neq("id",currentUser.id)
-        .limit(1);
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select("id,username")
+          .ilike(
+            "username",
+            username
+          )
+          .neq(
+            "id",
+            currentUser.id
+          )
+          .limit(1);
+
 
       if(usernameError){
 
@@ -485,6 +513,7 @@ completeBtn.addEventListener(
 
       }
 
+
       if(existingUsers?.length){
 
         throw new Error(
@@ -494,11 +523,12 @@ completeBtn.addEventListener(
       }
 
 
-      /* ================================
-         AVATAR
-      ================================= */
+      /* -------------------------------------
+         UPLOAD AVATAR
+      ------------------------------------- */
 
       let avatarUrl = null;
+
 
       if(selectedAvatar){
 
@@ -507,17 +537,23 @@ completeBtn.addEventListener(
             .split(".")
             .pop()
             .toLowerCase()
-            .replace(/[^a-z0-9]/g,"");
+            .replace(
+              /[^a-z0-9]/g,
+              ""
+            );
+
 
         const safeExtension =
-          ["jpg","jpeg","png","webp","gif"]
-            .includes(extension)
+          [
+            "jpg",
+            "jpeg",
+            "png",
+            "webp",
+            "gif"
+          ].includes(extension)
             ? extension
             : "jpg";
 
-        /*
-          Unique file path avoids CDN/cache problems.
-        */
 
         const filePath =
           `${currentUser.id}/avatar-${Date.now()}.${safeExtension}`;
@@ -525,19 +561,21 @@ completeBtn.addEventListener(
 
         const {
           error:uploadError
-        } = await supabaseClient
-          .storage
-          .from("avatars")
-          .upload(
-            filePath,
-            selectedAvatar,
-            {
-              cacheControl:"3600",
-              upsert:false,
-              contentType:
-                selectedAvatar.type || "image/jpeg"
-            }
-          );
+        } =
+          await supabaseClient
+            .storage
+            .from("avatars")
+            .upload(
+              filePath,
+              selectedAvatar,
+              {
+                cacheControl:"3600",
+                upsert:false,
+                contentType:
+                  selectedAvatar.type ||
+                  "image/jpeg"
+              }
+            );
 
 
         if(uploadError){
@@ -550,21 +588,20 @@ completeBtn.addEventListener(
         }
 
 
-        /*
-          Get public URL
-        */
-
         const {
           data:publicData
         } =
           supabaseClient
             .storage
             .from("avatars")
-            .getPublicUrl(filePath);
+            .getPublicUrl(
+              filePath
+            );
 
 
         avatarUrl =
-          publicData?.publicUrl || null;
+          publicData?.publicUrl ||
+          null;
 
 
         if(!avatarUrl){
@@ -578,9 +615,9 @@ completeBtn.addEventListener(
       }
 
 
-      /* ================================
+      /* -------------------------------------
          SAVE PROFILE
-      ================================= */
+      ------------------------------------- */
 
       const profileData = {
 
@@ -599,14 +636,15 @@ completeBtn.addEventListener(
 
       const {
         error:profileError
-      } = await supabaseClient
-        .from("profiles")
-        .upsert(
-          profileData,
-          {
-            onConflict:"id"
-          }
-        );
+      } =
+        await supabaseClient
+          .from("profiles")
+          .upsert(
+            profileData,
+            {
+              onConflict:"id"
+            }
+          );
 
 
       if(profileError){
@@ -619,40 +657,50 @@ completeBtn.addEventListener(
       }
 
 
-      /* ================================
+      /* -------------------------------------
          SUCCESS
-      ================================= */
+      ------------------------------------- */
 
       showMessage(
         "Profile created successfully! Opening Connect...",
         "success"
       );
 
+
       completeBtn.textContent =
         "Profile Created ✓";
 
 
-      setTimeout(function(){
+      setTimeout(
+        function(){
 
-        window.location.href =
-          "home.html";
+          window.location.href =
+            "home.html";
 
-      },700);
+        },
+        700
+      );
 
 
-    }catch(error){
+    }
+    catch(error){
 
       console.error(
         "PROFILE SETUP ERROR:",
         error
       );
 
+
       showMessage(
         error?.message ||
         "Something went wrong. Please try again."
       );
 
-      completeBtn.disabled = false;
+
+      completeBtn.disabled =
+        false;
+
+
       completeBtn.textContent =
         "Complete Profile";
 
@@ -661,7 +709,5 @@ completeBtn.addEventListener(
   }
 );
 
-</script>
-
-</body>
+</script></body>
 </html>
