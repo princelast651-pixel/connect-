@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -32,6 +33,14 @@ public class MainActivity extends Activity {
         settings.setDatabaseEnabled(true);
 
         webView.setWebViewClient(new WebViewClient());
+
+        /*
+         * JavaScript <-> Android bridge
+         */
+        webView.addJavascriptInterface(
+                new AndroidVoiceBridge(),
+                "AndroidVoice"
+        );
 
         webView.setWebChromeClient(new WebChromeClient() {
 
@@ -69,6 +78,9 @@ public class MainActivity extends Activity {
         );
     }
 
+    /*
+     * Starts the Android foreground service.
+     */
     private void startVoiceService() {
 
         if (checkSelfPermission(
@@ -81,7 +93,8 @@ public class MainActivity extends Activity {
         Intent intent =
                 new Intent(this, VoiceService.class);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.O) {
 
             startForegroundService(intent);
 
@@ -91,12 +104,46 @@ public class MainActivity extends Activity {
         }
     }
 
+    /*
+     * Stops the Android foreground service.
+     */
     private void stopVoiceService() {
 
         Intent intent =
                 new Intent(this, VoiceService.class);
 
         stopService(intent);
+    }
+
+    /*
+     * JavaScript bridge.
+     *
+     * room.html calls:
+     *
+     * AndroidVoice.voiceStarted()
+     * AndroidVoice.voiceStopped()
+     */
+    private class AndroidVoiceBridge {
+
+        @JavascriptInterface
+        public void voiceStarted() {
+
+            runOnUiThread(() -> {
+
+                startVoiceService();
+
+            });
+        }
+
+        @JavascriptInterface
+        public void voiceStopped() {
+
+            runOnUiThread(() -> {
+
+                stopVoiceService();
+
+            });
+        }
     }
 
     @Override
