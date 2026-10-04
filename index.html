@@ -290,8 +290,6 @@ input:focus{
 
 <body>
 
-<!-- SPLASH -->
-
 <div id="splash">
 
   <div class="logo">
@@ -340,8 +338,6 @@ input:focus{
 </div>
 
 
-<!-- AUTH -->
-
 <div class="auth-container" id="authContainer">
 
   <div class="auth-card">
@@ -389,9 +385,6 @@ input:focus{
 
     <div class="error" id="error"></div>
 
-
-    <!-- GOOGLE LOGIN -->
-
     <button
       class="google-btn"
       id="googleBtn">
@@ -406,11 +399,9 @@ input:focus{
 
     </button>
 
-
     <div class="divider">
       OR
     </div>
-
 
     <label>
       EMAIL
@@ -423,7 +414,6 @@ input:focus{
       autocomplete="email"
     >
 
-
     <label>
       PASSWORD
     </label>
@@ -435,7 +425,6 @@ input:focus{
       autocomplete="current-password"
     >
 
-
     <button
       class="auth-btn"
       id="authBtn">
@@ -444,12 +433,10 @@ input:focus{
 
     </button>
 
-
     <div
       class="success"
       id="success">
     </div>
-
 
     <div class="switch">
 
@@ -478,8 +465,7 @@ const SUPABASE_URL =
 "https://riversitunmzvuprecbt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkwNjMxNjQwLCJleHAiOjIxMDYyMDc2NDB9.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
-
+"eyJhbGciOiJIUzI1NiIsInR5cCI6ImFub24iLCJpYXQiOjE3OTA2MzE2NDAsImV4cCI6MjEwNjIwNzY0MH0.RnOPXbJKZRwkSqFUu3lb9XVmOxqqffc2hAMEFGFzoNY";
 
 const supabaseClient =
 supabase.createClient(
@@ -489,7 +475,8 @@ supabase.createClient(
     auth:{
       persistSession:true,
       autoRefreshToken:true,
-      detectSessionInUrl:true
+      detectSessionInUrl:true,
+      flowType:"pkce"
     }
   }
 );
@@ -549,7 +536,8 @@ let redirecting = false;
 
 function showError(message){
 
-  errorBox.textContent = message;
+  errorBox.textContent =
+    message;
 
   errorBox.style.display =
     "block";
@@ -590,12 +578,6 @@ async function checkProfileAndRedirect(session){
   if(redirecting){
     return;
   }
-
-  console.log(
-    "Logged in user:",
-    session.user.email
-  );
-
 
   try{
 
@@ -648,7 +630,10 @@ async function checkProfileAndRedirect(session){
 
   }catch(err){
 
-    console.error(err);
+    console.error(
+      "Profile check error:",
+      err
+    );
 
     redirectTo(
       "profile-setup.html"
@@ -666,6 +651,77 @@ async function checkProfileAndRedirect(session){
 async function handleOAuthCallback(){
 
   try{
+
+    /*
+     * PKCE callback:
+     * Google returns ?code=...
+     */
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const code =
+      params.get("code");
+
+
+    if(code){
+
+      const {
+        data,
+        error
+      } =
+      await supabaseClient.auth
+        .exchangeCodeForSession(code);
+
+
+      if(error){
+
+        console.error(
+          "OAuth code exchange error:",
+          error
+        );
+
+        showError(
+          error.message ||
+          "Google login failed."
+        );
+
+        return false;
+      }
+
+
+      if(
+        data &&
+        data.session
+      ){
+
+        /*
+         * URL se code hata do.
+         */
+
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+
+
+        await checkProfileAndRedirect(
+          data.session
+        );
+
+        return true;
+      }
+
+    }
+
+
+    /*
+     * Fallback:
+     * Agar session already stored hai.
+     */
 
     const {
       data,
@@ -690,25 +746,6 @@ async function handleOAuthCallback(){
       data.session
     ){
 
-      console.log(
-        "OAuth/session detected"
-      );
-
-
-      if(
-        window.location.hash
-      ){
-
-        history.replaceState(
-          null,
-          document.title,
-          window.location.pathname +
-          window.location.search
-        );
-
-      }
-
-
       await checkProfileAndRedirect(
         data.session
       );
@@ -721,6 +758,11 @@ async function handleOAuthCallback(){
     console.error(
       "OAuth callback error:",
       err
+    );
+
+    showError(
+      err.message ||
+      "Google login failed."
     );
 
   }
@@ -757,29 +799,25 @@ googleBtn.addEventListener(
       const {
         error
       } =
-      await supabaseClient.auth.signInWithOAuth({
+      await supabaseClient.auth
+        .signInWithOAuth({
 
-        provider:
-          "google",
+          provider:
+            "google",
 
-        options:{
+          options:{
 
-          redirectTo:
-            "https://princelast651-pixel.github.io/connect-/",
+            redirectTo:
+              "https://princelast651-pixel.github.io/connect-/",
 
-          /*
-           * IMPORTANT:
-           * Google account chooser
-           * show karega.
-           */
-          queryParams:{
-            prompt:
-              "select_account"
+            queryParams:{
+              prompt:
+                "select_account"
+            }
+
           }
 
-        }
-
-      });
+        });
 
 
       if(error){
@@ -874,8 +912,6 @@ authBtn.addEventListener(
 
     try{
 
-      /* SIGN UP */
-
       if(isSignup){
 
         const {
@@ -942,21 +978,20 @@ authBtn.addEventListener(
       }
 
 
-      /* LOGIN */
-
       const {
         data,
         error
       } =
-      await supabaseClient.auth.signInWithPassword({
+      await supabaseClient.auth
+        .signInWithPassword({
 
-        email:
-          userEmail,
+          email:
+            userEmail,
 
-        password:
-          userPassword
+          password:
+            userPassword
 
-      });
+        });
 
 
       if(error){
@@ -1087,7 +1122,10 @@ supabaseClient.auth.onAuthStateChange(
 
 
     if(
-      event === "SIGNED_IN" &&
+      (
+        event === "SIGNED_IN" ||
+        event === "INITIAL_SESSION"
+      ) &&
       session &&
       !redirecting
     ){
