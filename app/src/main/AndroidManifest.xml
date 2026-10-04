@@ -1,8 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Microphone -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Foreground microphone service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
@@ -10,7 +14,7 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:label="Connect"
         android:icon="@android:drawable/sym_def_app_icon"
-        android:usesCleartextTraffic="false">
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
